@@ -1,0 +1,5 @@
+﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,status,price,quantity,delivery_method,ticket_type,name_type,raw_description,first_observed_at,last_observed_at,details_fetched,sold_at,year_month
+pvtdnj5n7y,1781665825957,ryosuke-yamada-asia-tour-2026-red-y,2026-09-06,,[台北] TAIPEI MUSIC CENTER,listing,0,2,当日手渡し,paper,female,"2階最前、センターより。
+2枚まとめの場合は値下げします。
+座席権利のみ、当日事前手渡し。公演中止以外返金不可。",2026-06-17 03:10:25,2026-08-27 07:17:28,False,,2026-06
+sold_ryosuke-yamada-asia-tour-2026-red-y_1781196364622_100000,1781196364622,ryosuke-yamada-asia-tour-2026-red-y,2026-09-13,,[ソウル] Jangchung Arena,sold,100000,1,公演前に名義変更,electronic,female,,2026-06-11 16:46:04,2026-08-27 07:17:28,False,2026-08-27 07:17:28,2026-06

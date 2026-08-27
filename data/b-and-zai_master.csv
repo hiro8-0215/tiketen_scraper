@@ -1,0 +1,1 @@
+﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,ticket_type,name_type,delivery_method,seller_name,seller_rating,order_num,ticket_tags,first_observed_at,last_observed_at,sold_at,status,quantity,price,raw_description,details_fetched
