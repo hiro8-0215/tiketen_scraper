@@ -1,3 +1,3 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-06,akechico,2026-08-27,18:00,[大阪府] フェスティバルホール,1,1,0,0,5000.0,5000,5000
+2026-06,akechico,2026-08-27,18:00,[大阪府] フェスティバルホール,1,0,0,1,5000.0,5000,5000
 2026-06,akechico,2026-08-30,12:30,[大阪府] フェスティバルホール,2,0,2,0,55000.0,0,110000
