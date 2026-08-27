@@ -45,6 +45,15 @@ def upload_file(webapp_url: str, token: str, path: Path, subfolder: str) -> None
     try:
         with urllib.request.urlopen(request, timeout=120) as response:
             body = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        if error.code in {401, 403}:
+            raise RuntimeError(
+                "Apps Script denied anonymous access. Redeploy the web app "
+                "with 'Who has access: Anyone' and update GDRIVE_WEBAPP_URL."
+            ) from error
+        raise RuntimeError(
+            f"Upload failed for {path.name}: HTTP {error.code}"
+        ) from error
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
         raise RuntimeError(f"Upload failed for {path.name}: {error}") from error
     if body.get("status") != "success":

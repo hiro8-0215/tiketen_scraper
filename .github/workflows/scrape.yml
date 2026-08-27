@@ -19,12 +19,12 @@ jobs:
 
     steps:
       - name: リポジトリのチェックアウト
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0 # 全履歴を取得（コミットに必要）
 
       - name: Pythonのセットアップ
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.11' # Python 3.11 を使用
           
