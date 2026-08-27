@@ -336,6 +336,43 @@ def load_master(performer):
             master[row['ticket_id']] = row
     return master
 
+def sanitize_unicode(value):
+    """Preserve valid Unicode and replace only malformed UTF-16 surrogates.
+
+    Some upstream descriptions contain a lone half of an emoji (for example
+    ``\\ud83c``). Python can keep that value in memory, but UTF-8 cannot encode
+    it. Valid surrogate pairs are combined into their actual Unicode code
+    point; a lone surrogate is represented explicitly with U+FFFD instead of
+    aborting the entire scrape or silently dropping text.
+    """
+    if not isinstance(value, str):
+        return value
+
+    output = []
+    index = 0
+    while index < len(value):
+        codepoint = ord(value[index])
+        if 0xD800 <= codepoint <= 0xDBFF:
+            if index + 1 < len(value):
+                low = ord(value[index + 1])
+                if 0xDC00 <= low <= 0xDFFF:
+                    combined = 0x10000 + ((codepoint - 0xD800) << 10) + (low - 0xDC00)
+                    output.append(chr(combined))
+                    index += 2
+                    continue
+            output.append('\ufffd')
+        elif 0xDC00 <= codepoint <= 0xDFFF:
+            output.append('\ufffd')
+        else:
+            output.append(value[index])
+        index += 1
+    return ''.join(output)
+
+
+def _sanitized_row(row, fieldnames=None):
+    keys = fieldnames if fieldnames is not None else row.keys()
+    return {key: sanitize_unicode(row.get(key, '')) for key in keys}
+
 def save_master(performer, master):
     os.makedirs(DATA_DIR, exist_ok=True)
     master_file = os.path.join(DATA_DIR, f'{performer}_master.csv')
@@ -344,19 +381,27 @@ def save_master(performer, master):
                   'seller_rating', 'order_num', 'ticket_tags', 'first_observed_at', 'last_observed_at', 
                   'sold_at', 'status', 'quantity', 'price', 'raw_description', 'details_fetched']
                   
-    with open(master_file, 'w', encoding='utf-8-sig', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for t_id, row in master.items():
-            row_out = {k: row.get(k, '') for k in fieldnames}
-            writer.writerow(row_out)
+    temporary_file = master_file + '.tmp'
+    try:
+        with open(temporary_file, 'w', encoding='utf-8-sig', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            for row in master.values():
+                writer.writerow(_sanitized_row(row, fieldnames))
+        # Never leave a partially written master if encoding or I/O fails.
+        os.replace(temporary_file, master_file)
+    finally:
+        if os.path.exists(temporary_file):
+            os.remove(temporary_file)
 
 def save_snapshots(performer, master):
     import pandas as pd
     os.makedirs(SNAPSHOT_DIR, exist_ok=True)
     os.makedirs(MARKET_DIR, exist_ok=True)
     
-    df = pd.DataFrame(list(master.values()))
+    # Snapshot/market CSVs must use the same malformed-Unicode handling as the
+    # master file; otherwise the later snapshot stage can fail on the same row.
+    df = pd.DataFrame([_sanitized_row(row) for row in master.values()])
     if df.empty: return
         
     df['price'] = pd.to_numeric(df['price'], errors='coerce')
