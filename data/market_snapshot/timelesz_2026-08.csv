@@ -1,4 +1,4 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-08,timelesz-live-tour-2026-momentum,2026-08-29,17:00,セキスイハイムスーパーアリーナ,65,34,23,8,55623.07692307692,0,105000
-2026-08,timelesz-live-tour-2026-momentum,2026-08-30,13:00,セキスイハイムスーパーアリーナ,58,34,21,3,56891.39655172414,0,130000
-2026-08,timelesz-live-tour-2026-momentum,2026-08-30,17:30,セキスイハイムスーパーアリーナ,140,88,40,12,39157.95714285714,0,100000
+2026-08,timelesz-live-tour-2026-momentum,2026-08-29,17:00,セキスイハイムスーパーアリーナ,65,33,23,9,55623.07692307692,0,105000
+2026-08,timelesz-live-tour-2026-momentum,2026-08-30,13:00,セキスイハイムスーパーアリーナ,58,32,22,4,56891.39655172414,0,130000
+2026-08,timelesz-live-tour-2026-momentum,2026-08-30,17:30,セキスイハイムスーパーアリーナ,145,91,40,14,39014.57931034483,0,100000
