@@ -6,6 +6,7 @@ import glob
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timedelta, timezone
@@ -14,6 +15,8 @@ from pathlib import Path
 
 JST = timezone(timedelta(hours=9), "JST")
 MAX_FILE_BYTES = 35 * 1024 * 1024
+MAX_UPLOAD_ATTEMPTS = 5
+RETRYABLE_HTTP_CODES = {404, 408, 429, 500, 502, 503, 504}
 
 
 def required_environment(name: str) -> str:
@@ -42,20 +45,44 @@ def upload_file(webapp_url: str, token: str, path: Path, subfolder: str) -> None
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    try:
-        with urllib.request.urlopen(request, timeout=120) as response:
-            body = json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as error:
-        if error.code in {401, 403}:
-            raise RuntimeError(
-                "Apps Script denied anonymous access. Redeploy the web app "
-                "with 'Who has access: Anyone' and update GDRIVE_WEBAPP_URL."
-            ) from error
-        raise RuntimeError(
-            f"Upload failed for {path.name}: HTTP {error.code}"
-        ) from error
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
-        raise RuntimeError(f"Upload failed for {path.name}: {error}") from error
+    body = None
+    for attempt in range(1, MAX_UPLOAD_ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=120) as response:
+                body = json.loads(response.read().decode("utf-8"))
+            break
+        except urllib.error.HTTPError as error:
+            if error.code in {401, 403}:
+                raise RuntimeError(
+                    "Apps Script denied anonymous access. Redeploy the web app "
+                    "with 'Who has access: Anyone' and update GDRIVE_WEBAPP_URL."
+                ) from error
+            if error.code not in RETRYABLE_HTTP_CODES or attempt == MAX_UPLOAD_ATTEMPTS:
+                raise RuntimeError(
+                    f"Upload failed for {path.name}: HTTP {error.code} "
+                    f"after {attempt} attempt(s)"
+                ) from error
+            delay = 2 ** (attempt - 1)
+            print(
+                f"retrying: {path.name} after HTTP {error.code} "
+                f"({attempt}/{MAX_UPLOAD_ATTEMPTS}, wait {delay}s)",
+                flush=True,
+            )
+            time.sleep(delay)
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
+            if attempt == MAX_UPLOAD_ATTEMPTS:
+                raise RuntimeError(
+                    f"Upload failed for {path.name} after {attempt} attempts: {error}"
+                ) from error
+            delay = 2 ** (attempt - 1)
+            print(
+                f"retrying: {path.name} after transient error "
+                f"({attempt}/{MAX_UPLOAD_ATTEMPTS}, wait {delay}s): {error}",
+                flush=True,
+            )
+            time.sleep(delay)
+    if body is None:
+        raise RuntimeError(f"Upload failed for {path.name} without a response")
     if body.get("status") != "success":
         raise RuntimeError(
             f"Google Apps Script rejected {path.name}: "
