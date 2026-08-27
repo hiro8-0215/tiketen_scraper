@@ -1,0 +1,4 @@
+﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
+2026-07,yakusoku-no-hate,2026-09-28,,[東京都] 東京国際フォーラム ホールA,13,10,3,0,17923.076923076922,13000,35000
+2026-07,yakusoku-no-hate,2026-09-29,13:00,[東京都] 東京国際フォーラム ホールA,2,2,0,0,18000.0,15000,21000
+2026-07,yakusoku-no-hate,2026-09-29,18:00,[東京都] 東京国際フォーラム ホールA,19,17,2,0,23078.947368421053,14000,45000
