@@ -15,7 +15,7 @@ concurrency:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 40  # ランナー割り当て遅延等の異常滞留に対する安全装置
+    timeout-minutes: 60  # 全対象API取得 + 最大25分の詳細差分取得
 
     steps:
       - name: リポジトリのチェックアウト
@@ -36,7 +36,14 @@ jobs:
       - name: Playwright（ブラウザ）のインストール
         run: playwright install chromium
         
-      - name: スクレイピングの実行
+      - name: 全対象のAPI状態を収集
+        env:
+          SCRAPE_MODE: api
+        run: python scraper.py
+
+      - name: 未取得の詳細を差分補完
+        env:
+          SCRAPE_MODE: details
         run: python scraper.py
         
       - name: 取得したデータを保存（コミット＆プッシュ）

@@ -12,6 +12,11 @@ from playwright.sync_api import sync_playwright
 # 25分経過で途中保存して正常終了。次回トリガーで続きを自動再開。
 SCRAPE_START_TIME = time.time()
 MAX_RUNTIME_SECONDS = 25 * 60  # 25分
+SCRAPE_MODE = os.environ.get('SCRAPE_MODE', 'full').strip().lower()
+if SCRAPE_MODE not in {'full', 'api', 'details'}:
+    raise RuntimeError(
+        "SCRAPE_MODE must be one of: full, api, details"
+    )
 
 def is_time_remaining():
     """残り時間があるかチェック"""
@@ -387,6 +392,49 @@ def save_snapshots(performer, master):
         for ym, group in mdf.groupby('year_month'):
             group.to_csv(os.path.join(MARKET_DIR, f'{performer}_{ym}.csv'), index=False, encoding='utf-8-sig')
 
+def enrich_ticket_details(performer, master, ticket_ids):
+    """Incrementally enrich active tickets, returning True on time limit."""
+    pending = list(dict.fromkeys(ticket_ids))
+    if not pending:
+        return False
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        fetched_count = 0
+        for index, share_code in enumerate(pending):
+            if not is_time_remaining():
+                print(
+                    f"[TIME LIMIT] 詳細取得を中断します。"
+                    f"残り{len(pending) - index}件は次回実行で継続します。"
+                )
+                save_master(performer, master)
+                browser.close()
+                return True
+            print(f"Fetching details for NEW active ticket {share_code}...")
+            details = parse_ticket_details(page, share_code)
+            time.sleep(1)
+            if not details:
+                continue
+            row = master.get(share_code)
+            if row is None or row.get('status') != 'listing':
+                continue
+            if details.get('raw_description'):
+                row['raw_description'] = details['raw_description']
+            row['seller_name'] = details.get('seller_name', '')
+            row['seller_rating'] = details.get('seller_rating', '')
+            row['order_num'] = details.get('order_num', '')
+            row['ticket_tags'] = details.get('ticket_tags', '')
+            row['details_fetched'] = 'True'
+            fetched_count += 1
+            if fetched_count % 50 == 0 or (index + 1) == len(pending):
+                print(
+                    f"[CHECKPOINT] Saving after {fetched_count} detail fetches..."
+                )
+                save_master(performer, master)
+        browser.close()
+    return False
+
+
 def main():
     targets_file = os.path.join(DATA_DIR, 'targets.json')
     if not os.path.exists(targets_file):
@@ -400,13 +448,32 @@ def main():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     time_limit_reached = False
+    print(f"Scrape mode: {SCRAPE_MODE}")
     for performer in performers:
-        if not is_time_remaining():
+        if SCRAPE_MODE != 'api' and not is_time_remaining():
             print(f"[TIME LIMIT] 25分経過のため残りのperformerをスキップします。次回実行で継続します。")
             time_limit_reached = True
             break
         print(f"=== Processing {performer} ===")
         master = load_master(performer)
+
+        if SCRAPE_MODE == 'details':
+            pending = [
+                ticket_id for ticket_id, row in master.items()
+                if row.get('status') == 'listing'
+                and str(row.get('details_fetched', 'False')) != 'True'
+            ]
+            time_limit_reached = enrich_ticket_details(
+                performer, master, pending
+            )
+            save_master(performer, master)
+            save_snapshots(performer, master)
+            if time_limit_reached:
+                print(
+                    f"[TIME LIMIT] {performer}までの詳細を保存しました。"
+                )
+                break
+            continue
         
         by_share_code = {t['ticket_id']: t for t in master.values() if not t['ticket_id'].startswith('sold_')}
         by_created_at = {
@@ -530,47 +597,6 @@ def main():
                         by_created_at[match_key] = row
                         master[t_id] = row
 
-        if new_active_tickets:
-            with sync_playwright() as p:
-                browser = p.chromium.launch(headless=True)
-                page = browser.new_page()
-                fetched_count = 0
-                for i, share_code in enumerate(new_active_tickets):
-                    if not is_time_remaining():
-                        print(f"[TIME LIMIT] 25分経過のため詳細取得を中断します。残り{len(new_active_tickets) - i}件は次回実行で継続します。")
-                        # 途中まで取得した分を保存してからbreak
-                        save_master(performer, master)
-                        time_limit_reached = True
-                        break
-                    print(f"Fetching details for NEW active ticket {share_code}...")
-                    details = parse_ticket_details(page, share_code)
-                    time.sleep(1)  # サーバー負荷軽減: 全ページアクセス後に1秒待機
-                    if not details: continue
-                    
-                    row = master[share_code]
-                    if details.get('raw_description'):
-                        row['raw_description'] = details['raw_description']
-                    row['seller_name'] = details.get('seller_name', '')
-                    row['seller_rating'] = details.get('seller_rating', '')
-                    row['order_num'] = details.get('order_num', '')
-                    row['ticket_tags'] = details.get('ticket_tags', '')
-                    row['details_fetched'] = 'True'
-                    fetched_count += 1
-                    
-                    # インクリメンタル保存: 50件ごと + 最後の1件はかならず保存
-                    if fetched_count % 50 == 0 or (i + 1) == len(new_active_tickets):
-                        print(f"[CHECKPOINT] Saving after {fetched_count} detail fetches...")
-                        save_master(performer, master)
-                    
-                browser.close()
-        
-        if time_limit_reached:
-            # タイムリミットに達した場合、現在のperformerまでの結果を保存して終了
-            save_master(performer, master)
-            save_snapshots(performer, master)
-            print(f"[TIME LIMIT] {performer} まで保存完了。残りは次回実行で処理します。")
-            break
-
         deleted_count = mark_confirmed_absences_deleted(
             master, active_codes_by_event, now_str
         )
@@ -582,6 +608,18 @@ def main():
         save_master(performer, master)
         save_snapshots(performer, master)
         print(f"Saved {len(master)} tickets to master for {performer}.")
+
+        if SCRAPE_MODE != 'api':
+            time_limit_reached = enrich_ticket_details(
+                performer, master, new_active_tickets
+            )
+            save_master(performer, master)
+            save_snapshots(performer, master)
+            if time_limit_reached:
+                print(
+                    f"[TIME LIMIT] {performer}までの状態・詳細を保存しました。"
+                )
+                break
 
 if __name__ == '__main__':
     main()

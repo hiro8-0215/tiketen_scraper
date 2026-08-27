@@ -2,7 +2,7 @@ import sys
 import unittest
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -31,6 +31,42 @@ def active_response(ticket_id):
 
 
 class ScraperSafetyTest(unittest.TestCase):
+    def test_detail_enrichment_updates_only_after_success(self):
+        master = {"a": stored_listing("a")}
+        context = MagicMock()
+        browser = context.__enter__.return_value.chromium.launch.return_value
+        with (
+            patch("scraper.sync_playwright", return_value=context),
+            patch("scraper.is_time_remaining", return_value=True),
+            patch("scraper.time.sleep"),
+            patch("scraper.save_master"),
+            patch("scraper.parse_ticket_details", return_value={
+                "raw_description": "seat detail",
+                "seller_name": "seller",
+                "seller_rating": "5",
+                "order_num": "10",
+                "ticket_tags": "tag",
+            }),
+        ):
+            stopped = scraper.enrich_ticket_details("group", master, ["a"])
+        self.assertFalse(stopped)
+        self.assertEqual(master["a"]["details_fetched"], "True")
+        self.assertEqual(master["a"]["raw_description"], "seat detail")
+        browser.close.assert_called_once()
+
+    def test_detail_enrichment_saves_and_resumes_at_time_limit(self):
+        master = {"a": stored_listing("a")}
+        context = MagicMock()
+        with (
+            patch("scraper.sync_playwright", return_value=context),
+            patch("scraper.is_time_remaining", return_value=False),
+            patch("scraper.save_master") as save,
+            patch("builtins.print"),
+        ):
+            stopped = scraper.enrich_ticket_details("group", master, ["a"])
+        self.assertTrue(stopped)
+        save.assert_called_once_with("group", master)
+
     def test_sold_match_key_is_scoped_to_event(self):
         row = stored_listing("a", event_id="event-a")
         self.assertNotEqual(

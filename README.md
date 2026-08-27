@@ -74,6 +74,11 @@ python measure_run.py
 ```
 
 ## GitHub Actionsでの運用例
+
+現在のワークフローは二段階で実行します。最初の`SCRAPE_MODE=api`で対象アーティスト
+全件のAPI状態を先に取得して全masterを保存し、その後の`SCRAPE_MODE=details`で
+未取得の出品者・備考詳細を25分の範囲で差分補完します。これにより初回実行でも、
+詳細取得の時間切れによって後半アーティストのmasterが作られないことを防ぎます。
 プロジェクトのルートに `.github/workflows/scrape.yml` を作成することで、指定したスケジュールで自動実行できます。
 
 ```yaml
@@ -89,10 +94,10 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v7
         with:
           python-version: '3.10'
           
