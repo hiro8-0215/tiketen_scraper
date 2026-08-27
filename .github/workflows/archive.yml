@@ -1,0 +1,37 @@
+name: Daily Archive to Google Drive
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Ticket Scraper"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: google-drive-archive
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Pythonのセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Google Driveへmasterをバックアップ
+        env:
+          GDRIVE_WEBAPP_URL: ${{ secrets.GDRIVE_WEBAPP_URL }}
+          GDRIVE_UPLOAD_TOKEN: ${{ secrets.GDRIVE_UPLOAD_TOKEN }}
+          GDRIVE_SOURCE_DIR: data
+        run: python upload_to_gdrive.py

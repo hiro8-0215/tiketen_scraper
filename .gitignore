@@ -1,0 +1,49 @@
+# Python/runtime
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+*service-account*.json
+*service_account*.json
+*credentials*.json
+*oauth*.json
+astute-pride-*.json
+
+# Model/training datasets (operational data/ is versioned and Drive-backed)
+tiketen_date_data/
+semantic_feature_data/
+手動_data/
+data_legacy_corrupted_*/
+
+# Generated model outputs
+**/artifacts/
+**/logs/
+**/checkpoints/
+**/train_data/
+**/inputs/
+**/qwen_ticket_model/
+*.joblib
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.bin
+*.pt
+*.pth
+*.safetensors
+*.cbm
+*.onnx
+
+# Local tools/UI
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+playwright-report/
