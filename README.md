@@ -63,6 +63,16 @@ ticketen_scraping/
 ```
 ※スラッグは実際のチケテンのURL `https://ticketen.jp/performers/〇〇` の「〇〇」の部分です。
 
+Ticketen側のURL識別子が履歴CSVで使うグループ名と異なる場合は、保存名を
+`name`、現在の取得元識別子を`source`として分離できます。これによりURL変更後も
+master CSV名と学習時のグループIDは変わりません。
+
+```json
+[
+  {"name": "b-and-zai", "source": "bandzai"}
+]
+```
+
 ### プログラムの実行
 以下のコマンドでスクレイピングを開始します。
 ```bash

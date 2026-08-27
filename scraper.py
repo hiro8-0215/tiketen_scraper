@@ -35,6 +35,10 @@ class ScrapeIntegrityError(RuntimeError):
     """Raised when a response is unsafe to use for state transitions."""
 
 
+class NoEventsFound(ScrapeIntegrityError):
+    """The performer page is valid but currently has no linked events."""
+
+
 def fetch_html(url):
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -51,7 +55,7 @@ def get_events(performer):
         if m and m.group(1) not in events:
             events.append(m.group(1))
     if not events:
-        raise ScrapeIntegrityError(
+        raise NoEventsFound(
             f"No events were found for {performer}; preserving existing listings"
         )
     return events
@@ -480,6 +484,33 @@ def enrich_ticket_details(performer, master, ticket_ids):
     return False
 
 
+def normalize_targets(raw_targets):
+    """Return stable output names paired with current Ticketen performer IDs.
+
+    String entries remain backward compatible. Object entries allow Ticketen's
+    URL identifier to change without renaming historical master CSVs.
+    """
+    targets = []
+    seen_names = set()
+    for entry in raw_targets:
+        if isinstance(entry, str):
+            name = source = entry.strip()
+        elif isinstance(entry, dict):
+            name = str(entry.get('name', '')).strip()
+            source = str(entry.get('source', '')).strip()
+        else:
+            raise ValueError(f"Invalid target entry: {entry!r}")
+        if not name or not source:
+            raise ValueError(f"Target name/source must not be empty: {entry!r}")
+        if name in seen_names:
+            raise ValueError(f"Duplicate target output name: {name}")
+        seen_names.add(name)
+        targets.append({'name': name, 'source': source})
+    if not targets:
+        raise ValueError("At least one scrape target is required")
+    return targets
+
+
 def main():
     targets_file = os.path.join(DATA_DIR, 'targets.json')
     if not os.path.exists(targets_file):
@@ -487,14 +518,16 @@ def main():
         with open(targets_file, 'w') as f:
             json.dump(["snow-man"], f)
             
-    with open(targets_file, 'r') as f:
-        performers = json.load(f)
+    with open(targets_file, 'r', encoding='utf-8') as f:
+        targets = normalize_targets(json.load(f))
 
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     time_limit_reached = False
     print(f"Scrape mode: {SCRAPE_MODE}")
-    for performer in performers:
+    for target in targets:
+        performer = target['name']
+        source_performer = target['source']
         if SCRAPE_MODE != 'api' and not is_time_remaining():
             print(f"[TIME LIMIT] 25分経過のため残りのperformerをスキップします。次回実行で継続します。")
             time_limit_reached = True
@@ -528,9 +561,18 @@ def main():
         
         new_active_tickets = []
 
-        print(f"Fetching events for {performer}...")
+        print(f"Fetching events for {performer} ({source_performer})...")
         try:
-            events = get_events(performer)
+            events = get_events(source_performer)
+        except NoEventsFound as error:
+            print(f"[NO EVENTS] {error}")
+            save_master(performer, master)
+            save_snapshots(performer, master)
+            print(
+                f"Saved {len(master)} existing tickets for {performer}; "
+                "no status transitions applied."
+            )
+            continue
         except ScrapeIntegrityError as error:
             print(f"[INTEGRITY] {error}")
             continue
@@ -668,9 +710,9 @@ def main():
 
     if SCRAPE_MODE == 'api':
         missing = [
-            performer for performer in performers
+            target['name'] for target in targets
             if not os.path.exists(
-                os.path.join(DATA_DIR, f'{performer}_master.csv')
+                os.path.join(DATA_DIR, f"{target['name']}_master.csv")
             )
         ]
         if missing:
@@ -678,7 +720,7 @@ def main():
                 f"API pass did not create all target masters: {missing}"
             )
         print(
-            f"API coverage complete: {len(performers)}/{len(performers)} masters."
+            f"API coverage complete: {len(targets)}/{len(targets)} masters."
         )
 
 if __name__ == '__main__':

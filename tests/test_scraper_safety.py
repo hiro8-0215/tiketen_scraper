@@ -31,6 +31,11 @@ def active_response(ticket_id):
 
 
 class ScraperSafetyTest(unittest.TestCase):
+    @patch("scraper.fetch_html", return_value="<html><body>No events</body></html>")
+    def test_valid_performer_with_no_events_has_distinct_result(self, _):
+        with self.assertRaises(scraper.NoEventsFound):
+            scraper.get_events("valid-but-empty")
+
     def test_detail_enrichment_updates_only_after_success(self):
         master = {"a": stored_listing("a")}
         context = MagicMock()
