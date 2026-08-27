@@ -621,5 +621,20 @@ def main():
                 )
                 break
 
+    if SCRAPE_MODE == 'api':
+        missing = [
+            performer for performer in performers
+            if not os.path.exists(
+                os.path.join(DATA_DIR, f'{performer}_master.csv')
+            )
+        ]
+        if missing:
+            raise RuntimeError(
+                f"API pass did not create all target masters: {missing}"
+            )
+        print(
+            f"API coverage complete: {len(performers)}/{len(performers)} masters."
+        )
+
 if __name__ == '__main__':
     main()
