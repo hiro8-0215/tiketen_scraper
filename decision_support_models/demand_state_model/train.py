@@ -436,6 +436,11 @@ def train(data_dir: Path | None = None) -> dict:
     np.random.seed(SEED)
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     tickets = load_tickets(data_dir)
+    observation_days = (tickets["last_observed_at"].max() - tickets["last_observed_at"].min()).total_seconds() / 86400
+    if observation_days < max(HORIZONS_DAYS):
+        raise RuntimeError(
+            f"Demand training needs at least {max(HORIZONS_DAYS)} days of clean observation; only {observation_days:.2f} days are available"
+        )
     tickets, cutoff = add_end_times(tickets)
     landmarks, frame_fingerprint, cache_reused = _load_or_build_training_frame(
         tickets, cutoff

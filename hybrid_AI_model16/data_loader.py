@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from config import FORBIDDEN_MODEL_COLUMNS, MODEL15_DIR
+from config import DATA_ROOT, FORBIDDEN_MODEL_COLUMNS, MODEL15_DIR
 
 
 if str(MODEL15_DIR) not in sys.path:
@@ -85,9 +85,49 @@ def _safe_ratio(numerator, denominator):
     return numerator / denominator
 
 
+def load_historical_snapshot() -> pd.DataFrame:
+    """Union reliable sold history instead of discarding it for the newest day."""
+    directories = [
+        path for path in DATA_ROOT.glob("data_*")
+        if path.is_dir() and any(path.glob("*_master.csv"))
+    ]
+    if not directories:
+        raise FileNotFoundError(f"No data snapshots found in {DATA_ROOT}")
+    frames = [_MODEL15.load_snapshot(path) for path in directories]
+    snapshot = pd.concat(frames, ignore_index=True)
+    created = snapshot.get(
+        "created_at_unix", pd.Series("", index=snapshot.index)
+    ).astype("string").fillna("").str.strip().str.replace(r"\.0$", "", regex=True)
+    event = snapshot["event_id"].astype("string").fillna("").str.strip()
+    snapshot["_logical_id"] = "ticket:" + snapshot["ticket_id"].astype(str)
+    stable = created.ne("") & event.ne("")
+    snapshot.loc[stable, "_logical_id"] = (
+        "created:" + event[stable] + "|" + created[stable]
+    )
+    snapshot["_status_priority"] = snapshot["status"].map(
+        {"deleted": 0, "listing": 1, "sold": 2}
+    ).fillna(-1)
+    snapshot = (
+        snapshot.sort_values(
+            ["_logical_id", "last_observed_at", "_status_priority", "ticket_id"],
+            na_position="first",
+        )
+        .drop_duplicates("_logical_id", keep="last")
+        .drop(columns=["_logical_id", "_status_priority"])
+        .reset_index(drop=True)
+    )
+    snapshot.attrs["historical_snapshot_count"] = len(directories)
+    return snapshot
+
+
 def prepare_dataset(data_dir: Path | None = None) -> pd.DataFrame:
     """Load Model13-clean sold rows and add listing-time-only global features."""
-    df = _MODEL15.prepare_dataset(data_dir).copy()
+    if data_dir is None:
+        df = _MODEL15.prepare_dataset_from_snapshot(
+            load_historical_snapshot()
+        ).copy()
+    else:
+        df = _MODEL15.prepare_dataset(data_dir).copy()
     delivery = df.get("delivery_method", pd.Series("", index=df.index)).fillna("").astype(str)
     df["delivery_channel"] = delivery.map(_delivery_channel)
     df["delivery_timing"] = delivery.map(_delivery_timing)

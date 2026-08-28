@@ -228,21 +228,30 @@ def load_tickets(data_dir: Path | None = None) -> pd.DataFrame:
     unknown = set(result["status"].dropna()) - ALLOWED_STATUS
     if unknown:
         raise ValueError(f"Unknown status values: {sorted(unknown)}")
-    # Cross-listed events can put one ticket ID in multiple performer files.
-    # Make tied timestamps deterministic and retain an explicit sale over an
-    # inferred disappearance.
+    created = result.get("created_at_unix", pd.Series("", index=result.index)).fillna("").astype(str).str.strip()
+    event = result["event_id"].fillna("").astype(str).str.strip()
+    result["_logical_id"] = "ticket:" + result["ticket_id"].astype(str)
+    stable = created.ne("") & event.ne("")
+    result.loc[stable, "_logical_id"] = "created:" + event[stable] + "|" + created[stable]
+    rotated = int(result.groupby("_logical_id")["ticket_id"].nunique().gt(1).sum())
     result["_status_priority"] = result["status"].map(
-        {"listing": 0, "deleted": 1, "sold": 2}
+        {"deleted": 0, "listing": 1, "sold": 2}
     )
     result = (
         result.sort_values(
-            ["ticket_id", "last_observed_at", "_status_priority"],
+            ["_logical_id", "last_observed_at", "_status_priority", "ticket_id"],
             na_position="first",
         )
-        .drop_duplicates("ticket_id", keep="last")
-        .drop(columns="_status_priority")
+        .drop_duplicates("_logical_id", keep="last")
+        .drop(columns=["_status_priority", "_logical_id"])
         .reset_index(drop=True)
     )
+    if "sold_at_source" in result:
+        unknown_sale_time = result["status"].eq("sold") & result["sold_at_source"].fillna("").eq("historical_unknown")
+        excluded_unknown_sales = int(unknown_sale_time.sum())
+        result = result.loc[~unknown_sale_time].copy()
+    else:
+        excluded_unknown_sales = 0
     if result["ticket_id"].isna().any() or result["first_observed_at"].isna().any():
         raise ValueError("ticket_id and first_observed_at must be present")
     if (result["status"].eq("sold") & result["sold_at"].isna()).any():
@@ -266,4 +275,6 @@ def load_tickets(data_dir: Path | None = None) -> pd.DataFrame:
     result.attrs["invalid_listing_price_rows"] = len(invalid_price_ids)
     result.attrs["invalid_listing_price_ticket_ids"] = invalid_price_ids
     result.attrs["invalid_listing_price_policy"] = "set_nan_then_fold_local_median_imputation"
+    result.attrs["rotated_logical_listing_ids"] = rotated
+    result.attrs["excluded_unknown_sale_time_rows"] = excluded_unknown_sales
     return result

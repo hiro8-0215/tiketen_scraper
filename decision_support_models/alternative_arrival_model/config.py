@@ -25,7 +25,7 @@ SEMANTIC_COMPARABLE_FIELDS = (
     "semantic_seat_level", "semantic_row_position", "semantic_visibility",
 )
 
-PIPELINE_VERSION = "alternative_arrival_semantic_selection_v3_optimized"
+PIPELINE_VERSION = "alternative_arrival_semantic_selection_v4_logical_identity"
 SEED = 42
 HORIZONS_DAYS = (1, 3, 7)
 MIN_SAVINGS_YEN = 2000

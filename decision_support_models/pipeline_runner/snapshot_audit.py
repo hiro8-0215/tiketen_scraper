@@ -12,6 +12,8 @@ ALLOWED_STATUS = {"listing", "sold", "deleted"}
 MAX_LABEL_LAG_DAYS = 2
 MIN_LATEST_DELETION_SPIKE = 50
 MAX_LATEST_DELETION_SPIKE_FRACTION = 0.05
+MIN_SALE_TIME_SPIKE = 50
+MAX_SALE_TIME_SPIKE_FRACTION = 0.05
 
 
 def _snapshot_key(path: Path) -> tuple[int, ...]:
@@ -72,6 +74,8 @@ def audit_snapshot(snapshot: Path) -> dict:
     missing_ticket_ids = 0
     invalid_last_observed = 0
     maximum_observed: datetime | None = None
+    records: list[dict] = []
+    sold_time_counts: Counter[datetime] = Counter()
 
     for path in files:
         with path.open("r", encoding="utf-8-sig", newline="") as stream:
@@ -103,6 +107,49 @@ def audit_snapshot(snapshot: Path) -> dict:
                         else max(maximum_observed, observed)
                     )
                     status_time_counts[(status, observed)] += 1
+                sold_at = _parse_datetime(row.get("sold_at", ""))
+                if status == "sold" and sold_at is not None:
+                    sold_time_counts[sold_at] += 1
+                event_id = str(row.get("event_id", "")).strip()
+                created_at = str(row.get("created_at_unix", "")).strip()
+                logical_id = (
+                    f"created:{event_id}|{created_at}"
+                    if event_id and created_at
+                    else f"ticket:{ticket_id}"
+                )
+                records.append({
+                    "logical_id": logical_id, "ticket_id": ticket_id,
+                    "status": status, "observed": observed,
+                })
+
+    status_priority = {"deleted": 0, "listing": 1, "sold": 2}
+    canonical: dict[str, dict] = {}
+    logical_ticket_ids: dict[str, set[str]] = defaultdict(set)
+    logical_statuses: dict[str, set[str]] = defaultdict(set)
+    for record in records:
+        logical_ticket_ids[record["logical_id"]].add(record["ticket_id"])
+        logical_statuses[record["logical_id"]].add(record["status"])
+        rank = (
+            record["observed"] or datetime.min,
+            status_priority.get(record["status"], -1),
+        )
+        previous = canonical.get(record["logical_id"])
+        if previous is None or rank > previous["rank"]:
+            canonical[record["logical_id"]] = {**record, "rank": rank}
+
+    raw_status_counts = status_counts.copy()
+    raw_status_time_counts = status_time_counts.copy()
+    status_counts = Counter(record["status"] for record in canonical.values())
+    status_time_counts = Counter(
+        (record["status"], record["observed"])
+        for record in canonical.values() if record["observed"] is not None
+    )
+    rotated_logical_ids = {
+        key for key, values in logical_ticket_ids.items() if len(values) > 1
+    }
+    conflicting_logical_ids = {
+        key for key in rotated_logical_ids if len(logical_statuses[key]) > 1
+    }
 
     duplicate_ids = {key for key, count in occurrences.items() if count > 1}
     conflicting_ids = {
@@ -131,6 +178,18 @@ def audit_snapshot(snapshot: Path) -> dict:
     largest_deleted, largest_deleted_at = (
         max(deletion_spikes) if deletion_spikes else (0, None)
     )
+    raw_deletion_spikes = [
+        (count, observed)
+        for (status, observed), count in raw_status_time_counts.items()
+        if status == "deleted"
+    ]
+    raw_largest_deleted, raw_largest_deleted_at = (
+        max(raw_deletion_spikes) if raw_deletion_spikes else (0, None)
+    )
+    largest_sold_at, largest_sold_timestamp = (
+        max((count, timestamp) for timestamp, count in sold_time_counts.items())
+        if sold_time_counts else (0, None)
+    )
     ignored_copies = sorted(
         path.name for path in snapshot.glob("*_master(*).csv")
     )
@@ -147,19 +206,32 @@ def audit_snapshot(snapshot: Path) -> dict:
         warnings.append(
             f"ignored master-like copies: {ignored_copies}"
         )
+    if rotated_logical_ids:
+        warnings.append(
+            f"{len(rotated_logical_ids):,} logical listings use multiple ticket IDs; "
+            "canonicalized by event_id + created_at_unix"
+        )
 
     return {
         "snapshot": str(snapshot.resolve()),
         "files": len(files),
         "rows": rows,
+        "canonical_rows": len(canonical),
         "unique_tickets": len(occurrences),
         "status_counts": dict(status_counts),
+        "raw_status_counts": dict(raw_status_counts),
         "maximum_last_observed_at": str(maximum_observed),
         "snapshot_label_date": str(label_date),
         "snapshot_label_lag_days": lag_days,
         "latest_timestamp_deleted_rows": latest_deleted,
         "largest_timestamp_deleted_rows": largest_deleted,
         "largest_timestamp_deleted_at": str(largest_deleted_at),
+        "raw_largest_timestamp_deleted_rows": raw_largest_deleted,
+        "raw_largest_timestamp_deleted_at": str(raw_largest_deleted_at),
+        "largest_sold_at_rows": largest_sold_at,
+        "largest_sold_at": str(largest_sold_timestamp),
+        "rotated_logical_listing_ids": len(rotated_logical_ids),
+        "conflicting_logical_status_ids": len(conflicting_logical_ids),
         "duplicate_ticket_ids": len(duplicate_ids),
         "conflicting_duplicate_status_ids": len(conflicting_ids),
         "missing_ticket_ids": missing_ticket_ids,
@@ -198,6 +270,17 @@ def validate_snapshot(snapshot: Path, allow_historical: bool = False) -> dict:
         historical_errors.append(
             f"{spike:,} rows were deleted at one timestamp "
             f"({report['largest_timestamp_deleted_at']})"
+        )
+    sold_spike = report["largest_sold_at_rows"]
+    if (
+        sold_spike >= MIN_SALE_TIME_SPIKE
+        and sold_spike / max(report["canonical_rows"], 1)
+        > MAX_SALE_TIME_SPIKE_FRACTION
+    ):
+        historical_errors.append(
+            f"{sold_spike:,} sold rows share one sold_at timestamp "
+            f"({report['largest_sold_at']}); bootstrap sale times are not valid "
+            "demand labels"
         )
     errors = structural_errors + ([] if allow_historical else historical_errors)
     report["historical_override_used"] = bool(

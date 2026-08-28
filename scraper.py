@@ -118,6 +118,35 @@ def _ticket_match_key(row, event_id=None):
     )
 
 
+def _listing_identity_key(row, event_id=None):
+    """Stable listing identity across shareCode and price edits."""
+    event = event_id if event_id is not None else row.get('event_id', '')
+    return f"{str(event)}_{str(row.get('created_at_unix', ''))}"
+
+
+def _rekey_active_listing(
+    master, by_share_code, by_identity, share_code, identity_key
+):
+    """Reuse an edited active listing instead of creating a false deletion."""
+    row = by_share_code.get(share_code) or by_identity.get(identity_key)
+    if row is None:
+        return None, False
+    if row.get('status') == 'sold':
+        raise ScrapeIntegrityError(
+            f"Confirmed sold logical listing returned as active: {share_code}"
+        )
+    old_id = str(row.get('ticket_id', ''))
+    changed = old_id != share_code
+    if changed:
+        master.pop(old_id, None)
+        by_share_code.pop(old_id, None)
+        row['ticket_id'] = share_code
+        master[share_code] = row
+    by_share_code[share_code] = row
+    by_identity[identity_key] = row
+    return row, changed
+
+
 def _sold_ticket_id(event_id, created_at_unix, price):
     """Build a stable ID without cross-event timestamp collisions."""
     return f"sold_{event_id}_{created_at_unix}_{price}"
@@ -151,6 +180,7 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
         )
 
     active_codes = set()
+    active_identities = set()
     sold_keys = set()
     for ticket in tickets:
         status = ticket.get('status')
@@ -166,6 +196,9 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
                     f"Confirmed sold ticket returned as active: {share_code}"
                 )
             active_codes.add(share_code)
+            active_identities.add(_listing_identity_key({
+                'created_at_unix': ticket.get('createdAt', ''),
+            }, slug))
         elif status == 'sold':
             sold_keys.add(_ticket_match_key({
                 'created_at_unix': ticket.get('createdAt', ''),
@@ -174,7 +207,9 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
 
     unexplained = [
         ticket_id for ticket_id, row in prior_active.items()
-        if ticket_id not in active_codes and _ticket_match_key(row) not in sold_keys
+        if ticket_id not in active_codes
+        and _listing_identity_key(row) not in active_identities
+        and _ticket_match_key(row) not in sold_keys
     ]
     prior_count = len(prior_active)
     future_or_unknown = not _all_performances_finished(
@@ -340,6 +375,33 @@ def load_master(performer):
             master[row['ticket_id']] = row
     return master
 
+
+def canonicalize_master(master):
+    """Collapse historical shareCode rotations before applying a new snapshot."""
+    groups = {}
+    for row in master.values():
+        identity = _listing_identity_key(row) if row.get('event_id') and row.get('created_at_unix') else f"ticket:{row.get('ticket_id', '')}"
+        groups.setdefault(identity, []).append(row)
+    result = {}
+    priority = {'deleted': 0, 'listing': 1, 'sold': 2}
+    detail_fields = ('seller_name', 'seller_rating', 'order_num', 'ticket_tags')
+    for rows in groups.values():
+        def rank(row):
+            try:
+                observed = datetime.fromisoformat(str(row.get('last_observed_at', '')))
+            except ValueError:
+                observed = datetime.min
+            return (observed, priority.get(str(row.get('status', '')).lower(), -1), str(row.get('ticket_id', '')))
+        winner = max(rows, key=rank).copy()
+        for source in rows:
+            for field in detail_fields:
+                if not winner.get(field) and source.get(field):
+                    winner[field] = source[field]
+            if str(source.get('details_fetched', 'False')) == 'True':
+                winner['details_fetched'] = 'True'
+        result[str(winner.get('ticket_id', ''))] = winner
+    return result, len(master) - len(result)
+
 def sanitize_unicode(value):
     """Preserve valid Unicode and replace only malformed UTF-16 surrogates.
 
@@ -383,7 +445,8 @@ def save_master(performer, master):
     fieldnames = ['ticket_id', 'created_at_unix', 'event_id', 'perf_date', 'perf_time', 'venue', 
                   'ticket_type', 'name_type', 'delivery_method', 'seller_name', 
                   'seller_rating', 'order_num', 'ticket_tags', 'first_observed_at', 'last_observed_at', 
-                  'sold_at', 'status', 'quantity', 'price', 'raw_description', 'details_fetched']
+                  'sold_at', 'sold_at_source', 'status', 'quantity', 'price',
+                  'raw_description', 'details_fetched']
                   
     temporary_file = master_file + '.tmp'
     try:
@@ -534,6 +597,9 @@ def main():
             break
         print(f"=== Processing {performer} ===")
         master = load_master(performer)
+        master, collapsed = canonicalize_master(master)
+        if collapsed:
+            print(f"[IDENTITY] Collapsed {collapsed} historical shareCode duplicates for {performer}.")
 
         if SCRAPE_MODE == 'details':
             pending = [
@@ -556,6 +622,10 @@ def main():
         by_share_code = {t['ticket_id']: t for t in master.values() if not t['ticket_id'].startswith('sold_')}
         by_created_at = {
             _ticket_match_key(t): t
+            for t in master.values() if t.get('created_at_unix')
+        }
+        by_identity = {
+            _listing_identity_key(t): t
             for t in master.values() if t.get('created_at_unix')
         }
         
@@ -611,13 +681,32 @@ def main():
                 if status == 'active':
                     share_code = t.get('shareCode')
                     if not share_code: continue
-                    if share_code in by_share_code:
-                        row = by_share_code[share_code]
-                        if row.get('status') == 'deleted':
-                            row['status'] = 'listing'
-                            row['sold_at'] = ''
+                    identity_key = _listing_identity_key({
+                        'created_at_unix': created_at_unix,
+                    }, slug)
+                    row, rekeyed = _rekey_active_listing(
+                        master, by_share_code, by_identity,
+                        share_code, identity_key,
+                    )
+                    if row is not None:
+                        row['status'] = 'listing'
+                        row['sold_at'] = ''
+                        row['sold_at_source'] = ''
                         row['created_at_unix'] = created_at_unix
                         row['last_observed_at'] = now_str
+                        row['price'] = t.get('pricePerTicket', row.get('price', 0))
+                        row['quantity'] = t.get('quantity', row.get('quantity', 0))
+                        row['delivery_method'] = t.get(
+                            'deliveryMethod', row.get('delivery_method', '')
+                        )
+                        row['ticket_type'] = t.get(
+                            'ticketType', row.get('ticket_type', '')
+                        )
+                        row['name_type'] = t.get(
+                            'nameGender', row.get('name_type', '')
+                        )
+                        if t.get('description'):
+                            row['raw_description'] = t['description']
                         if str(row.get('details_fetched', 'False')) != 'True':
                             new_active_tickets.append(share_code)
                         by_created_at[match_key] = row
@@ -638,6 +727,7 @@ def main():
                             'raw_description': t.get('description', ''),
                             'first_observed_at': now_str,
                             'last_observed_at': now_str,
+                            'sold_at_source': '',
                             'details_fetched': 'False',
                         }
                         try:
@@ -646,6 +736,7 @@ def main():
                             
                         by_share_code[share_code] = row
                         by_created_at[match_key] = row
+                        by_identity[identity_key] = row
                         master[share_code] = row
                         new_active_tickets.append(share_code)
                         
@@ -656,6 +747,7 @@ def main():
                             row['status'] = 'sold'
                             if not row.get('sold_at'):
                                 row['sold_at'] = now_str
+                            row['sold_at_source'] = 'transition_observed'
                         row['last_observed_at'] = now_str
                     else:
                         t_id = _sold_ticket_id(slug, created_at_unix, price_val)
@@ -675,7 +767,8 @@ def main():
                             'raw_description': t.get('description', ''),
                             'first_observed_at': now_str,
                             'last_observed_at': now_str,
-                            'sold_at': now_str,
+                            'sold_at': '',
+                            'sold_at_source': 'historical_unknown',
                             'details_fetched': 'False',
                         }
                         try:

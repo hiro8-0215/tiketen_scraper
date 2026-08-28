@@ -40,11 +40,10 @@ def check():
     if OUTPUT_FILE.exists():
         semantic = pd.read_csv(OUTPUT_FILE, dtype={"text_hash": str})
         missing_columns = {"text_hash", *SEMANTIC_FEATURES, "semantic_schema_version"} - set(semantic)
-        usable = (
-            semantic[~semantic.get("semantic_source", pd.Series("", index=semantic.index)).eq("parse_error")]
-            if not missing_columns else semantic.iloc[0:0]
-        )
+        parse_error_rows = semantic[semantic.get("semantic_source", pd.Series("", index=semantic.index)).eq("parse_error")] if not missing_columns else semantic.iloc[0:0]
+        usable = semantic[~semantic.index.isin(parse_error_rows.index)] if not missing_columns else semantic.iloc[0:0]
         covered = descriptions.text_hash.isin(usable.text_hash).sum() if not missing_columns else 0
+        current_parse_errors = int(descriptions.text_hash.isin(parse_error_rows.text_hash).sum()) if not missing_columns else 0
         report.update({
             "semantic_rows": len(semantic), "usable_semantic_rows": len(usable),
             "covered_descriptions": int(covered),
@@ -57,9 +56,9 @@ def check():
         })
         manifest = json.loads(MANIFEST_FILE.read_text(encoding="utf-8")) if MANIFEST_FILE.exists() else {}
         report["manifest_complete"] = bool(manifest.get("complete"))
-        parse_errors = int(manifest.get("parse_errors", 0))
-        report["parse_errors"] = parse_errors
-        report["parse_error_rate"] = round(parse_errors / max(len(descriptions), 1), 4)
+        report["parse_errors"] = current_parse_errors
+        report["historical_cache_parse_errors"] = int(manifest.get("parse_errors", 0))
+        report["parse_error_rate"] = round(current_parse_errors / max(len(descriptions), 1), 4)
         report["generation_format"] = manifest.get("generation_format", "legacy_free_json")
         report["recovered_format_errors"] = int(manifest.get("recovered_format_errors", 0))
         report["quality_ok"] = bool(

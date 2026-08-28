@@ -26,7 +26,7 @@ SEMANTIC_MAX_PARSE_ERROR_RATE = 0.01
 # Optional, but accepted only when every ticket in the selected snapshot is covered.
 FAIR_PRICE_CACHE = ARTIFACT_DIR / "fair_price_all_tickets.csv"
 
-PIPELINE_VERSION = "demand_state_semantic_selection_v3_optimized"
+PIPELINE_VERSION = "demand_state_semantic_selection_v4_logical_identity"
 SEED = 42
 HORIZONS_DAYS = (1, 3, 7)
 LANDMARK_STEP_DAYS = 1

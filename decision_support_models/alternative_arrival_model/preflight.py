@@ -41,6 +41,15 @@ def check():
             "error": str(error), "next": "Complete semantic_data_builder first.",
             "note": "No training or LLM extraction was executed.",
         }
+    observation_days = (tickets["last_observed_at"].max() - tickets["last_observed_at"].min()).total_seconds() / 86400
+    if observation_days < max(HORIZONS_DAYS):
+        return {
+            "ok": False, "snapshot": str(selected),
+            "observation_window_days": round(observation_days, 2),
+            "required_observation_days": max(HORIZONS_DAYS),
+            "next": "Continue clean collection before alternative-arrival training.",
+            "note": "No training or LLM extraction was executed.",
+        }
     tickets = prepare_end_times(tickets)
     sample_tickets = tickets.head(min(len(tickets), 200))
     sample = add_market_features(build_landmarks(sample_tickets), prepare_end_times(sample_tickets))
@@ -54,6 +63,7 @@ def check():
     disk_ok = free_gib >= required_free_gib
     return {
         "ok": disk_ok, "snapshot": str(selected), "tickets": len(tickets),
+        "observation_window_days": round(observation_days, 2),
         "snapshot_quality": snapshot_report,
         "excluded_temporal_anomalies": int(
             tickets.attrs.get("excluded_temporal_anomalies", 0)

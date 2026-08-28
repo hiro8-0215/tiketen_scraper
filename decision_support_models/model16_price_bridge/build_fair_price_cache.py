@@ -104,16 +104,19 @@ def load_snapshot(data_dir: Path) -> pd.DataFrame:
     unknown = set(result["status"]) - {"listing", "sold", "deleted"}
     if unknown:
         raise ValueError(f"Unknown status: {sorted(unknown)}")
-    result["_status_priority"] = result["status"].map(
-        {"listing": 0, "deleted": 1, "sold": 2}
-    )
+    created = result.get("created_at_unix", pd.Series("", index=result.index)).fillna("").astype(str).str.strip()
+    event = result["event_id"].fillna("").astype(str).str.strip()
+    result["_logical_id"] = "ticket:" + result["ticket_id"].astype(str)
+    stable = created.ne("") & event.ne("")
+    result.loc[stable, "_logical_id"] = "created:" + event[stable] + "|" + created[stable]
+    result["_status_priority"] = result["status"].map({"deleted": 0, "listing": 1, "sold": 2})
     result = (
         result.sort_values(
-            ["ticket_id", "last_observed_at", "_status_priority"],
+            ["_logical_id", "last_observed_at", "_status_priority", "ticket_id"],
             na_position="first",
         )
-        .drop_duplicates("ticket_id", keep="last")
-        .drop(columns="_status_priority")
+        .drop_duplicates("_logical_id", keep="last")
+        .drop(columns=["_status_priority", "_logical_id"])
         .reset_index(drop=True)
     )
     if result.ticket_id.isna().any() or result.first_observed_at.isna().any():

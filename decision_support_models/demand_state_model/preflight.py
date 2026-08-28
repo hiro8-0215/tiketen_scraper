@@ -43,6 +43,15 @@ def check() -> dict:
             "error": str(error), "next": "Complete semantic_data_builder first.",
             "note": "No training or LLM extraction was executed.",
         }
+    observation_days = (tickets["last_observed_at"].max() - tickets["last_observed_at"].min()).total_seconds() / 86400
+    if observation_days < max(HORIZONS_DAYS):
+        return {
+            "ok": False, "snapshot": str(selected),
+            "observation_window_days": round(observation_days, 2),
+            "required_observation_days": max(HORIZONS_DAYS),
+            "next": "Continue clean collection before demand training.",
+            "note": "No training or LLM extraction was executed.",
+        }
     tickets, _ = add_end_times(tickets)
     sample_tickets = tickets.head(min(200, len(tickets)))
     sample = add_market_features(
@@ -60,6 +69,7 @@ def check() -> dict:
         "ok": disk_ok,
         "snapshot": str(selected),
         "tickets": len(tickets),
+        "observation_window_days": round(observation_days, 2),
         "status_counts": tickets["status"].value_counts().to_dict(),
         "snapshot_quality": snapshot_report,
         "excluded_temporal_anomalies": int(

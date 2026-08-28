@@ -40,6 +40,8 @@ def load_snapshot(data_dir: Path | None = None) -> pd.DataFrame:
         if slug in EXCLUDE_GROUPS:
             continue
         frame = pd.read_csv(path, low_memory=False)
+        if frame.empty:
+            continue
         frame["group_slug"] = slug
         frames.append(frame)
     if not frames:
@@ -172,8 +174,8 @@ def merge_semantic_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def prepare_dataset(data_dir: Path | None = None) -> pd.DataFrame:
-    snapshot = load_snapshot(data_dir)
+def prepare_dataset_from_snapshot(snapshot: pd.DataFrame) -> pd.DataFrame:
+    """Prepare Model13-clean features from an already canonicalized snapshot."""
     sold = clean_model13_population(snapshot)
     # Historical market prices use the same clean population; listing-count
     # features may still observe all listings available at that point in time.
@@ -220,6 +222,10 @@ def prepare_dataset(data_dir: Path | None = None) -> pd.DataFrame:
     sold["duplicate_group"] = normalized.map(lambda x: hashlib.sha1(x.encode("utf-8")).hexdigest())
     sold = sold.sort_values(["first_observed_at", "ticket_id"], na_position="first").reset_index(drop=True)
     return sold
+
+
+def prepare_dataset(data_dir: Path | None = None) -> pd.DataFrame:
+    return prepare_dataset_from_snapshot(load_snapshot(data_dir))
 
 
 def model_feature_columns(df: pd.DataFrame):

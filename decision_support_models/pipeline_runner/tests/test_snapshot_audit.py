@@ -9,7 +9,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from snapshot_audit import audit_snapshot, validate_snapshot
 
 
-FIELDS = ["ticket_id", "status", "last_observed_at"]
+FIELDS = [
+    "ticket_id", "event_id", "created_at_unix", "status",
+    "last_observed_at", "sold_at",
+]
 
 
 def write_master(snapshot: Path, rows: list[dict]) -> None:
@@ -118,6 +121,26 @@ class SnapshotAuditTest(unittest.TestCase):
                 })
             report = audit_snapshot(snapshot)
             self.assertEqual(report["conflicting_duplicate_status_ids"], 1)
+
+    def test_rotated_share_code_prefers_direct_listing_over_inferred_deleted(self):
+        with tempfile.TemporaryDirectory() as folder:
+            snapshot = Path(folder) / "data_8_28"
+            write_master(snapshot, [
+                {"ticket_id": "old-code", "event_id": "event", "created_at_unix": "123", "status": "deleted", "last_observed_at": "2026-08-28 02:00:00"},
+                {"ticket_id": "new-code", "event_id": "event", "created_at_unix": "123", "status": "listing", "last_observed_at": "2026-08-28 02:00:00"},
+            ])
+            report = validate_snapshot(snapshot)
+            self.assertEqual(report["canonical_rows"], 1)
+            self.assertEqual(report["status_counts"], {"listing": 1})
+
+    def test_bootstrap_sale_time_spike_is_blocked(self):
+        with tempfile.TemporaryDirectory() as folder:
+            snapshot = Path(folder) / "data_8_28"
+            rows = [{"ticket_id": f"sold-{index}", "event_id": "event", "created_at_unix": str(index), "status": "sold", "last_observed_at": "2026-08-28 02:00:00", "sold_at": "2026-08-27 07:17:28"} for index in range(100)]
+            rows.append({"ticket_id": "active", "event_id": "event", "created_at_unix": "active", "status": "listing", "last_observed_at": "2026-08-28 02:00:00"})
+            write_master(snapshot, rows)
+            with self.assertRaisesRegex(RuntimeError, "bootstrap sale times"):
+                validate_snapshot(snapshot)
 
 
 if __name__ == "__main__":

@@ -84,14 +84,28 @@ def pipeline_fingerprint(snapshot: Path) -> str:
 
 
 def ticket_ids(snapshot: Path) -> set[str]:
-    result: set[str] = set()
+    canonical: dict[str, tuple[tuple, str]] = {}
+    priority = {"deleted": 0, "listing": 1, "sold": 2}
     for path in snapshot.glob("*_master.csv"):
         with path.open("r", encoding="utf-8-sig", newline="") as stream:
             reader = csv.DictReader(stream)
             if "ticket_id" not in (reader.fieldnames or []):
                 raise ValueError(f"ticket_id is missing: {path}")
-            result.update(str(row["ticket_id"]).strip() for row in reader if row.get("ticket_id"))
-    return result
+            for row in reader:
+                identifier = str(row.get("ticket_id", "")).strip()
+                if not identifier:
+                    continue
+                event = str(row.get("event_id", "")).strip()
+                created = str(row.get("created_at_unix", "")).strip()
+                logical = f"created:{event}|{created}" if event and created else f"ticket:{identifier}"
+                try:
+                    observed = datetime.fromisoformat(str(row.get("last_observed_at", "")).strip())
+                except ValueError:
+                    observed = datetime.min
+                rank = (observed, priority.get(str(row.get("status", "")).lower(), -1), identifier)
+                if logical not in canonical or rank > canonical[logical][0]:
+                    canonical[logical] = (rank, identifier)
+    return {value[1] for value in canonical.values()}
 
 
 def validate_model16(
@@ -283,9 +297,9 @@ def stage_outputs_valid(stage: Stage) -> bool:
         report_path = model_dir / "artifacts" / "training_report.json"
         oof_path = model_dir / "artifacts" / "oof_predictions.csv"
         expected_version = (
-            "demand_state_semantic_selection_v3_optimized"
+            "demand_state_semantic_selection_v4_logical_identity"
             if stage.name == "demand"
-            else "alternative_arrival_semantic_selection_v3_optimized"
+            else "alternative_arrival_semantic_selection_v4_logical_identity"
         )
         required_oof = (
             {"ticket_id", "landmark_at", "horizon_days", "fold"}
