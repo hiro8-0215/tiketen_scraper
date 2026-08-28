@@ -1,7 +1,7 @@
 ﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,ticket_type,name_type,delivery_method,seller_name,seller_rating,order_num,ticket_tags,first_observed_at,last_observed_at,sold_at,sold_at_source,status,quantity,price,raw_description,details_fetched,year_month
-sold_akechico_1777019177761_23000,1777019177761,akechico,2026-08-30,12:30,[大阪府] フェスティバルホール,pickup_number,female,発券開始日までに発券番号共有,,,,,2026-04-24 08:26:17,2026-08-28 20:01:18,2026-08-27 07:17:28,,sold,2,23000,"CNプレイガイド S席 2連
+sold_akechico_1777019177761_23000,1777019177761,akechico,2026-08-30,12:30,[大阪府] フェスティバルホール,pickup_number,female,発券開始日までに発券番号共有,,,,,2026-04-24 08:26:17,2026-08-28 21:01:16,2026-08-27 07:17:28,,sold,2,23000,"CNプレイガイド S席 2連
 発券番号をお伝えいたしますのでご自身で発券ください。
 発券番号をお伝えした時点で受取評価をお願いいたします。
 公演中止以外の如何な...",False,2026-04
-sold_akechico_1775483459618_29700,1775483459618,akechico,2026-08-30,12:30,[大阪府] フェスティバルホール,paper,female,公演日14日前までに郵送,,,,,2026-04-06 13:50:59,2026-08-28 20:01:18,2026-08-27 07:17:28,,sold,2,29700,"5名義中2番手/S席/WEST.FC/神山名義/有効期限内/すり替えなし下3桁提示可
+sold_akechico_1775483459618_29700,1775483459618,akechico,2026-08-30,12:30,[大阪府] フェスティバルホール,paper,female,公演日14日前までに郵送,,,,,2026-04-06 13:50:59,2026-08-28 21:01:16,2026-08-27 07:17:28,,sold,2,29700,"5名義中2番手/S席/WEST.FC/神山名義/有効期限内/すり替えなし下3桁提示可
 チケットが手元に届き次第、当方が選択しなかった残り4名義からお好きな座席を...",False,2026-04
