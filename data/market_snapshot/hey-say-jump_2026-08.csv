@@ -1,13 +1,13 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-08,ryosuke-yamada-asia-tour-2026-red-y,2026-09-06,,[台北] TAIPEI MUSIC CENTER,2,1,0,1,30000.0,30000,30000
-2026-08,ryosuke-yamada-asia-tour-2026-red-y,2026-09-13,,[ソウル] Jangchung Arena,10,4,2,4,37500.0,0,80000
-2026-08,ryosuke-yamada-asia-tour-2026-red-y,2026-09-26,,[バンコク] Thunder Dome,2,1,0,1,0.0,0,0
-2026-08,scrap-and-chorus-2026,2026-09-18,18:30,[東京都] THEATER MILANO-Za,4,2,0,2,11522.5,11000,12045
-2026-08,scrap-and-chorus-2026,2026-09-19,17:30,[東京都] THEATER MILANO-Za,2,1,0,1,11000.0,11000,11000
-2026-08,scrap-and-chorus-2026,2026-09-26,13:00,[東京都] THEATER MILANO-Za,2,1,0,1,12000.0,12000,12000
-2026-08,scrap-and-chorus-2026,2026-09-26,17:30,[東京都] THEATER MILANO-Za,2,1,0,1,12000.0,12000,12000
-2026-08,scrap-and-chorus-2026,2026-09-27,13:00,[東京都] THEATER MILANO-Za,8,4,0,4,28750.0,10000,50000
-2026-08,scrap-and-chorus-2026,2026-10-23,18:30,[大阪府] 東京建物 Brillia HALL 箕面 大ホール,6,3,0,3,36333.333333333336,14000,50000
-2026-08,scrap-and-chorus-2026,2026-10-24,13:00,[大阪府] 東京建物 Brillia HALL 箕面 大ホール,2,1,0,1,10000.0,10000,10000
-2026-08,scrap-and-chorus-2026,2026-10-24,17:30,[大阪府] 東京建物 Brillia HALL 箕面 大ホール,2,1,0,1,10000.0,10000,10000
-2026-08,scrap-and-chorus-2026,2026-10-25,13:00,[大阪府] 東京建物 Brillia HALL 箕面 大ホール,8,3,2,3,33937.5,10500,60000
+2026-08,ryosuke-yamada-asia-tour-2026-red-y,2026-09-06,,[台北] TAIPEI MUSIC CENTER,1,1,0,0,30000.0,30000,30000
+2026-08,ryosuke-yamada-asia-tour-2026-red-y,2026-09-13,,[ソウル] Jangchung Arena,6,4,2,0,39166.666666666664,0,80000
+2026-08,ryosuke-yamada-asia-tour-2026-red-y,2026-09-26,,[バンコク] Thunder Dome,1,1,0,0,0.0,0,0
+2026-08,scrap-and-chorus-2026,2026-09-18,18:30,[東京都] THEATER MILANO-Za,2,2,0,0,11522.5,11000,12045
+2026-08,scrap-and-chorus-2026,2026-09-19,17:30,[東京都] THEATER MILANO-Za,1,1,0,0,11000.0,11000,11000
+2026-08,scrap-and-chorus-2026,2026-09-26,13:00,[東京都] THEATER MILANO-Za,1,1,0,0,12000.0,12000,12000
+2026-08,scrap-and-chorus-2026,2026-09-26,17:30,[東京都] THEATER MILANO-Za,1,1,0,0,12000.0,12000,12000
+2026-08,scrap-and-chorus-2026,2026-09-27,13:00,[東京都] THEATER MILANO-Za,4,4,0,0,28750.0,10000,50000
+2026-08,scrap-and-chorus-2026,2026-10-23,18:30,[大阪府] 東京建物 Brillia HALL 箕面 大ホール,3,3,0,0,36333.333333333336,14000,50000
+2026-08,scrap-and-chorus-2026,2026-10-24,13:00,[大阪府] 東京建物 Brillia HALL 箕面 大ホール,1,1,0,0,10000.0,10000,10000
+2026-08,scrap-and-chorus-2026,2026-10-24,17:30,[大阪府] 東京建物 Brillia HALL 箕面 大ホール,1,1,0,0,10000.0,10000,10000
+2026-08,scrap-and-chorus-2026,2026-10-25,13:00,[大阪府] 東京建物 Brillia HALL 箕面 大ホール,5,3,2,0,29300.0,10500,60000
