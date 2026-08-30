@@ -1,5 +1,5 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
 2026-07,acees-arena-tour-v,2026-08-29,12:30,Asueアリーナ大阪,44,0,36,8,30507.75,0,68000
 2026-07,acees-arena-tour-v,2026-08-29,17:30,Asueアリーナ大阪,56,0,54,2,31189.285714285714,0,75000
-2026-07,acees-arena-tour-v,2026-08-30,12:30,Asueアリーナ大阪,67,4,55,8,33985.0447761194,9000,65000
+2026-07,acees-arena-tour-v,2026-08-30,12:30,Asueアリーナ大阪,67,3,55,9,33474.59701492537,9000,65000
 2026-07,acees-arena-tour-v,2026-08-30,17:30,Asueアリーナ大阪,62,0,60,2,45750.37096774193,10000,85000
