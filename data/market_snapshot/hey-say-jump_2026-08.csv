@@ -1,4 +1,7 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
+2026-08,jumpdate,2026-10-11,17:30,[神奈川県] 横浜アリーナ,1,1,0,0,40000.0,40000,40000
+2026-08,jumpdate,2026-10-12,13:00,[神奈川県] 横浜アリーナ,1,1,0,0,40000.0,40000,40000
+2026-08,jumpdate,2026-10-12,17:30,[神奈川県] 横浜アリーナ,3,3,0,0,68333.33333333333,40000,85000
 2026-08,ryosuke-yamada-asia-tour-2026-red-y,2026-09-06,,[台北] TAIPEI MUSIC CENTER,1,0,0,1,30000.0,30000,30000
 2026-08,ryosuke-yamada-asia-tour-2026-red-y,2026-09-13,,[ソウル] Jangchung Arena,7,4,3,0,57214.28571428572,0,165500
 2026-08,ryosuke-yamada-asia-tour-2026-red-y,2026-09-26,,[バンコク] Thunder Dome,1,1,0,0,0.0,0,0
