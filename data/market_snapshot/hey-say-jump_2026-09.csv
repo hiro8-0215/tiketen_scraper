@@ -1,0 +1,5 @@
+﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
+2026-09,jumpdate,2026-10-10,17:30,横浜アリーナ,1,1,0,0,80000.0,80000,80000
+2026-09,jumpdate,2026-10-11,13:00,横浜アリーナ,1,1,0,0,35000.0,35000,35000
+2026-09,jumpdate,2026-10-11,17:30,横浜アリーナ,1,1,0,0,65000.0,65000,65000
+2026-09,jumpdate,2026-10-12,17:30,横浜アリーナ,1,1,0,0,45000.0,45000,45000
