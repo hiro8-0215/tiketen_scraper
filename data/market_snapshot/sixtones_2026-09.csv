@@ -1,5 +1,5 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
 2026-09,hakucho-to-komori-movie-greeting,2026-09-03,18:30,丸の内ピカデリー (東京都),1,1,0,0,35000.0,35000,35000
-2026-09,hakuchotokomori-aisatsu,2026-09-04,11:50,丸の内ピカデリー (東京都),2,1,0,1,41500.0,38000,45000
+2026-09,hakuchotokomori-aisatsu,2026-09-04,11:50,丸の内ピカデリー (東京都),2,0,0,2,41500.0,38000,45000
 2026-09,milesixtones-2026,2026-09-19,17:30,味の素スタジアム,4,4,0,0,21075.0,300,40000
 2026-09,milesixtones-2026,2026-09-20,17:30,味の素スタジアム,3,3,0,0,35333.333333333336,30000,38000

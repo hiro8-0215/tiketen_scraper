@@ -1,5 +1,5 @@
 ﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,ticket_type,name_type,delivery_method,seller_name,seller_rating,order_num,ticket_tags,first_observed_at,last_observed_at,sold_at,sold_at_source,status,quantity,price,raw_description,details_fetched,year_month
-iugxt1lxm5,1788242283575,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,paper,female,当日手渡し,☁️,5.0,,番手,2026-09-01 05:58:03,2026-09-01 06:01:16,,,listing,2,16400,"2名義中2番手
+iugxt1lxm5,1788242283575,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,paper,female,当日手渡し,☁️,5.0,,番手,2026-09-01 05:58:03,2026-09-01 07:01:20,,,deleted,2,16400,"2名義中2番手
 即3.8
 定価分チケテン残り手渡し
 初期当選/なにわ・Aぇ名義/すり替えなし/下3桁提示可
