@@ -1,2 +1,3 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-09,milesixtones-2026,2026-09-19,17:30,味の素スタジアム,1,1,0,0,300.0,300,300
+2026-09,milesixtones-2026,2026-09-19,17:30,味の素スタジアム,2,2,0,0,16150.0,300,32000
+2026-09,milesixtones-2026,2026-09-20,17:30,味の素スタジアム,1,1,0,0,38000.0,38000,38000
