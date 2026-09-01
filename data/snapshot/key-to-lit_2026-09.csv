@@ -1,11 +1,11 @@
 ﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,ticket_type,name_type,delivery_method,seller_name,seller_rating,order_num,ticket_tags,first_observed_at,last_observed_at,sold_at,sold_at_source,status,quantity,price,raw_description,details_fetched,year_month
-k78ui097t9,1788226908375,key-to-lit-arena-tour-2026-neo-classics,2026-10-04,17:30,マリンメッセ福岡 A館,paper,female,当日手渡し,えび,5.0,,ランダム,2026-09-01 01:41:48,2026-09-01 04:01:11,,,listing,1,12000,"ランダム配布（買い手様は座席を選べません）
+k78ui097t9,1788226908375,key-to-lit-arena-tour-2026-neo-classics,2026-10-04,17:30,マリンメッセ福岡 A館,paper,female,当日手渡し,えび,5.0,,ランダム,2026-09-01 01:41:48,2026-09-01 05:03:14,,,listing,1,12000,"ランダム配布（買い手様は座席を選べません）
 *  日本語の通じる方のみご購入ください。男性〇未成年〇
 *  会場の電波が悪い可能性がございますので、購入後は当日...",True,2026-09
-ijx70et4sp,1788226984176,key-to-lit-arena-tour-2026-neo-classics,2026-10-09,18:00,セキスイハイムスーパーアリーナ,paper,female,当日手渡し,えび,5.0,,ランダム,2026-09-01 01:43:04,2026-09-01 04:01:11,,,listing,1,18000,"ランダム配布（買い手様は座席を選べません）
+ijx70et4sp,1788226984176,key-to-lit-arena-tour-2026-neo-classics,2026-10-09,18:00,セキスイハイムスーパーアリーナ,paper,female,当日手渡し,えび,5.0,,ランダム,2026-09-01 01:43:04,2026-09-01 05:03:14,,,listing,1,18000,"ランダム配布（買い手様は座席を選べません）
 *  日本語の通じる方のみご購入ください。男性〇未成年〇
 *  会場の電波が悪い可能性がございますので、購入後は当日...",True,2026-09
-g1n93eyo0v,1788232634673,key-to-lit-arena-tour-2026-neo-classics,2026-10-04,12:30,マリンメッセ福岡 A館,pickup_number,female,入金後2日以内に発券番号共有,ま,5.0,,,2026-09-01 03:17:14,2026-09-01 04:01:11,,,listing,2,35000,"8/29取得　注釈付き一般指定(2名券)
+g1n93eyo0v,1788232634673,key-to-lit-arena-tour-2026-neo-classics,2026-10-04,12:30,マリンメッセ福岡 A館,pickup_number,female,入金後2日以内に発券番号共有,ま,5.0,,,2026-09-01 03:17:14,2026-09-01 05:03:14,,,listing,2,35000,"8/29取得　注釈付き一般指定(2名券)
 セブンイレブンで発券をお願いします。
 また、セブンイレブンで発券時のチケットは1枚のみとなりす。
-2名お揃いの上入場してください。",True,2026-09
+2名お揃いの上入場し...",True,2026-09
