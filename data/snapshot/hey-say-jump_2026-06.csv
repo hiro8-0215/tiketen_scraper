@@ -1,4 +1,4 @@
 ﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,ticket_type,name_type,delivery_method,seller_name,seller_rating,order_num,ticket_tags,first_observed_at,last_observed_at,sold_at,sold_at_source,status,quantity,price,raw_description,details_fetched,year_month
-sold_ryosuke-yamada-asia-tour-2026-red-y_1781196364622_100000,1781196364622,ryosuke-yamada-asia-tour-2026-red-y,2026-09-13,,[ソウル] Jangchung Arena,electronic,female,公演前に名義変更,,,,,2026-06-11 16:46:04,2026-09-02 00:01:19,2026-08-27 07:17:28,,sold,1,100000,,False,2026-06
+sold_ryosuke-yamada-asia-tour-2026-red-y_1781196364622_100000,1781196364622,ryosuke-yamada-asia-tour-2026-red-y,2026-09-13,,[ソウル] Jangchung Arena,electronic,female,公演前に名義変更,,,,,2026-06-11 16:46:04,2026-09-02 01:01:11,2026-08-27 07:17:28,,sold,1,100000,,False,2026-06
 n2r1ii65yy,1781665825957,ryosuke-yamada-asia-tour-2026-red-y,2026-09-06,,[台北] TAIPEI MUSIC CENTER,paper,female,当日手渡し,ゆ,5.0,,,2026-06-17 03:10:25,2026-08-31 16:01:10,,,deleted,1,0,"今日まで掲載。2階最前。
 座席権利のみ、当日事前手渡し。公演中止以外返金不可。",True,2026-06
