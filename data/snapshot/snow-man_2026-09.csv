@@ -1,5 +1,5 @@
 ﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,ticket_type,name_type,delivery_method,seller_name,seller_rating,order_num,ticket_tags,first_observed_at,last_observed_at,sold_at,sold_at_source,status,quantity,price,raw_description,details_fetched,year_month
-6utghqpqs1,1788367954506,yakusoku-no-hate,2026-09-29,18:00,[東京都] 東京国際フォーラム ホールA,paper,female,公演日7日前までに郵送,nii,5.0,,,2026-09-02 16:52:34,2026-09-03 04:01:14,,,listing,1,20000,主催者側による公演中止の場合のみ、送料・仲介手数料を差し引いた金額返金致します。,True,2026-09
+6utghqpqs1,1788367954506,yakusoku-no-hate,2026-09-29,18:00,[東京都] 東京国際フォーラム ホールA,paper,female,公演日7日前までに郵送,nii,5.0,,,2026-09-02 16:52:34,2026-09-03 05:01:16,,,listing,1,20000,主催者側による公演中止の場合のみ、送料・仲介手数料を差し引いた金額返金致します。,True,2026-09
 ijuoi8gz17,1788316672587,yakusoku-no-hate,2026-09-29,18:00,[東京都] 東京国際フォーラム ホールA,paper,female,公演日3日前までに郵送,るる,5.0,,,2026-09-02 02:37:52,2026-09-03 03:01:31,,,deleted,1,45000,"FC枠での当選になります。
 
 主催者側都合での公演中止の場合のみ返金可能。
