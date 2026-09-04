@@ -1,9 +1,9 @@
 ﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,ticket_type,name_type,delivery_method,seller_name,seller_rating,order_num,ticket_tags,first_observed_at,last_observed_at,sold_at,sold_at_source,status,quantity,price,raw_description,details_fetched,year_month
-bt7ri6ohkb,1782229585461,yakusoku-no-hate,2026-09-28,,[東京都] 東京国際フォーラム ホールA,paper,female,公演日7日前までに郵送,m,5.0,,,2026-06-23 15:46:25,2026-09-04 07:01:11,,,listing,1,25000,"FC当選/該当名義
+bt7ri6ohkb,1782229585461,yakusoku-no-hate,2026-09-28,,[東京都] 東京国際フォーラム ホールA,paper,female,公演日7日前までに郵送,m,5.0,,,2026-06-23 15:46:25,2026-09-04 08:01:12,,,listing,1,25000,"FC当選/該当名義
 公演中止の場合のみ返金対応致します。
 ",True,2026-06
-2ohkohkz0c,1782133952992,yakusoku-no-hate,2026-09-29,13:00,[東京都] 東京国際フォーラム ホールA,paper,female,公演日7日前までに郵送,T,5.0,,,2026-06-22 13:12:32,2026-09-04 07:01:11,,,listing,1,18000,"FC当選/前通路、横通路席
+2ohkohkz0c,1782133952992,yakusoku-no-hate,2026-09-29,13:00,[東京都] 東京国際フォーラム ホールA,paper,female,公演日7日前までに郵送,T,5.0,,,2026-06-22 13:12:32,2026-09-04 08:01:12,,,listing,1,18000,"FC当選/前通路、横通路席
 
 公演中止以外の返金対応はいたしかねます。観劇マナーを守り、名義に傷をつける行為をされない方のみ購入お願いいたします。",True,2026-06
-l13i85gmz2,1782268530631,yakusoku-no-hate,2026-09-29,13:00,[東京都] 東京国際フォーラム ホールA,paper,female,当日手渡し,ゆ,5.0,,,2026-06-24 02:35:30,2026-09-04 07:01:11,,,listing,1,39000,"FC先行/該当名義/すり替えあり
+l13i85gmz2,1782268530631,yakusoku-no-hate,2026-09-29,13:00,[東京都] 東京国際フォーラム ホールA,paper,female,当日手渡し,ゆ,5.0,,,2026-06-24 02:35:30,2026-09-04 08:01:12,,,listing,1,39000,"FC先行/該当名義/すり替えあり
 公演中止以外は一切返金致しません。",True,2026-06
