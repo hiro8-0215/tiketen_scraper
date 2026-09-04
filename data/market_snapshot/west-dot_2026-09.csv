@@ -1,13 +1,13 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-09,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,10,9,0,1,38140.0,16400,85000
-2026-09,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,12,11,0,1,32416.666666666668,24000,40000
-2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-18,18:00,Zepp Haneda (TOKYO),6,5,1,0,13833.333333333334,9000,20000
-2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-19,13:00,Zepp Haneda (TOKYO),3,3,0,0,9333.333333333334,9000,10000
+2026-09,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,23,7,15,1,31700.0,3200,85000
+2026-09,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,16,8,7,1,28793.75,6200,40000
+2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-18,18:00,Zepp Haneda (TOKYO),8,4,4,0,12750.0,9000,20000
+2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-19,13:00,Zepp Haneda (TOKYO),3,2,1,0,9333.333333333334,9000,10000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-19,18:00,Zepp Haneda (TOKYO),4,4,0,0,13750.0,10000,17000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,18:00,Zepp Nagoya,1,0,0,1,8000.0,8000,8000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-14,19:00,Zepp Namba (OSAKA),2,2,0,0,9500.0,9000,10000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,13:00,Zepp Namba (OSAKA),1,1,0,0,9000.0,9000,9000
-2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,18:00,Zepp Namba (OSAKA),2,2,0,0,9500.0,8000,11000
+2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,18:00,Zepp Namba (OSAKA),4,2,2,0,9607.0,8000,11000
 2026-09,rocknroll-stage-2026,2026-11-07,18:00,兵庫県立芸術文化センター 阪急 中ホール,1,1,0,0,30000.0,30000,30000
 2026-09,rocknroll-stage-2026,2026-11-13,18:00,東京建物 ぴあ シアター,1,1,0,0,25000.0,25000,25000
-2026-09,rocknroll-stage-2026,2026-11-14,13:00,東京建物 ぴあ シアター,1,1,0,0,25000.0,25000,25000
+2026-09,rocknroll-stage-2026,2026-11-14,13:00,東京建物 ぴあ シアター,1,0,1,0,25000.0,25000,25000
