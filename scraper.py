@@ -112,8 +112,11 @@ def fetch_all_tickets(event_id):
 
 def _ticket_match_key(row, event_id=None):
     event = event_id if event_id is not None else row.get('event_id', '')
+    created_at = str(row.get('created_at_unix', '')).strip()
+    if not event or not created_at:
+        return None
     return (
-        f"{str(event)}_{str(row.get('created_at_unix', ''))}_"
+        f"{str(event)}_{created_at}_"
         f"{str(row.get('price', ''))}"
     )
 
@@ -121,20 +124,26 @@ def _ticket_match_key(row, event_id=None):
 def _listing_identity_key(row, event_id=None):
     """Stable listing identity across shareCode and price edits."""
     event = event_id if event_id is not None else row.get('event_id', '')
-    return f"{str(event)}_{str(row.get('created_at_unix', ''))}"
+    created_at = str(row.get('created_at_unix', '')).strip()
+    if not event or not created_at:
+        return None
+    return f"{str(event)}_{created_at}"
 
 
 def _rekey_active_listing(
     master, by_share_code, by_identity, share_code, identity_key
 ):
     """Reuse an edited active listing instead of creating a false deletion."""
-    row = by_share_code.get(share_code) or by_identity.get(identity_key)
+    row = by_share_code.get(share_code)
+    if row is None and identity_key is not None:
+        row = by_identity.get(identity_key)
+        # A different shareCode after a confirmed sale is a new lifecycle,
+        # not a rotation of the sold listing. Preserve the sold history and
+        # let the caller create a fresh active row.
+        if row is not None and row.get('status') == 'sold':
+            return None, False
     if row is None:
         return None, False
-    if row.get('status') == 'sold':
-        raise ScrapeIntegrityError(
-            f"Confirmed sold logical listing returned as active: {share_code}"
-        )
     old_id = str(row.get('ticket_id', ''))
     changed = old_id != share_code
     if changed:
@@ -143,7 +152,8 @@ def _rekey_active_listing(
         row['ticket_id'] = share_code
         master[share_code] = row
     by_share_code[share_code] = row
-    by_identity[identity_key] = row
+    if identity_key is not None:
+        by_identity[identity_key] = row
     return row, changed
 
 
@@ -190,20 +200,19 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
                 raise ScrapeIntegrityError(
                     f"Active ticket without shareCode for {slug}"
                 )
-            existing = master.get(share_code)
-            if existing and existing.get('status') == 'sold':
-                raise ScrapeIntegrityError(
-                    f"Confirmed sold ticket returned as active: {share_code}"
-                )
             active_codes.add(share_code)
-            active_identities.add(_listing_identity_key({
+            identity_key = _listing_identity_key({
                 'created_at_unix': ticket.get('createdAt', ''),
-            }, slug))
+            }, slug)
+            if identity_key is not None:
+                active_identities.add(identity_key)
         elif status == 'sold':
-            sold_keys.add(_ticket_match_key({
+            sold_key = _ticket_match_key({
                 'created_at_unix': ticket.get('createdAt', ''),
                 'price': ticket.get('pricePerTicket', ''),
-            }, slug))
+            }, slug)
+            if sold_key is not None:
+                sold_keys.add(sold_key)
 
     unexplained = [
         ticket_id for ticket_id, row in prior_active.items()
@@ -692,7 +701,10 @@ def main():
                         row['status'] = 'listing'
                         row['sold_at'] = ''
                         row['sold_at_source'] = ''
-                        row['created_at_unix'] = created_at_unix
+                        # Ticketen may omit createdAt. Never erase a previously
+                        # observed identity with an absent upstream field.
+                        if created_at_unix:
+                            row['created_at_unix'] = created_at_unix
                         row['last_observed_at'] = now_str
                         row['price'] = t.get('pricePerTicket', row.get('price', 0))
                         row['quantity'] = t.get('quantity', row.get('quantity', 0))
@@ -709,7 +721,8 @@ def main():
                             row['raw_description'] = t['description']
                         if str(row.get('details_fetched', 'False')) != 'True':
                             new_active_tickets.append(share_code)
-                        by_created_at[match_key] = row
+                        if match_key is not None:
+                            by_created_at[match_key] = row
                     else:
                         row = {
                             'ticket_id': share_code,
@@ -735,12 +748,20 @@ def main():
                         except: pass
                             
                         by_share_code[share_code] = row
-                        by_created_at[match_key] = row
-                        by_identity[identity_key] = row
+                        if match_key is not None:
+                            by_created_at[match_key] = row
+                        if identity_key is not None:
+                            by_identity[identity_key] = row
                         master[share_code] = row
                         new_active_tickets.append(share_code)
                         
                 elif status == 'sold':
+                    if match_key is None:
+                        print(
+                            f"[IDENTITY] Skipping unidentifiable sold ticket "
+                            f"for {slug}: createdAt is missing"
+                        )
+                        continue
                     if match_key in by_created_at:
                         row = by_created_at[match_key]
                         if row.get('status') != 'sold':
