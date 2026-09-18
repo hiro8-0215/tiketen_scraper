@@ -1,8 +1,8 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-09,movie-matching-true-love-stage-greeting,2026-09-25,11:40,ユナイテッド・シネマアクアシティお台場,15,13,0,2,28073.333333333332,3600,88000
-2026-09,movie-matching-true-love-stage-greeting,2026-09-25,14:50,ユナイテッド・シネマアクアシティお台場y,15,13,0,2,12840.0,0,40000
+2026-09,movie-matching-true-love-stage-greeting,2026-09-25,11:40,ユナイテッド・シネマアクアシティお台場,15,12,0,3,28073.333333333332,3600,88000
+2026-09,movie-matching-true-love-stage-greeting,2026-09-25,14:50,ユナイテッド・シネマアクアシティお台場y,17,14,0,3,16847.058823529413,0,90000
 2026-09,movie-matching-true-love-stage-greeting,2026-09-25,15:25,TOHOシネマズ六本木ヒルズ,14,13,0,1,19421.428571428572,0,100000
-2026-09,movie-matching-true-love-stage-greeting,2026-09-25,18:40,TOHOシネマズ六本木ヒルズ,22,18,0,4,11795.454545454546,0,50000
+2026-09,movie-matching-true-love-stage-greeting,2026-09-25,18:40,TOHOシネマズ六本木ヒルズ,22,17,0,5,13840.90909090909,0,55000
 2026-09,snowman-dome-tour-2026-2027-all-suite,2026-10-30,17:00,[北海道] 大和ハウス プレミストドーム（札幌ドーム）,233,184,0,49,25591.901287553646,0,80000
 2026-09,snowman-dome-tour-2026-2027-all-suite,2026-10-31,17:00,[北海道] 大和ハウス プレミストドーム（札幌ドーム）,129,106,0,23,23841.17054263566,0,70000
 2026-09,snowman-dome-tour-2026-2027-all-suite,2026-11-01,15:00,[北海道] 大和ハウス プレミストドーム（札幌ドーム）,146,118,0,28,22663.945205479453,0,50000
