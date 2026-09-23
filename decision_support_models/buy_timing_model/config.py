@@ -7,7 +7,7 @@ ARTIFACT_DIR = MODEL_DIR / "artifacts"
 
 DEMAND_OOF = INPUT_DIR / "demand_oof.csv"
 ALTERNATIVE_OOF = INPUT_DIR / "alternative_oof.csv"
-PIPELINE_VERSION = "buy_timing_policy_v1"
+PIPELINE_VERSION = "buy_timing_policy_v2_per_horizon_holdout"
 
 PROFILES = {
     # Opportunity loss when a listing disappears before a cheaper replacement.

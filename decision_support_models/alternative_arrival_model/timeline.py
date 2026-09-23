@@ -91,6 +91,10 @@ def build_landmarks(tickets: pd.DataFrame, horizons=HORIZONS_DAYS, cutoff=None) 
         )
 
     start = prepared["first_observed_at"].to_numpy(dtype="datetime64[ns]")
+    trusted_start_text = tickets.attrs.get("trusted_temporal_start_at")
+    if trusted_start_text:
+        trusted_start = np.datetime64(pd.Timestamp(trusted_start_text), "ns")
+        start = np.maximum(start, trusted_start)
     outcome = prepared["outcome_at"].to_numpy(dtype="datetime64[ns]")
     performance = prepared["performance_at"].to_numpy(dtype="datetime64[ns]")
     cutoff_value = np.datetime64(cutoff, "ns")
@@ -98,6 +102,9 @@ def build_landmarks(tickets: pd.DataFrame, horizons=HORIZONS_DAYS, cutoff=None) 
     has_performance = ~np.isnat(performance)
     end[has_performance] = np.minimum(performance[has_performance], cutoff_value)
     has_outcome = ~np.isnat(outcome)
+    listing = prepared['status'].eq('listing').to_numpy()
+    last_seen = prepared['last_observed_at'].to_numpy(dtype='datetime64[ns]')
+    end[listing] = np.minimum(end[listing], last_seen[listing])
     end[has_outcome] = outcome[has_outcome]
     outcome_and_performance = has_outcome & has_performance
     end[outcome_and_performance] = np.minimum(
@@ -120,7 +127,9 @@ def build_landmarks(tickets: pd.DataFrame, horizons=HORIZONS_DAYS, cutoff=None) 
     ).astype("timedelta64[ns]")
     result = prepared.iloc[repeated_ticket][static].reset_index(drop=True).copy()
     result["landmark_at"] = pd.to_datetime(landmark_values)
-    result["days_since_listing"] = offsets.astype(float)
+    result["days_since_listing"] = (
+        result["landmark_at"] - result["first_observed_at"]
+    ).dt.total_seconds() / 86400
     result["days_until_event"] = (
         result["performance_at"] - result["landmark_at"]
     ).dt.total_seconds() / 86400
@@ -158,6 +167,10 @@ def build_landmarks(tickets: pd.DataFrame, horizons=HORIZONS_DAYS, cutoff=None) 
         for horizon in horizons:
             deadline = moments + np.timedelta64(int(horizon), "D")
             fully_observed = deadline <= cutoff_value
+            if 'snapshot_dir' in tickets.attrs:
+                from observation_coverage import observed_windows
+                fully_observed &= observed_windows(tickets.attrs.get('collection_records', []),
+                                                   values['event_id'], moments, deadline)
             if pd.notna(performance_at):
                 fully_observed &= deadline <= np.datetime64(performance_at, "ns")
             left = np.searchsorted(qualifying_times, moments, side="right")
@@ -202,6 +215,7 @@ def build_landmarks(tickets: pd.DataFrame, horizons=HORIZONS_DAYS, cutoff=None) 
     result.attrs["excluded_temporal_anomaly_ticket_ids"] = list(
         prepared.attrs.get("excluded_temporal_anomaly_ticket_ids", [])
     )
+    result.attrs["trusted_temporal_start_at"] = trusted_start_text
     for column in (
         "ticket_id", "event_id", "group_slug", "venue", "ticket_type", "name_type",
         "quantity", "delivery_method", "duplicate_group", "semantic_seat_level",

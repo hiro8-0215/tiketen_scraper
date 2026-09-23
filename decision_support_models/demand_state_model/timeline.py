@@ -44,6 +44,8 @@ def add_end_times(tickets: pd.DataFrame, cutoff: pd.Timestamp | None = None):
     result.loc[sold, "outcome_at"] = result.loc[sold, "sold_at"]
     result.loc[deleted, "outcome_at"] = result.loc[deleted, "last_observed_at"]
     result["known_until"] = cutoff
+    listing = result["status"].eq("listing")
+    result.loc[listing, "known_until"] = result.loc[listing, "last_observed_at"].clip(upper=cutoff)
     result.loc[sold | deleted, "known_until"] = result.loc[sold | deleted, "outcome_at"]
     if "performance_at" in result:
         valid_performance = result["performance_at"].notna()
@@ -88,6 +90,10 @@ def build_landmarks(
     # millions of daily landmark rows. Derived text flags retain their signal.
     static_columns = [column for column in prepared.columns if column in STATIC_KEEP]
     start = prepared["first_observed_at"].to_numpy(dtype="datetime64[ns]")
+    trusted_start_text = tickets.attrs.get("trusted_temporal_start_at")
+    if trusted_start_text:
+        trusted_start = np.datetime64(pd.Timestamp(trusted_start_text), "ns")
+        start = np.maximum(start, trusted_start)
     end = prepared["known_until"].to_numpy(dtype="datetime64[ns]")
     valid = ~np.isnat(start) & ~np.isnat(end) & (end > start)
     step_ns = int(pd.Timedelta(days=LANDMARK_STEP_DAYS).value)
@@ -108,7 +114,9 @@ def build_landmarks(
         offsets * step_ns
     ).astype("timedelta64[ns]")
     result["landmark_at"] = pd.to_datetime(landmark_at)
-    result["days_since_listing"] = offsets.astype(float) * LANDMARK_STEP_DAYS
+    result["days_since_listing"] = (
+        result["landmark_at"] - result["first_observed_at"]
+    ).dt.total_seconds() / 86400
     if "performance_at" in result:
         result["days_until_event"] = (
             result["performance_at"] - result["landmark_at"]
@@ -143,6 +151,7 @@ def build_landmarks(
             result[column] = result[column].astype("category")
     result = result.sort_values(["landmark_at", "ticket_id"]).reset_index(drop=True)
     result.attrs["observation_cutoff"] = str(cutoff)
+    result.attrs["trusted_temporal_start_at"] = trusted_start_text
     result.attrs["excluded_temporal_anomalies"] = int(
         prepared.attrs.get("excluded_temporal_anomalies", 0)
     )

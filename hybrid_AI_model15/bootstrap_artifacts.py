@@ -1,12 +1,16 @@
 """Bootstrap Model15 semantics, dataset manifest, and verified BERT cache rows."""
 from __future__ import annotations
+import argparse
 import hashlib
 import json
 import os
 import numpy as np
 import pandas as pd
 
-from config import ARTIFACT_DIR, ROOT, SEMANTIC_FEATURES_FILE
+from config import (
+    ARTIFACT_DIR, BERT_MAX_LENGTH, BERT_MODEL, DATA_ROOT, ROOT,
+    SEMANTIC_FEATURES_FILE,
+)
 
 
 def _binary(value):
@@ -64,10 +68,86 @@ def bootstrap_semantics():
     print(f"semantic JSON: {len(output):,} descriptions; legacy added={legacy_added:,} (price_estimate excluded)")
 
 
+def reuse_verified_model14(combined, ids, text_hashes):
+    """Recover legacy embeddings only after reconstructing their exact texts."""
+    legacy_dir = ROOT / "hybrid_AI_model14"
+    artifact_dir = legacy_dir / "artifacts"
+    embedding_path = artifact_dir / "bert_raw.npy"
+    rows_path = artifact_dir / "bert_rows.json"
+    config_path = legacy_dir / "config.py"
+    if not all(path.exists() for path in [embedding_path, rows_path, config_path]):
+        return 0
+    config_text = config_path.read_text(encoding="utf-8")
+    if (
+        f'BERT_MODEL = "{BERT_MODEL}"' not in config_text
+        or f"BERT_MAX_LENGTH = {BERT_MAX_LENGTH}" not in config_text
+    ):
+        return 0
+    legacy_rows = json.loads(rows_path.read_text(encoding="utf-8"))
+    legacy_bert = np.load(embedding_path, mmap_mode="r")
+    if (
+        legacy_bert.shape != (len(legacy_rows), 768)
+        or len(set(legacy_rows)) != len(legacy_rows)
+    ):
+        return 0
+
+    # Identify the source snapshot by reproducing Model14's documented
+    # positive-sold population. Exact row equality proves which input texts
+    # produced the stored matrix; current rows are then matched by ID + hash.
+    from data_loader import load_snapshot
+    source_texts = None
+    for directory in DATA_ROOT.glob("data_*"):
+        if not directory.is_dir() or not any(directory.glob("*_master.csv")):
+            continue
+        snapshot = load_snapshot(directory)
+        price = pd.to_numeric(snapshot.get("price"), errors="coerce")
+        source = snapshot.loc[
+            snapshot["status"].eq("sold") & price.gt(0)
+        ].copy()
+        source = (
+            source.sort_values("first_observed_at")
+            .drop_duplicates("ticket_id", keep="last")
+        )
+        tags = source.get(
+            "ticket_tags", pd.Series("", index=source.index)
+        ).fillna("").astype(str)
+        descriptions = source.get(
+            "raw_description", pd.Series("", index=source.index)
+        ).fillna("").astype(str)
+        source["_model_text"] = descriptions + " [タグ] " + tags
+        source = source.sort_values(
+            ["first_observed_at", "ticket_id"], na_position="first"
+        ).reset_index(drop=True)
+        if source.ticket_id.tolist() == legacy_rows:
+            source_texts = source["_model_text"].tolist()
+            break
+    if source_texts is None:
+        return 0
+
+    legacy_hashes = [
+        hashlib.sha256(text.encode("utf-8")).hexdigest()
+        for text in source_texts
+    ]
+    positions = pd.Index(legacy_rows).get_indexer(ids)
+    matched = np.array([
+        position >= 0
+        and legacy_hashes[position] == text_hashes[index]
+        and np.isfinite(legacy_bert[position]).all()
+        and not np.isfinite(combined[index]).all()
+        for index, position in enumerate(positions)
+    ])
+    if matched.any():
+        combined[matched] = np.asarray(legacy_bert[positions[matched]])
+    return int(matched.sum())
+
+
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--historical", action="store_true")
+    args = parser.parse_args()
     bootstrap_semantics()
-    from data_loader import prepare_dataset
-    df = prepare_dataset()
+    from data_loader import prepare_dataset, prepare_historical_dataset
+    df = prepare_historical_dataset() if args.historical else prepare_dataset()
     ids = df.ticket_id.tolist()
     text_hashes = [
         hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -101,6 +181,8 @@ def main():
                 combined[current_match] = np.asarray(current_bert[current_positions[current_match]])
         del current_bert
 
+    legacy_reused = reuse_verified_model14(combined, ids, text_hashes)
+
     # Write to a temporary file first: an older bootstrap may have hard-linked
     # the target to Model14, and direct overwrite would corrupt that source.
     bert_target = ARTIFACT_DIR / "bert_raw.npy"
@@ -127,7 +209,8 @@ def main():
     coverage = float(df.semantic_available.mean() * 100)
     bert_ready = int(np.isfinite(combined).all(axis=1).sum())
     print(
-        f"BERT cache: reused={bert_ready:,}, missing={len(ids) - bert_ready:,}; "
+        f"BERT cache: reused={bert_ready:,} (Model14 recovered={legacy_reused:,}), "
+        f"missing={len(ids) - bert_ready:,}; "
         f"clean rows={len(ids):,}; semantic coverage={coverage:.1f}%. "
         "Extract missing BERT rows, create folds, and retrain Qwen OOF."
     )

@@ -170,6 +170,18 @@ def _semantic_text_hash(value) -> str:
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
 
+def _bootstrap_sale_time_spikes(frame: pd.DataFrame) -> pd.Index:
+    """Return implausible transition timestamps that cannot be demand labels."""
+    observed = (
+        frame["status"].eq("sold")
+        & frame.get("sold_at_source", pd.Series("", index=frame.index))
+        .fillna("").eq("transition_observed")
+        & frame["sold_at"].notna()
+    )
+    counts = frame.loc[observed, "sold_at"].value_counts()
+    return counts.index[(counts >= 50) & (counts / max(len(frame), 1) > 0.05)]
+
+
 def attach_complete_semantics(frame: pd.DataFrame, required=REQUIRE_SEMANTIC_FEATURES) -> pd.DataFrame:
     """Attach target-free semantics only with complete all-description coverage."""
     result = frame.copy()
@@ -228,6 +240,9 @@ def load_tickets(data_dir: Path | None = None) -> pd.DataFrame:
     unknown = set(result["status"].dropna()) - ALLOWED_STATUS
     if unknown:
         raise ValueError(f"Unknown status values: {sorted(unknown)}")
+    # shareCode can rotate when an active listing is edited. The stable
+    # identity is event_id + created_at_unix, not the current URL code. At a
+    # tied timestamp direct listing/sold observations outrank inferred delete.
     created = result.get("created_at_unix", pd.Series("", index=result.index)).fillna("").astype(str).str.strip()
     event = result["event_id"].fillna("").astype(str).str.strip()
     result["_logical_id"] = "ticket:" + result["ticket_id"].astype(str)
@@ -246,12 +261,30 @@ def load_tickets(data_dir: Path | None = None) -> pd.DataFrame:
         .drop(columns=["_status_priority", "_logical_id"])
         .reset_index(drop=True)
     )
+    trusted_temporal_start = pd.NaT
     if "sold_at_source" in result:
-        unknown_sale_time = result["status"].eq("sold") & result["sold_at_source"].fillna("").eq("historical_unknown")
+        spike_times = _bootstrap_sale_time_spikes(result)
+        bootstrap_spike = result["status"].eq("sold") & result["sold_at"].isin(spike_times)
+        trusted_sales = result["status"].eq("sold") & result[
+            "sold_at_source"
+        ].fillna("").eq("transition_observed") & result["sold_at"].notna() & ~bootstrap_spike
+        if trusted_sales.any():
+            trusted_temporal_start = result.loc[trusted_sales, "sold_at"].min()
+        # Only an observed listing -> sold transition has a trustworthy sale
+        # timestamp.  Legacy rows have a blank source and bootstrap API rows
+        # use ``historical_unknown``; both remain valid price observations but
+        # must never become temporal demand labels.
+        unknown_sale_time = result["status"].eq("sold") & (
+            ~result["sold_at_source"].fillna("").eq("transition_observed")
+            | bootstrap_spike
+        )
         excluded_unknown_sales = int(unknown_sale_time.sum())
+        excluded_spike_sales = int(bootstrap_spike.sum())
         result = result.loc[~unknown_sale_time].copy()
     else:
         excluded_unknown_sales = 0
+        excluded_spike_sales = 0
+        spike_times = pd.Index([])
     if result["ticket_id"].isna().any() or result["first_observed_at"].isna().any():
         raise ValueError("ticket_id and first_observed_at must be present")
     if (result["status"].eq("sold") & result["sold_at"].isna()).any():
@@ -277,4 +310,9 @@ def load_tickets(data_dir: Path | None = None) -> pd.DataFrame:
     result.attrs["invalid_listing_price_policy"] = "set_nan_then_fold_local_median_imputation"
     result.attrs["rotated_logical_listing_ids"] = rotated
     result.attrs["excluded_unknown_sale_time_rows"] = excluded_unknown_sales
+    result.attrs["excluded_sale_time_spike_rows"] = excluded_spike_sales
+    result.attrs["excluded_sale_time_spikes"] = [str(value) for value in spike_times]
+    result.attrs["trusted_temporal_start_at"] = (
+        str(trusted_temporal_start) if pd.notna(trusted_temporal_start) else None
+    )
     return result

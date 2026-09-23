@@ -7,10 +7,26 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from decision import apply_policy, regret
 from decision import summarize
-from train_policy import _mean_regret
+from train_policy import _chronological_partitions_by_horizon, _mean_regret
 
 
 class DecisionTest(unittest.TestCase):
+    def test_each_horizon_uses_its_own_chronological_boundary(self):
+        rows = []
+        for horizon, start in ((1, "2026-01-01"), (7, "2026-02-01")):
+            for offset in range(10):
+                rows.append({
+                    "horizon_days": horizon,
+                    "landmark_at": pd.Timestamp(start) + pd.Timedelta(hours=offset),
+                })
+        partitions = _chronological_partitions_by_horizon(pd.DataFrame(rows))
+
+        self.assertEqual(set(partitions), {1, 7})
+        for training, validation in partitions.values():
+            self.assertFalse(training.empty)
+            self.assertFalse(validation.empty)
+            self.assertLess(training.landmark_at.max(), validation.landmark_at.min())
+
     def test_high_disappearance_and_discount_can_trigger_buy(self):
         frame = pd.DataFrame({"discount_ratio": [.20], "disappearance_probability": [.8], "p_alternative": [.1]})
         result = apply_policy(frame, {"disappear_weight": .5, "alternative_weight": .25, "buy_threshold": .1, "wait_threshold": .5})

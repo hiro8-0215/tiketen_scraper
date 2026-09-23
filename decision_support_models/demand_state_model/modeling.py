@@ -74,6 +74,120 @@ def temporal_group_splits(
     ]
     boundaries = np.cumsum(cohort_sizes).astype(int).tolist()
 
+    # A bootstrap snapshot can give thousands of listings the exact same
+    # first-observation timestamp.  Splitting that timestamp block by group
+    # count makes the first validation timestamp equal to the training cohort
+    # timestamp; after horizon purging no usable training history remains.
+    # In that case, build folds from whole first-seen timestamp blocks.  This
+    # keeps duplicate groups disjoint and preserves strict forward validation.
+    first_seen = groups["landmark_at"].to_numpy(dtype="datetime64[ns]")
+    split_tie = any(
+        0 < boundary < len(first_seen)
+        and first_seen[boundary - 1] == first_seen[boundary]
+        for boundary in boundaries[:-1]
+    )
+    if split_tie:
+        if target is None:
+            raise RuntimeError(
+                "Timestamp-tied temporal cohorts require a target for safe warm-up"
+            )
+        if target not in frame:
+            raise KeyError(f"Temporal split target is missing: {target}")
+        if min_class_count < 1:
+            raise ValueError("min_class_count must be at least 1")
+        required_classes = set(
+            frame[target].dropna().astype(int).unique().tolist()
+        )
+        unique_times = np.sort(np.unique(first_seen))
+
+        def counts_before(valid_start):
+            training_groups = set(
+                groups.loc[groups["landmark_at"].lt(valid_start), "duplicate_group"]
+                .tolist()
+            )
+            mask = frame["duplicate_group"].isin(training_groups) & (
+                frame["landmark_at"] + pd.Timedelta(days=horizon_days)
+                < valid_start
+            )
+            return frame.loc[mask, target].value_counts()
+
+        first_validation = None
+        # Leave at least one distinct first-seen time block for every fold.
+        for candidate in unique_times[1 : len(unique_times) - n_splits + 1]:
+            candidate = pd.Timestamp(candidate)
+            counts = counts_before(candidate)
+            by_class = {int(key): int(value) for key, value in counts.items()}
+            if all(
+                by_class.get(class_id, 0) >= min_class_count
+                for class_id in required_classes
+            ):
+                first_validation = candidate
+                break
+        if first_validation is None:
+            raise RuntimeError(
+                f"Cannot establish all target classes before {n_splits} "
+                f"timestamp-safe validation folds for {target}: "
+                f"required={sorted(required_classes)}, "
+                f"min_class_count={min_class_count}"
+            )
+
+        validation_times = unique_times[
+            unique_times >= np.datetime64(first_validation, "ns")
+        ]
+        time_cohorts = np.array_split(validation_times, n_splits)
+        if any(len(cohort) == 0 for cohort in time_cohorts):
+            raise RuntimeError(
+                f"Not enough distinct future timestamps for {n_splits} "
+                f"validation folds for {target}"
+            )
+        counts = counts_before(first_validation)
+        print(
+            f"[temporal split {target}] timestamp-safe warm-up; "
+            f"first validation={first_validation}; "
+            f"min_class_count={min_class_count}; "
+            f"train_classes={counts.to_dict()}",
+            flush=True,
+        )
+        for fold, cohort in enumerate(time_cohorts):
+            valid_start = pd.Timestamp(cohort[0])
+            valid_end = (
+                pd.Timestamp(time_cohorts[fold + 1][0])
+                if fold + 1 < len(time_cohorts)
+                else None
+            )
+            training_groups = set(
+                groups.loc[
+                    groups["landmark_at"].lt(valid_start), "duplicate_group"
+                ].tolist()
+            )
+            valid_groups = set(
+                groups.loc[
+                    groups["landmark_at"].ge(valid_start)
+                    & (
+                        groups["landmark_at"].lt(valid_end)
+                        if valid_end is not None
+                        else True
+                    ),
+                    "duplicate_group",
+                ].tolist()
+            )
+            train_mask = frame["duplicate_group"].isin(training_groups) & (
+                frame["landmark_at"] + pd.Timedelta(days=horizon_days)
+                < valid_start
+            )
+            valid_mask = frame["duplicate_group"].isin(valid_groups) & frame[
+                "landmark_at"
+            ].ge(valid_start)
+            if valid_end is not None:
+                valid_mask &= frame["landmark_at"].lt(valid_end)
+            if train_mask.any() and valid_mask.any():
+                yield (
+                    fold,
+                    frame.index[train_mask].to_numpy(),
+                    frame.index[valid_mask].to_numpy(),
+                )
+        return
+
     # An early survival cohort can contain only the active class even though
     # later data contains all competing outcomes. Move only the first
     # validation boundary forward, never backward, until its training prefix

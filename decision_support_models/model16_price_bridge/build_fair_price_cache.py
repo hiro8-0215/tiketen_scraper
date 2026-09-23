@@ -109,7 +109,9 @@ def load_snapshot(data_dir: Path) -> pd.DataFrame:
     result["_logical_id"] = "ticket:" + result["ticket_id"].astype(str)
     stable = created.ne("") & event.ne("")
     result.loc[stable, "_logical_id"] = "created:" + event[stable] + "|" + created[stable]
-    result["_status_priority"] = result["status"].map({"deleted": 0, "listing": 1, "sold": 2})
+    result["_status_priority"] = result["status"].map(
+        {"deleted": 0, "listing": 1, "sold": 2}
+    )
     result = (
         result.sort_values(
             ["_logical_id", "last_observed_at", "_status_priority", "ticket_id"],
@@ -505,5 +507,9 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", type=Path)
+    parser.add_argument("--output", type=Path)
     arguments = parser.parse_args()
+    if arguments.output:
+        OUTPUT_FILE = arguments.output.resolve()
+        REPORT_FILE = OUTPUT_FILE.with_suffix('.report.json')
     print(json.dumps(build(arguments.data_dir), ensure_ascii=False, indent=2))

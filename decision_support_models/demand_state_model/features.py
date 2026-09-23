@@ -62,6 +62,7 @@ def add_market_features(landmarks: pd.DataFrame, tickets: pd.DataFrame) -> pd.Da
         source = source_groups.get(event_id, empty_source)
         first_raw = source["first_observed_at"].to_numpy(dtype="datetime64[ns]")
         end_raw = source["end_at"].to_numpy(dtype="datetime64[ns]")
+        confirmed_until = source["last_observed_at"].to_numpy(dtype="datetime64[ns]")
         source_prices = pd.to_numeric(source["price"], errors="coerce").to_numpy(float)
         first = np.sort(first_raw[~np.isnat(first_raw)])
         sold_raw = source["sold_at"].to_numpy(dtype="datetime64[ns]")
@@ -95,6 +96,7 @@ def add_market_features(landmarks: pd.DataFrame, tickets: pd.DataFrame) -> pd.Da
                 ~np.isnat(first_raw)
                 & (first_raw <= moment)
                 & (np.isnat(end_raw) | (end_raw > moment))
+                & (~np.isnat(confirmed_until) & (confirmed_until >= moment))
             )
             active_count[moment_index] = int(active_mask.sum())
             prices = source_prices[active_mask]

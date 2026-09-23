@@ -1,0 +1,17 @@
+{
+  "schema_version": "target_free_semantic_v1",
+  "snapshot_dir": "tiketen_date_data/data_9_18",
+  "ticket_rows": 9737,
+  "unique_descriptions": 6724,
+  "complete": true,
+  "qwen_model": "Qwen/Qwen2.5-7B-Instruct",
+  "generation_format": "compact_integer_array_v1",
+  "max_input_tokens": 1024,
+  "max_output_tokens": 36,
+  "semantic_rows": 6724,
+  "parse_errors": 58,
+  "recovered_format_errors": 0,
+  "generated_this_run": 58,
+  "current_batch_size": 8,
+  "truncated_descriptions": 0
+}

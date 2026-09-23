@@ -37,7 +37,7 @@ from timeline import add_end_times, build_landmarks
 TRAINING_FRAME_CACHE = ARTIFACT_DIR / "training_frame_cache.joblib"
 TRAINING_FRAME_META = ARTIFACT_DIR / "training_frame_cache.json"
 OOF_CHECKPOINT_DIR = ARTIFACT_DIR / "oof_checkpoints"
-TEMPORAL_SPLIT_POLICY = "adaptive_warmup_min_leaf_v1"
+TEMPORAL_SPLIT_POLICY = "timestamp_block_adaptive_warmup_v2"
 # These checkpoints were produced with this exact fit/preprocessing policy.
 # Metric-only and artifact-writing fixes must not force 24 identical refits.
 # Bump this value only when data passed to model.fit or fit parameters change.
@@ -436,10 +436,17 @@ def train(data_dir: Path | None = None) -> dict:
     np.random.seed(SEED)
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     tickets = load_tickets(data_dir)
-    observation_days = (tickets["last_observed_at"].max() - tickets["last_observed_at"].min()).total_seconds() / 86400
+    trusted_start = pd.to_datetime(
+        tickets.attrs.get("trusted_temporal_start_at"), errors="coerce"
+    )
+    observation_days = (
+        (tickets["last_observed_at"].max() - trusted_start).total_seconds() / 86400
+        if pd.notna(trusted_start) else 0.0
+    )
     if observation_days < max(HORIZONS_DAYS):
         raise RuntimeError(
-            f"Demand training needs at least {max(HORIZONS_DAYS)} days of clean observation; only {observation_days:.2f} days are available"
+            f"Demand training needs at least {max(HORIZONS_DAYS)} days of "
+            f"clean observation; only {observation_days:.2f} days are available"
         )
     tickets, cutoff = add_end_times(tickets)
     landmarks, frame_fingerprint, cache_reused = _load_or_build_training_frame(
@@ -513,6 +520,9 @@ def train(data_dir: Path | None = None) -> dict:
         "excluded_temporal_anomalies": int(
             tickets.attrs.get("excluded_temporal_anomalies", 0)
         ),
+        "excluded_sale_time_spike_rows": int(
+            tickets.attrs.get("excluded_sale_time_spike_rows", 0)
+        ),
         "invalid_listing_price_rows": int(
             tickets.attrs.get("invalid_listing_price_rows", 0)
         ),
@@ -533,6 +543,12 @@ def train(data_dir: Path | None = None) -> dict:
         ),
         "excluded_temporal_anomaly_ticket_ids": list(
             tickets.attrs.get("excluded_temporal_anomaly_ticket_ids", [])
+        ),
+        "excluded_sale_time_spike_rows": int(
+            tickets.attrs.get("excluded_sale_time_spike_rows", 0)
+        ),
+        "excluded_sale_time_spikes": list(
+            tickets.attrs.get("excluded_sale_time_spikes", [])
         ),
         "invalid_listing_price_rows": int(
             tickets.attrs.get("invalid_listing_price_rows", 0)

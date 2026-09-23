@@ -56,6 +56,18 @@ def _semantic_hash(value):
     return hashlib.sha256(str(value or "").strip().encode("utf-8")).hexdigest()
 
 
+def _bootstrap_sale_time_spikes(frame: pd.DataFrame) -> pd.Index:
+    """Return implausible transition timestamps that cannot be arrival labels."""
+    observed = (
+        frame["status"].eq("sold")
+        & frame.get("sold_at_source", pd.Series("", index=frame.index))
+        .fillna("").eq("transition_observed")
+        & frame["sold_at"].notna()
+    )
+    counts = frame.loc[observed, "sold_at"].value_counts()
+    return counts.index[(counts >= 50) & (counts / max(len(frame), 1) > 0.05)]
+
+
 def attach_complete_semantics(frame: pd.DataFrame, required=REQUIRE_SEMANTIC_FEATURES):
     result = frame.copy()
     if not SEMANTIC_FEATURES_FILE.exists() or not SEMANTIC_MANIFEST_FILE.exists():
@@ -117,7 +129,9 @@ def load_tickets(data_dir: Path | None = None) -> pd.DataFrame:
     stable = created.ne("") & event.ne("")
     result.loc[stable, "_logical_id"] = "created:" + event[stable] + "|" + created[stable]
     rotated = int(result.groupby("_logical_id")["ticket_id"].nunique().gt(1).sum())
-    result["_status_priority"] = result["status"].map({"deleted": 0, "listing": 1, "sold": 2})
+    result["_status_priority"] = result["status"].map(
+        {"deleted": 0, "listing": 1, "sold": 2}
+    )
     result = (
         result.sort_values(
             ["_logical_id", "last_observed_at", "_status_priority", "ticket_id"],
@@ -127,12 +141,29 @@ def load_tickets(data_dir: Path | None = None) -> pd.DataFrame:
         .drop(columns=["_status_priority", "_logical_id"])
         .reset_index(drop=True)
     )
+    trusted_temporal_start = pd.NaT
     if "sold_at_source" in result:
-        unknown_sale_time = result["status"].eq("sold") & result["sold_at_source"].fillna("").eq("historical_unknown")
+        spike_times = _bootstrap_sale_time_spikes(result)
+        bootstrap_spike = result["status"].eq("sold") & result["sold_at"].isin(spike_times)
+        trusted_sales = result["status"].eq("sold") & result[
+            "sold_at_source"
+        ].fillna("").eq("transition_observed") & result["sold_at"].notna() & ~bootstrap_spike
+        if trusted_sales.any():
+            trusted_temporal_start = result.loc[trusted_sales, "sold_at"].min()
+        # Blank legacy provenance is not evidence of an observed sale time.
+        # Retain those rows for price modeling elsewhere, but exclude them
+        # from every temporal arrival/competition label here.
+        unknown_sale_time = result["status"].eq("sold") & (
+            ~result["sold_at_source"].fillna("").eq("transition_observed")
+            | bootstrap_spike
+        )
         excluded_unknown_sales = int(unknown_sale_time.sum())
+        excluded_spike_sales = int(bootstrap_spike.sum())
         result = result.loc[~unknown_sale_time].copy()
     else:
         excluded_unknown_sales = 0
+        excluded_spike_sales = 0
+        spike_times = pd.Index([])
     if (result["status"].eq("sold") & result["sold_at"].isna()).any():
         raise ValueError("sold ticket without sold_at")
     result = _merge_manual(result)
@@ -170,9 +201,16 @@ def load_tickets(data_dir: Path | None = None) -> pd.DataFrame:
         )
     result = attach_complete_semantics(result)
     result.attrs["snapshot_dir"] = str(selected)
+    from observation_coverage import load_coverage
+    result.attrs['collection_records'] = load_coverage(selected)
     result.attrs["invalid_listing_price_rows"] = len(invalid_price_ids)
     result.attrs["invalid_listing_price_ticket_ids"] = invalid_price_ids
     result.attrs["invalid_listing_price_policy"] = "excluded_from_price_comparison"
     result.attrs["rotated_logical_listing_ids"] = rotated
     result.attrs["excluded_unknown_sale_time_rows"] = excluded_unknown_sales
+    result.attrs["excluded_sale_time_spike_rows"] = excluded_spike_sales
+    result.attrs["excluded_sale_time_spikes"] = [str(value) for value in spike_times]
+    result.attrs["trusted_temporal_start_at"] = (
+        str(trusted_temporal_start) if pd.notna(trusted_temporal_start) else None
+    )
     return result

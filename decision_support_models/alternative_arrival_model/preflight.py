@@ -4,6 +4,8 @@ import json
 import shutil
 import sys
 
+import pandas as pd
+
 from config import HORIZONS_DAYS, MODEL_DIR, SEMANTIC_FEATURES_FILE, SEMANTIC_MANIFEST_FILE
 from data_loader import latest_data_dir, load_tickets
 from features import add_market_features, feature_profiles
@@ -19,7 +21,7 @@ def check():
         raise RuntimeError(f"Missing packages: {missing}")
     selected = latest_data_dir()
     try:
-        snapshot_report = validate_snapshot(selected)
+        snapshot_report = validate_snapshot(selected, allow_sale_time_spike=True)
     except RuntimeError as error:
         return {
             "ok": False, "snapshot": str(selected),
@@ -41,7 +43,13 @@ def check():
             "error": str(error), "next": "Complete semantic_data_builder first.",
             "note": "No training or LLM extraction was executed.",
         }
-    observation_days = (tickets["last_observed_at"].max() - tickets["last_observed_at"].min()).total_seconds() / 86400
+    trusted_start = pd.to_datetime(
+        tickets.attrs.get("trusted_temporal_start_at"), errors="coerce"
+    )
+    observation_days = (
+        (tickets["last_observed_at"].max() - trusted_start).total_seconds() / 86400
+        if pd.notna(trusted_start) else 0.0
+    )
     if observation_days < max(HORIZONS_DAYS):
         return {
             "ok": False, "snapshot": str(selected),
@@ -67,6 +75,12 @@ def check():
         "snapshot_quality": snapshot_report,
         "excluded_temporal_anomalies": int(
             tickets.attrs.get("excluded_temporal_anomalies", 0)
+        ),
+        "excluded_sale_time_spike_rows": int(
+            tickets.attrs.get("excluded_sale_time_spike_rows", 0)
+        ),
+        "excluded_sale_time_spikes": list(
+            tickets.attrs.get("excluded_sale_time_spikes", [])
         ),
         "excluded_temporal_anomaly_ticket_ids": list(
             tickets.attrs.get("excluded_temporal_anomaly_ticket_ids", [])

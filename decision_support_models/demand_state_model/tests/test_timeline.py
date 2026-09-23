@@ -17,6 +17,12 @@ from train import _select_profile
 
 
 class TimelineTest(unittest.TestCase):
+    def test_listing_is_censored_at_its_last_observation(self):
+        tickets=self._tickets()
+        tickets.loc[tickets.ticket_id.eq('active'),'last_observed_at']=pd.Timestamp('2026-01-02')
+        prepared,_=add_end_times(tickets,cutoff=pd.Timestamp('2026-01-10'))
+        self.assertEqual(prepared.set_index('ticket_id').loc['active','known_until'],pd.Timestamp('2026-01-02'))
+
     def _tickets(self):
         return pd.DataFrame({
             "ticket_id": ["sold", "deleted", "active"],
@@ -119,6 +125,34 @@ class TimelineTest(unittest.TestCase):
         self.assertGreaterEqual(
             frame.loc[splits[0][1], "state_1d"].value_counts().min(), 2
         )
+
+    def test_mass_first_seen_timestamp_is_kept_out_of_validation(self):
+        frame = pd.DataFrame({
+            "duplicate_group": [f"g{i}" for i in range(20)],
+            "landmark_at": [pd.Timestamp("2026-01-01")] * 12 + [
+                pd.Timestamp("2026-01-03") + pd.Timedelta(days=i)
+                for i in range(8)
+            ],
+            "state_1d": ([0, 1, 2] * 4) + ([0, 1, 2, 0] * 2),
+        })
+        splits = list(temporal_group_splits(
+            frame, horizon_days=1, n_splits=4, target="state_1d"
+        ))
+
+        self.assertEqual(len(splits), 4)
+        self.assertGreater(
+            frame.loc[splits[0][2], "landmark_at"].min(),
+            pd.Timestamp("2026-01-01"),
+        )
+        for _, training, validation in splits:
+            self.assertFalse(
+                set(frame.loc[training, "duplicate_group"])
+                & set(frame.loc[validation, "duplicate_group"])
+            )
+            self.assertLess(
+                (frame.loc[training, "landmark_at"] + pd.Timedelta(days=1)).max(),
+                frame.loc[validation, "landmark_at"].min(),
+            )
 
     def test_semantics_are_a_separate_ablation_profile(self):
         frame = build_landmarks(self._tickets(), horizons=(3,), cutoff=pd.Timestamp("2026-01-10"))

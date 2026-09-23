@@ -31,7 +31,7 @@ from timeline import build_landmarks, observation_cutoff, prepare_end_times
 TRAINING_FRAME_CACHE = ARTIFACT_DIR / "training_frame_cache.joblib"
 TRAINING_FRAME_META = ARTIFACT_DIR / "training_frame_cache.json"
 OOF_CHECKPOINT_DIR = ARTIFACT_DIR / "oof_checkpoints"
-TEMPORAL_SPLIT_POLICY = "adaptive_warmup_min_leaf_v1"
+TEMPORAL_SPLIT_POLICY = "timestamp_block_adaptive_warmup_v2"
 
 
 def _replace_joblib(value, path):
@@ -79,6 +79,8 @@ def _training_frame_fingerprint(tickets: pd.DataFrame) -> str:
     snapshot = Path(str(tickets.attrs.get("snapshot_dir", "")))
     model_dir = Path(__file__).resolve().parent
     paths = list(snapshot.glob("*_master.csv")) if snapshot.is_dir() else []
+    paths += list(snapshot.glob('observation_*.jsonl'))
+    paths += [model_dir / 'observation_coverage.py']
     paths += list(MANUAL_DIR.glob("*.csv"))
     paths += [SEMANTIC_FEATURES_FILE, SEMANTIC_MANIFEST_FILE]
     paths += [
@@ -173,9 +175,19 @@ def _audit_all_temporal_splits(landmarks: pd.DataFrame) -> dict[str, list[dict]]
                 f"Alternative {horizon}d requires negative/positive classes; got "
                 f"{full_counts.to_dict()}"
             )
-        splits = list(temporal_group_splits(
-            eligible, horizon, target=target, min_class_count=min_class_count
-        ))
+        try:
+            splits = list(temporal_group_splits(
+                eligible, horizon, target=target, min_class_count=min_class_count
+            ))
+        except RuntimeError as error:
+            if "timestamp-safe validation folds" not in str(error):
+                raise
+            print(
+                f"[alternative {horizon}d] unavailable for honest temporal "
+                f"validation: {error}",
+                flush=True,
+            )
+            continue
         if len(splits) != N_TEMPORAL_FOLDS:
             raise RuntimeError(
                 f"Alternative {horizon}d produced {len(splits)} temporal folds; "
@@ -233,6 +245,8 @@ def _audit_all_temporal_splits(landmarks: pd.DataFrame) -> dict[str, list[dict]]
             )
         audit[str(horizon)] = fold_audit
     print("[alternative] all full-frame temporal folds passed prefit audit", flush=True)
+    if not audit:
+        raise RuntimeError("No alternative-arrival horizon has valid temporal folds")
     return audit
 
 
@@ -417,10 +431,19 @@ def train(data_dir: Path | None = None):
     np.random.seed(SEED)
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     tickets = load_tickets(data_dir)
-    observation_days = (tickets["last_observed_at"].max() - tickets["last_observed_at"].min()).total_seconds() / 86400
+    if not tickets.attrs.get('collection_records'):
+        raise RuntimeError('Verified event collection history is missing. Run [25 3モデル検証] first; collect observation_*.jsonl before retraining. Existing models are preserved.')
+    trusted_start = pd.to_datetime(
+        tickets.attrs.get("trusted_temporal_start_at"), errors="coerce"
+    )
+    observation_days = (
+        (tickets["last_observed_at"].max() - trusted_start).total_seconds() / 86400
+        if pd.notna(trusted_start) else 0.0
+    )
     if observation_days < max(HORIZONS_DAYS):
         raise RuntimeError(
-            f"Alternative-arrival training needs at least {max(HORIZONS_DAYS)} days of clean observation; only {observation_days:.2f} days are available"
+            f"Alternative-arrival training needs at least {max(HORIZONS_DAYS)} "
+            f"days of clean observation; only {observation_days:.2f} days are available"
         )
     cutoff = observation_cutoff(tickets)
     prepared = prepare_end_times(tickets)
@@ -428,10 +451,19 @@ def train(data_dir: Path | None = None):
         tickets, prepared, cutoff
     )
     temporal_split_audit = _audit_all_temporal_splits(landmarks)
+    supported_horizons = tuple(
+        horizon for horizon in HORIZONS_DAYS
+        if str(horizon) in temporal_split_audit
+    )
+    unsupported_horizons = {
+        str(horizon): "insufficient pre-horizon history for leakage-safe validation"
+        for horizon in HORIZONS_DAYS
+        if horizon not in supported_horizons
+    }
     profiles = feature_profiles(landmarks)
     models, calibrators, selected_oof_parts, ablation_oof_parts, reports = {}, {}, [], [], {}
     selected_features = {}
-    for horizon in HORIZONS_DAYS:
+    for horizon in supported_horizons:
         target = f"alternative_{horizon}d"
         eligible = landmarks[landmarks[target].ge(0)].copy().reset_index(drop=True)
         if set(eligible[target].unique()) != {0, 1}:
@@ -487,6 +519,7 @@ def train(data_dir: Path | None = None):
         "pipeline_version": PIPELINE_VERSION, "snapshot_dir": tickets.attrs.get("snapshot_dir"),
         "observation_cutoff": str(cutoff),
         "training_frame_fingerprint": frame_fingerprint,
+        "supported_horizons": list(supported_horizons),
         "selected_features": selected_features,
         "models": models, "calibrators": calibrators,
     }
@@ -498,6 +531,14 @@ def train(data_dir: Path | None = None):
         "training_frame_cache_reused": cache_reused,
         "temporal_split_policy": TEMPORAL_SPLIT_POLICY,
         "prefit_temporal_split_audit": temporal_split_audit,
+        "supported_horizons": list(supported_horizons),
+        "unsupported_horizons": unsupported_horizons,
+        "excluded_sale_time_spike_rows": int(
+            prepared.attrs.get("excluded_sale_time_spike_rows", 0)
+        ),
+        "excluded_sale_time_spikes": list(
+            prepared.attrs.get("excluded_sale_time_spikes", [])
+        ),
         "invalid_listing_price_rows": int(
             tickets.attrs.get("invalid_listing_price_rows", 0)
         ),
@@ -518,7 +559,7 @@ def train(data_dir: Path | None = None):
         str(horizon): metrics(
             part.true_alternative.to_numpy(int), part.p_alternative.to_numpy(float)
         )
-        for horizon in HORIZONS_DAYS
+        for horizon in supported_horizons
         for part in [selected_oof[selected_oof.horizon_days.eq(horizon)]]
     }
     _replace_joblib(payload, ARTIFACT_DIR / "alternative_arrival.joblib")

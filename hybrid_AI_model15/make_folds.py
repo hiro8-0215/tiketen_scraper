@@ -1,10 +1,11 @@
 """Create the one authoritative fold manifest shared by Qwen and meta models."""
+import argparse
 import os
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import StratifiedGroupKFold
 from config import ARTIFACT_DIR, N_FOLDS, SEED, TARGET
-from data_loader import prepare_dataset
+from data_loader import prepare_dataset, prepare_historical_dataset
 
 
 def assign_folds(df: pd.DataFrame) -> np.ndarray:
@@ -19,7 +20,10 @@ def assign_folds(df: pd.DataFrame) -> np.ndarray:
 
 
 def main():
-    df = prepare_dataset()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--historical", action="store_true")
+    args = parser.parse_args()
+    df = prepare_historical_dataset() if args.historical else prepare_dataset()
     folds = assign_folds(df)
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     manifest = pd.DataFrame({

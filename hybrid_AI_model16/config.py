@@ -1,5 +1,6 @@
 """Model16: honest global ensemble configuration."""
 from pathlib import Path
+import os
 import sys
 
 for stream in (sys.stdout, sys.stderr):
@@ -10,7 +11,12 @@ ROOT = Path(__file__).resolve().parent.parent
 MODEL_DIR = Path(__file__).resolve().parent
 MODEL15_DIR = ROOT / "hybrid_AI_model15"
 SOURCE_ARTIFACT_DIR = MODEL15_DIR / "artifacts"
-ARTIFACT_DIR = MODEL_DIR / "artifacts"
+# A separate artifact root is used by the from-scratch runner.  Training is
+# completed and validated there before it replaces the current production
+# artifacts, so a failed multi-day run cannot destroy the working Model16.
+ARTIFACT_DIR = Path(
+    os.environ.get("MODEL16_ARTIFACT_DIR", str(MODEL_DIR / "artifacts"))
+).resolve()
 DATA_ROOT = ROOT / "tiketen_date_data"
 MANUAL_DIR = ROOT / "手動_data"
 SEMANTIC_FEATURES_FILE = SOURCE_ARTIFACT_DIR / "semantic_features.json"

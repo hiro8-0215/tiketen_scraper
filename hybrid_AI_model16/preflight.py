@@ -32,7 +32,15 @@ from snapshot_audit import validate_snapshot
 
 
 def main():
-    validate_snapshot(latest_data_dir())
+    snapshot_report = validate_snapshot(
+        latest_data_dir(), allow_sale_time_spike=True
+    )
+    if snapshot_report["sale_time_spike_override_used"]:
+        print(
+            "Model16 price-only audit: sold_at spike is excluded from the "
+            "price features/target; demand-label warning retained",
+            flush=True,
+        )
     required = [
         "folds.csv", "bert_raw.npy", "bert_rows.json", "bert_text_hashes.json",
         "semantic_features.json",

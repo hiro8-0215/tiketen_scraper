@@ -76,6 +76,8 @@ def audit_snapshot(snapshot: Path) -> dict:
     maximum_observed: datetime | None = None
     records: list[dict] = []
     sold_time_counts: Counter[datetime] = Counter()
+    raw_sold_time_counts: Counter[datetime] = Counter()
+    untrusted_sold_time_rows = 0
 
     for path in files:
         with path.open("r", encoding="utf-8-sig", newline="") as stream:
@@ -109,7 +111,15 @@ def audit_snapshot(snapshot: Path) -> dict:
                     status_time_counts[(status, observed)] += 1
                 sold_at = _parse_datetime(row.get("sold_at", ""))
                 if status == "sold" and sold_at is not None:
-                    sold_time_counts[sold_at] += 1
+                    raw_sold_time_counts[sold_at] += 1
+                    # A timestamp is a demand label only when the scraper saw
+                    # the listing change to sold.  Blank legacy provenance and
+                    # historical API discoveries are still useful for price
+                    # training, but their sale time is unknown.
+                    if str(row.get("sold_at_source", "")).strip() == "transition_observed":
+                        sold_time_counts[sold_at] += 1
+                    else:
+                        untrusted_sold_time_rows += 1
                 event_id = str(row.get("event_id", "")).strip()
                 created_at = str(row.get("created_at_unix", "")).strip()
                 logical_id = (
@@ -118,10 +128,15 @@ def audit_snapshot(snapshot: Path) -> dict:
                     else f"ticket:{ticket_id}"
                 )
                 records.append({
-                    "logical_id": logical_id, "ticket_id": ticket_id,
-                    "status": status, "observed": observed,
+                    "logical_id": logical_id,
+                    "ticket_id": ticket_id,
+                    "status": status,
+                    "observed": observed,
                 })
 
+    # Ticketen can rotate shareCode when an active listing is edited.  Treat
+    # event_id + created_at_unix as the stable listing identity. At a tied
+    # timestamp, direct active/sold observations outrank inferred deletion.
     status_priority = {"deleted": 0, "listing": 1, "sold": 2}
     canonical: dict[str, dict] = {}
     logical_ticket_ids: dict[str, set[str]] = defaultdict(set)
@@ -190,6 +205,10 @@ def audit_snapshot(snapshot: Path) -> dict:
         max((count, timestamp) for timestamp, count in sold_time_counts.items())
         if sold_time_counts else (0, None)
     )
+    raw_largest_sold_at, raw_largest_sold_timestamp = (
+        max((count, timestamp) for timestamp, count in raw_sold_time_counts.items())
+        if raw_sold_time_counts else (0, None)
+    )
     ignored_copies = sorted(
         path.name for path in snapshot.glob("*_master(*).csv")
     )
@@ -230,6 +249,9 @@ def audit_snapshot(snapshot: Path) -> dict:
         "raw_largest_timestamp_deleted_at": str(raw_largest_deleted_at),
         "largest_sold_at_rows": largest_sold_at,
         "largest_sold_at": str(largest_sold_timestamp),
+        "raw_largest_sold_at_rows": raw_largest_sold_at,
+        "raw_largest_sold_at": str(raw_largest_sold_timestamp),
+        "untrusted_sold_time_rows": untrusted_sold_time_rows,
         "rotated_logical_listing_ids": len(rotated_logical_ids),
         "conflicting_logical_status_ids": len(conflicting_logical_ids),
         "duplicate_ticket_ids": len(duplicate_ids),
@@ -242,7 +264,11 @@ def audit_snapshot(snapshot: Path) -> dict:
     }
 
 
-def validate_snapshot(snapshot: Path, allow_historical: bool = False) -> dict:
+def validate_snapshot(
+    snapshot: Path,
+    allow_historical: bool = False,
+    allow_sale_time_spike: bool = False,
+) -> dict:
     report = audit_snapshot(snapshot)
     structural_errors = []
     historical_errors = []
@@ -277,14 +303,25 @@ def validate_snapshot(snapshot: Path, allow_historical: bool = False) -> dict:
         and sold_spike / max(report["canonical_rows"], 1)
         > MAX_SALE_TIME_SPIKE_FRACTION
     ):
-        historical_errors.append(
+        sale_time_issue = (
             f"{sold_spike:,} sold rows share one sold_at timestamp "
             f"({report['largest_sold_at']}); bootstrap sale times are not valid "
             "demand labels"
         )
+        # Price-only models may keep these rows because sold_at is neither a
+        # feature nor their target. Demand/timing models retain the strict gate.
+        if allow_sale_time_spike:
+            report["warnings"].append(sale_time_issue)
+        else:
+            historical_errors.append(sale_time_issue)
     errors = structural_errors + ([] if allow_historical else historical_errors)
     report["historical_override_used"] = bool(
         allow_historical and historical_errors
+    )
+    report["sale_time_spike_override_used"] = bool(
+        allow_sale_time_spike and sold_spike >= MIN_SALE_TIME_SPIKE
+        and sold_spike / max(report["canonical_rows"], 1)
+        > MAX_SALE_TIME_SPIKE_FRACTION
     )
     report["errors"] = errors
     report["historical_issues"] = historical_errors

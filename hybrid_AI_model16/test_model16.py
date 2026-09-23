@@ -11,13 +11,20 @@ from config import (
     SEED,
     TARGET,
 )
-from data_loader import catboost_frame, model_feature_columns, prepare_dataset
+from data_loader import (
+    catboost_frame,
+    clean_model13_population,
+    load_historical_snapshot,
+    model_feature_columns,
+    prepare_dataset,
+)
 from modeling import (
     assign_inner_folds,
     blend_predictions,
     mape_training_weight,
     optimize_global_weights,
 )
+from incremental_evaluation import _logical_keys, _semantic_coverage
 
 
 class Model16Tests(unittest.TestCase):
@@ -27,7 +34,12 @@ class Model16Tests(unittest.TestCase):
         cls.numeric, cls.categorical = model_feature_columns(cls.df)
 
     def test_same_clean_sold_population(self):
-        self.assertEqual(len(self.df), 7313)
+        expected = clean_model13_population(
+            load_historical_snapshot(), verbose=False
+        )
+        self.assertEqual(len(self.df), len(expected))
+        self.assertEqual(set(self.df.ticket_id), set(expected.ticket_id))
+        self.assertTrue(self.df.status.eq("sold").all())
         self.assertTrue(self.df[TARGET].between(2_000, 150_000).all())
 
     def test_no_forbidden_or_target_features(self):
@@ -88,6 +100,20 @@ class Model16Tests(unittest.TestCase):
 
     def test_qwen_is_not_an_expert(self):
         self.assertFalse(any("qwen" in name.lower() for name in BASE_EXPERTS))
+
+    def test_incremental_logical_key_survives_ticket_id_change(self):
+        frame = pd.DataFrame({
+            "ticket_id": ["old-id", "new-id", "fallback-id"],
+            "event_id": ["event-1", "event-1", ""],
+            "created_at_unix": [12345.0, 12345, np.nan],
+        })
+        keys = _logical_keys(frame)
+        self.assertEqual(keys.iloc[0], keys.iloc[1])
+        self.assertEqual(keys.iloc[2], "ticket:fallback-id")
+
+    def test_missing_semantics_are_reported_as_zero_coverage(self):
+        self.assertEqual(_semantic_coverage(pd.DataFrame({"ticket_id": ["a"]})), 0.0)
+        self.assertIsNone(_semantic_coverage(pd.DataFrame()))
 
 
 if __name__ == "__main__":

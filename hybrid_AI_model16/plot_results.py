@@ -231,7 +231,7 @@ def save_dashboard(report, y, prediction, metrics):
     draw_residuals(axes[1, 0], y, prediction)
     draw_price_diagnostics(axes[1, 1], y, prediction)
     fig.suptitle(
-        "チケット価格予測 Model16 評価結果（nested OOF・7,313件）",
+        f"チケット価格予測 Model16 評価結果（nested OOF・{len(y):,}件）",
         fontsize=21,
         fontweight="bold",
     )

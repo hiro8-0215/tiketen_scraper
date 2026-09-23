@@ -1,6 +1,7 @@
 """Reuse cached BERT rows and encode only tickets added by a newer snapshot."""
 from __future__ import annotations
 
+import argparse
 import gc
 import hashlib
 import json
@@ -22,7 +23,7 @@ from config import (
     QWEN_GPU_INDEX,
     QWEN_GPU_MEMORY_FRACTION,
 )
-from data_loader import prepare_dataset
+from data_loader import prepare_dataset, prepare_historical_dataset
 
 
 def save_embeddings(embeddings, target):
@@ -32,7 +33,10 @@ def save_embeddings(embeddings, target):
 
 
 def main():
-    df = prepare_dataset()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--historical", action="store_true")
+    args = parser.parse_args()
+    df = prepare_historical_dataset() if args.historical else prepare_dataset()
     embedding_path = ARTIFACT_DIR / "bert_raw.npy"
     rows_path = ARTIFACT_DIR / "bert_rows.json"
     hashes_path = ARTIFACT_DIR / "bert_text_hashes.json"

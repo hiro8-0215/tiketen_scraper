@@ -21,6 +21,7 @@ def predict(data_dir: Path | None = None, as_of: pd.Timestamp | None = None) -> 
     as_of = pd.Timestamp(as_of) if as_of is not None else cutoff
     active = tickets[
         tickets["first_observed_at"].le(as_of)
+        & tickets["last_observed_at"].ge(as_of)
         & (tickets["outcome_at"].isna() | tickets["outcome_at"].gt(as_of))
         & (tickets["performance_at"].isna() | tickets["performance_at"].gt(as_of))
     ].copy()

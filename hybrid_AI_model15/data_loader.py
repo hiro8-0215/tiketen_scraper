@@ -53,6 +53,42 @@ def load_snapshot(data_dir: Path | None = None) -> pd.DataFrame:
     return df
 
 
+def load_historical_snapshot() -> pd.DataFrame:
+    """Union all snapshots and keep the latest trustworthy state per listing."""
+    directories = [
+        path for path in DATA_ROOT.glob("data_*")
+        if path.is_dir() and any(path.glob("*_master.csv"))
+    ]
+    if not directories:
+        raise FileNotFoundError(f"No data snapshots found in {DATA_ROOT}")
+    snapshot = pd.concat(
+        [load_snapshot(path) for path in directories], ignore_index=True
+    )
+    created = snapshot.get(
+        "created_at_unix", pd.Series("", index=snapshot.index)
+    ).astype("string").fillna("").str.strip().str.replace(r"\.0$", "", regex=True)
+    event = snapshot["event_id"].astype("string").fillna("").str.strip()
+    snapshot["_logical_id"] = "ticket:" + snapshot["ticket_id"].astype(str)
+    stable = created.ne("") & event.ne("")
+    snapshot.loc[stable, "_logical_id"] = (
+        "created:" + event[stable] + "|" + created[stable]
+    )
+    snapshot["_status_priority"] = snapshot["status"].map(
+        {"deleted": 0, "listing": 1, "sold": 2}
+    ).fillna(-1)
+    snapshot = (
+        snapshot.sort_values(
+            ["_logical_id", "last_observed_at", "_status_priority", "ticket_id"],
+            na_position="first",
+        )
+        .drop_duplicates("_logical_id", keep="last")
+        .drop(columns=["_logical_id", "_status_priority"])
+        .reset_index(drop=True)
+    )
+    snapshot.attrs["historical_snapshot_count"] = len(directories)
+    return snapshot
+
+
 def _master(name: str) -> pd.DataFrame:
     path = MANUAL_DIR / f"master_{name}.csv"
     return pd.read_csv(path) if path.exists() else pd.DataFrame()
@@ -226,6 +262,10 @@ def prepare_dataset_from_snapshot(snapshot: pd.DataFrame) -> pd.DataFrame:
 
 def prepare_dataset(data_dir: Path | None = None) -> pd.DataFrame:
     return prepare_dataset_from_snapshot(load_snapshot(data_dir))
+
+
+def prepare_historical_dataset() -> pd.DataFrame:
+    return prepare_dataset_from_snapshot(load_historical_snapshot())
 
 
 def model_feature_columns(df: pd.DataFrame):

@@ -4,6 +4,7 @@ import argparse
 import gc
 import json
 import os
+import re
 
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
 os.environ.setdefault(
@@ -20,7 +21,7 @@ from config import (
     QWEN_GPU_INDEX, QWEN_GPU_MEMORY_FRACTION, QWEN_MODEL,
     SEMANTIC_FEATURES_FILE,
 )
-from data_loader import clean_model13_population, load_snapshot
+from data_loader import clean_model13_population, load_historical_snapshot, load_snapshot
 
 SEMANTIC_SCHEMA_VERSION = "model15_semantic_v1"
 
@@ -84,12 +85,31 @@ def parse_json(text):
     # Decode the first complete object instead of greedily spanning multiple
     # objects/code fences, which caused avoidable parse_error rows.
     start = text.find("{")
-    if start < 0:
-        raise ValueError("JSON object not found")
-    payload, _ = json.JSONDecoder().raw_decode(text[start:])
-    if not isinstance(payload, dict):
-        raise ValueError("Semantic response is not a JSON object")
-    return normalize(payload)
+    try:
+        if start < 0:
+            raise ValueError("JSON object not found")
+        payload, _ = json.JSONDecoder().raw_decode(text[start:])
+        if not isinstance(payload, dict):
+            raise ValueError("Semantic response is not a JSON object")
+        return normalize(payload)
+    except (json.JSONDecodeError, ValueError):
+        # Qwen occasionally emits an almost-JSON object (single quotes,
+        # Japanese colon, or an unterminated fence). Recover only explicitly
+        # named schema fields; unknown values are normalized safely.
+        recovered = {}
+        keys = list(ALLOWED) + [
+            "semantic_is_fc_early", "semantic_is_random", "semantic_confidence"
+        ]
+        for key in keys:
+            match = re.search(
+                rf"[\"']?{re.escape(key)}[\"']?\s*[:：]\s*[\"']?([^\"'\n,}}]+)",
+                text,
+            )
+            if match:
+                recovered[key] = match.group(1).strip()
+        if len(recovered) < 3:
+            raise
+        return normalize(recovered)
 
 
 def save_semantics(payload):
@@ -105,12 +125,25 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--reset", action="store_true")
     parser.add_argument("--refresh-legacy", action="store_true", help="legacy entriesも拡張schemaで再抽出")
+    parser.add_argument("--historical", action="store_true",
+                        help="最新日だけでなくModel16の履歴統合母集団を処理")
+    parser.add_argument("--first-observed-after",
+                        help="このISO日時より後に初観測された行だけを差分生成")
     parser.add_argument("--batch-size", type=int, default=4,
                         help="GPU生成batch。CUDA OOM時は自動で半分に下げる")
     args = parser.parse_args()
     if args.batch_size < 1:
         parser.error("--batch-size must be at least 1")
-    raw = clean_model13_population(load_snapshot())
+    snapshot = load_historical_snapshot() if args.historical else load_snapshot()
+    raw = clean_model13_population(snapshot)
+    if args.first_observed_after:
+        cutoff = pd.Timestamp(args.first_observed_after)
+        observed = pd.to_datetime(raw.get("first_observed_at"), errors="coerce")
+        if cutoff.tzinfo is not None:
+            observed = pd.to_datetime(observed, utc=True)
+            cutoff = cutoff.tz_convert("UTC")
+        raw = raw.loc[observed.gt(cutoff)].copy()
+        print(f"first_observed_after={args.first_observed_after}: rows={len(raw):,}")
     descriptions = raw["raw_description"].astype(str).drop_duplicates().tolist()
     existing = {} if args.reset or not SEMANTIC_FEATURES_FILE.exists() else json.loads(SEMANTIC_FEATURES_FILE.read_text(encoding="utf-8"))
     for cached in existing.values():
@@ -122,7 +155,8 @@ def main():
         or (
             args.refresh_legacy
             and (
-                existing[description].get("semantic_source") != "qwen15"
+                existing[description].get("semantic_source")
+                not in {"qwen15", "qwen15_parse_fallback"}
                 or existing[description].get("semantic_schema_version") != SEMANTIC_SCHEMA_VERSION
             )
         )
@@ -191,9 +225,10 @@ def main():
                     existing[description] = parse_json(response)
                 except Exception:
                     errors += 1
-                    existing[description] = normalize({})
-                    existing[description]["semantic_source"] = "parse_error"
-                    existing[description]["semantic_available"] = 0
+                    fallback = normalize(existing.get(description, {}))
+                    fallback["semantic_source"] = "qwen15_parse_fallback"
+                    fallback["semantic_available"] = 0
+                    existing[description] = fallback
             processed += len(descriptions)
             progress.update(len(descriptions))
             del inputs, output

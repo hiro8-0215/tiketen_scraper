@@ -97,12 +97,20 @@ def ticket_ids(snapshot: Path) -> set[str]:
                     continue
                 event = str(row.get("event_id", "")).strip()
                 created = str(row.get("created_at_unix", "")).strip()
-                logical = f"created:{event}|{created}" if event and created else f"ticket:{identifier}"
+                logical = (
+                    f"created:{event}|{created}"
+                    if event and created else f"ticket:{identifier}"
+                )
+                observed_text = str(row.get("last_observed_at", "")).strip()
                 try:
-                    observed = datetime.fromisoformat(str(row.get("last_observed_at", "")).strip())
+                    observed = datetime.fromisoformat(observed_text)
                 except ValueError:
                     observed = datetime.min
-                rank = (observed, priority.get(str(row.get("status", "")).lower(), -1), identifier)
+                rank = (
+                    observed,
+                    priority.get(str(row.get("status", "")).lower(), -1),
+                    identifier,
+                )
                 if logical not in canonical or rank > canonical[logical][0]:
                     canonical[logical] = (rank, identifier)
     return {value[1] for value in canonical.values()}
@@ -297,9 +305,9 @@ def stage_outputs_valid(stage: Stage) -> bool:
         report_path = model_dir / "artifacts" / "training_report.json"
         oof_path = model_dir / "artifacts" / "oof_predictions.csv"
         expected_version = (
-            "demand_state_semantic_selection_v4_logical_identity"
+            "demand_state_semantic_selection_v5_timestamp_safe_cv"
             if stage.name == "demand"
-            else "alternative_arrival_semantic_selection_v4_logical_identity"
+            else "alternative_arrival_semantic_selection_v5_supported_horizons"
         )
         required_oof = (
             {"ticket_id", "landmark_at", "horizon_days", "fold"}
@@ -315,9 +323,19 @@ def stage_outputs_valid(stage: Stage) -> bool:
                 has_data = next(reader, None) is not None
         except (json.JSONDecodeError, OSError):
             return False
+        metric_horizons = set(report.get("metrics_by_horizon", {}))
+        horizons_ok = metric_horizons == {"1", "3", "7"}
+        if stage.name == "alternative":
+            declared = {str(value) for value in report.get("supported_horizons", [])}
+            unavailable = set(report.get("unsupported_horizons", {}))
+            horizons_ok = bool(
+                metric_horizons
+                and metric_horizons == declared
+                and metric_horizons | unavailable == {"1", "3", "7"}
+            )
         return bool(
             report.get("pipeline_version") == expected_version
-            and set(report.get("metrics_by_horizon", {})) == {"1", "3", "7"}
+            and horizons_ok
             and fields_ok and has_data
             and Path(report.get("snapshot_dir", "")).resolve() == latest_snapshot().resolve()
         )
@@ -396,7 +414,9 @@ def main() -> None:
     args = parse_args()
     snapshot = latest_snapshot()
     snapshot_report = validate_snapshot(
-        snapshot, allow_historical=args.allow_historical_snapshot
+        snapshot,
+        allow_historical=args.allow_historical_snapshot,
+        allow_sale_time_spike=True,
     )
     selected_stages = stages(args.batch_size)
     if args.from_stage:
@@ -416,6 +436,12 @@ def main() -> None:
         print(
             "WARNING: historical snapshot override is active; outputs must not "
             "be used for current demand or buy-timing recommendations.",
+            flush=True,
+        )
+    if snapshot_report["sale_time_spike_override_used"]:
+        print(
+            "Demand-label guard: bootstrap sold_at spike will be quarantined "
+            "by demand and alternative loaders.",
             flush=True,
         )
     print(f"Model 16: {MODEL16_ARTIFACT}")

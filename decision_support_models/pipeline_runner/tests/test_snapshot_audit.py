@@ -11,7 +11,7 @@ from snapshot_audit import audit_snapshot, validate_snapshot
 
 FIELDS = [
     "ticket_id", "event_id", "created_at_unix", "status",
-    "last_observed_at", "sold_at",
+    "last_observed_at", "sold_at", "sold_at_source",
 ]
 
 
@@ -126,21 +126,67 @@ class SnapshotAuditTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             snapshot = Path(folder) / "data_8_28"
             write_master(snapshot, [
-                {"ticket_id": "old-code", "event_id": "event", "created_at_unix": "123", "status": "deleted", "last_observed_at": "2026-08-28 02:00:00"},
-                {"ticket_id": "new-code", "event_id": "event", "created_at_unix": "123", "status": "listing", "last_observed_at": "2026-08-28 02:00:00"},
+                {
+                    "ticket_id": "old-code", "event_id": "event",
+                    "created_at_unix": "123", "status": "deleted",
+                    "last_observed_at": "2026-08-28 02:00:00",
+                },
+                {
+                    "ticket_id": "new-code", "event_id": "event",
+                    "created_at_unix": "123", "status": "listing",
+                    "last_observed_at": "2026-08-28 02:00:00",
+                },
             ])
             report = validate_snapshot(snapshot)
             self.assertEqual(report["canonical_rows"], 1)
             self.assertEqual(report["status_counts"], {"listing": 1})
+            self.assertEqual(report["rotated_logical_listing_ids"], 1)
 
     def test_bootstrap_sale_time_spike_is_blocked(self):
         with tempfile.TemporaryDirectory() as folder:
             snapshot = Path(folder) / "data_8_28"
-            rows = [{"ticket_id": f"sold-{index}", "event_id": "event", "created_at_unix": str(index), "status": "sold", "last_observed_at": "2026-08-28 02:00:00", "sold_at": "2026-08-27 07:17:28"} for index in range(100)]
-            rows.append({"ticket_id": "active", "event_id": "event", "created_at_unix": "active", "status": "listing", "last_observed_at": "2026-08-28 02:00:00"})
+            rows = [{
+                "ticket_id": f"sold-{index}", "event_id": "event",
+                "created_at_unix": str(index), "status": "sold",
+                "last_observed_at": "2026-08-28 02:00:00",
+                "sold_at": "2026-08-27 07:17:28",
+                "sold_at_source": "transition_observed",
+            } for index in range(100)]
+            rows.append({
+                "ticket_id": "active", "event_id": "event",
+                "created_at_unix": "active", "status": "listing",
+                "last_observed_at": "2026-08-28 02:00:00",
+            })
             write_master(snapshot, rows)
             with self.assertRaisesRegex(RuntimeError, "bootstrap sale times"):
                 validate_snapshot(snapshot)
+
+            report = validate_snapshot(snapshot, allow_sale_time_spike=True)
+            self.assertTrue(report["ok"])
+            self.assertTrue(report["sale_time_spike_override_used"])
+            self.assertIn("not valid demand labels", report["warnings"][-1])
+
+    def test_untrusted_bootstrap_sale_times_are_reported_but_not_labels(self):
+        with tempfile.TemporaryDirectory() as folder:
+            snapshot = Path(folder) / "data_8_28"
+            rows = [{
+                "ticket_id": f"sold-{index}", "event_id": "event",
+                "created_at_unix": str(index), "status": "sold",
+                "last_observed_at": "2026-08-28 02:00:00",
+                "sold_at": "2026-08-27 07:17:28",
+                "sold_at_source": "historical_unknown",
+            } for index in range(100)]
+            rows.append({
+                "ticket_id": "active", "event_id": "event",
+                "created_at_unix": "active", "status": "listing",
+                "last_observed_at": "2026-08-28 02:00:00",
+            })
+            write_master(snapshot, rows)
+            report = validate_snapshot(snapshot)
+            self.assertTrue(report["ok"])
+            self.assertEqual(report["largest_sold_at_rows"], 0)
+            self.assertEqual(report["raw_largest_sold_at_rows"], 100)
+            self.assertEqual(report["untrusted_sold_time_rows"], 100)
 
 
 if __name__ == "__main__":

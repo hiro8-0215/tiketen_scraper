@@ -12,7 +12,7 @@ from snapshot_audit import latest_snapshot, validate_snapshot
 def check():
     selected = latest_snapshot(MODEL_DIR.parents[1] / "tiketen_date_data")
     try:
-        snapshot_report = validate_snapshot(selected)
+        snapshot_report = validate_snapshot(selected, allow_sale_time_spike=True)
     except RuntimeError as error:
         return {
             "ok": False, "snapshot": str(selected), "error": str(error),

@@ -38,7 +38,13 @@ from config import (
     TARGET,
     WEIGHT_EPSILON,
 )
-from data_loader import catboost_frame, model_feature_columns, prepare_dataset
+from data_loader import (
+    catboost_frame,
+    latest_data_dir,
+    load_snapshot,
+    model_feature_columns,
+    prepare_dataset,
+)
 from modeling import (
     assign_inner_folds,
     blend_predictions,
@@ -365,6 +371,11 @@ def tune_all_experts(df, bert, y, assignments, numeric, categorical, prefix, lgb
 
 def main():
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
+    training_snapshot_dir = latest_data_dir()
+    training_snapshot_raw = load_snapshot(training_snapshot_dir)
+    training_cutoff = pd.to_datetime(
+        training_snapshot_raw.get("last_observed_at"), errors="coerce"
+    ).max()
     df = prepare_dataset()
     folds, bert = validate_inputs(df)
     numeric, categorical = model_feature_columns(df)
@@ -493,6 +504,8 @@ def main():
         "model": "Model16",
         "pipeline_version": PIPELINE_VERSION,
         "dataset_fingerprint": fingerprint,
+        "training_snapshot": training_snapshot_dir.name,
+        "training_cutoff": training_cutoff.isoformat() if pd.notna(training_cutoff) else None,
         "rows": len(df),
         "cleaning_policy": "model13_exact_sold_only",
         "selection_policy": "single global predictor selected by nested grouped OOF MAE",

@@ -29,6 +29,8 @@ def main():
     print(table[[
         "candidate", "mae_yen", "mape_pct", "mdape_pct", "within_20_pct", "r2", "bias_yen"
     ]].round(3).to_string(index=False))
+    from plot_results import main as create_plots
+    create_plots()
 
 
 if __name__ == "__main__":

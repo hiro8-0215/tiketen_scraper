@@ -7,7 +7,7 @@ from pathlib import Path
 import joblib
 import pandas as pd
 
-from config import ARTIFACT_DIR, HORIZONS_DAYS
+from config import ARTIFACT_DIR
 from data_loader import load_tickets
 from features import add_market_features
 from modeling import calibrate, enforce_monotonic_wide, predict_positive_probability
@@ -16,11 +16,15 @@ from timeline import observation_cutoff, prepare_end_times
 
 def predict(data_dir: Path | None = None, as_of=None):
     payload = joblib.load(ARTIFACT_DIR / "alternative_arrival.joblib")
+    horizons = tuple(
+        sorted(int(value) for value in payload["selected_features"])
+    )
     tickets = load_tickets(data_dir)
     prepared = prepare_end_times(tickets)
     as_of = pd.Timestamp(as_of or observation_cutoff(tickets))
     active = prepared[
         prepared.first_observed_at.le(as_of)
+        & prepared.last_observed_at.ge(as_of)
         & (prepared.outcome_at.isna() | prepared.outcome_at.gt(as_of))
         & (prepared.performance_at.isna() | prepared.performance_at.gt(as_of))
     ].copy()
@@ -32,14 +36,14 @@ def predict(data_dir: Path | None = None, as_of=None):
     frame = add_market_features(active, prepared)
     result = frame[["ticket_id", "event_id", "price"]].copy()
     result["as_of"] = as_of
-    for horizon in HORIZONS_DAYS:
+    for horizon in horizons:
         selected = payload["selected_features"][str(horizon)]
         features = selected["numeric"] + selected["categorical"]
         raw = predict_positive_probability(
             payload["models"][str(horizon)], frame[features]
         )
         result[f"p_alternative_{horizon}d"] = calibrate(payload["calibrators"][str(horizon)], raw)
-    return enforce_monotonic_wide(result, HORIZONS_DAYS)
+    return enforce_monotonic_wide(result, horizons)
 
 
 if __name__ == "__main__":

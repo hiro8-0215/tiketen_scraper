@@ -85,6 +85,12 @@ def _seed_model15(descriptions: pd.DataFrame, existing: pd.DataFrame) -> pd.Data
 
 def _atomic_save(frame: pd.DataFrame, manifest: dict):
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    # Keep historical descriptions for snapshot-specific validation. The
+    # manifest still describes coverage of the selected snapshot.
+    if OUTPUT_FILE.exists():
+        previous = pd.read_csv(OUTPUT_FILE, dtype={'text_hash': str})
+        if 'semantic_schema_version' in previous and previous.semantic_schema_version.eq(SCHEMA_VERSION).all():
+            frame = pd.concat([previous, frame], ignore_index=True).drop_duplicates('text_hash', keep='last')
     temporary = OUTPUT_FILE.with_suffix(".csv.tmp")
     frame.sort_values("text_hash").to_csv(temporary, index=False)
     os.replace(temporary, OUTPUT_FILE)

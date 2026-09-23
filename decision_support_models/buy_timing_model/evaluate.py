@@ -16,12 +16,20 @@ from decision import apply_policy, summarize
 def evaluate(demand_path=DEMAND_OOF, alternative_path=ALTERNATIVE_OOF):
     payload = json.loads((ARTIFACT_DIR / "policy.json").read_text(encoding="utf-8"))
     frame = load_oof(demand_path, alternative_path)
-    holdout = frame[frame.landmark_at.ge(pd.Timestamp(payload["holdout_start"]))]
+    starts = payload.get("holdout_start_by_horizon")
+    if starts is None:
+        starts = {
+            str(int(horizon)): payload["holdout_start"]
+            for horizon in frame.horizon_days.unique()
+        }
     result = {}
     for name, by_horizon in payload["profiles"].items():
         result[name] = {}
         for horizon, policy in by_horizon.items():
-            part = holdout[holdout.horizon_days.eq(int(horizon))]
+            part = frame[
+                frame.horizon_days.eq(int(horizon))
+                & frame.landmark_at.ge(pd.Timestamp(starts[horizon]))
+            ]
             result[name][horizon] = summarize(apply_policy(part, policy), PROFILES[name])
     path = ARTIFACT_DIR / "evaluation.json"
     temporary = path.with_suffix(".json.tmp")

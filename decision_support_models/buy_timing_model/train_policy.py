@@ -59,24 +59,52 @@ def _atomic_json(value, path):
     os.replace(temporary, path)
 
 
+def _chronological_partitions_by_horizon(frame):
+    """Create an independent chronological holdout for each horizon."""
+    partitions = {}
+    for horizon in sorted(frame.horizon_days.unique()):
+        part = frame[frame.horizon_days.eq(horizon)].copy()
+        dates = part.landmark_at.sort_values().drop_duplicates().reset_index(drop=True)
+        if len(dates) < 5:
+            raise ValueError(
+                f"At least five distinct landmark timestamps are needed for "
+                f"{int(horizon)}d; got {len(dates)}"
+            )
+        boundary = dates.iloc[max(1, int(len(dates) * 0.70) - 1)]
+        training = part[part.landmark_at.le(boundary)]
+        validation = part[part.landmark_at.gt(boundary)]
+        if training.empty or validation.empty:
+            raise ValueError(
+                f"Chronological holdout is empty for {int(horizon)}d"
+            )
+        partitions[int(horizon)] = (training, validation)
+    return partitions
+
+
 def train(demand_path: Path = DEMAND_OOF, alternative_path: Path = ALTERNATIVE_OOF):
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     frame = load_oof(demand_path, alternative_path)
-    dates = frame.landmark_at.sort_values().drop_duplicates()
-    if len(dates) < 5:
-        raise ValueError("At least five distinct landmark timestamps are needed")
-    boundary = dates.iloc[max(1, int(len(dates) * 0.70) - 1)]
-    training, validation = frame[frame.landmark_at.le(boundary)], frame[frame.landmark_at.gt(boundary)]
-    if training.empty or validation.empty:
-        raise ValueError("Chronological holdout is empty")
-    selected, report = {}, {"pipeline_version": PIPELINE_VERSION, "holdout_start": str(validation.landmark_at.min()), "profiles": {}}
+    partitions = _chronological_partitions_by_horizon(frame)
+    holdout_starts = {
+        str(horizon): str(validation.landmark_at.min())
+        for horizon, (_, validation) in partitions.items()
+    }
+    selected, report = {}, {
+        "pipeline_version": PIPELINE_VERSION,
+        "holdout_start_by_horizon": holdout_starts,
+        "rows_by_horizon": {
+            str(horizon): {
+                "training": int(len(training)),
+                "chronological_holdout": int(len(validation)),
+                "limited_evidence": bool(len(training) < 200 or len(validation) < 50),
+            }
+            for horizon, (training, validation) in partitions.items()
+        },
+        "profiles": {},
+    }
     for name, profile in PROFILES.items():
         selected[name], report["profiles"][name] = {}, {}
-        for horizon in sorted(frame.horizon_days.unique()):
-            train_part = training[training.horizon_days.eq(horizon)]
-            valid_part = validation[validation.horizon_days.eq(horizon)]
-            if train_part.empty or valid_part.empty:
-                raise ValueError(f"Empty train/holdout partition for {horizon}d")
+        for horizon, (train_part, valid_part) in partitions.items():
             best_policy, best_loss = None, float("inf")
             for candidate in _candidates():
                 loss = _mean_regret(train_part, candidate, profile)
@@ -88,7 +116,11 @@ def train(demand_path: Path = DEMAND_OOF, alternative_path: Path = ALTERNATIVE_O
                 "training": summarize(apply_policy(train_part, best_policy), profile),
                 "chronological_holdout": summarize(apply_policy(valid_part, best_policy), profile),
             }
-    payload = {"pipeline_version": PIPELINE_VERSION, "holdout_start": str(validation.landmark_at.min()), "profiles": selected}
+    payload = {
+        "pipeline_version": PIPELINE_VERSION,
+        "holdout_start_by_horizon": holdout_starts,
+        "profiles": selected,
+    }
     _atomic_json(payload, ARTIFACT_DIR / "policy.json")
     _atomic_json(report, ARTIFACT_DIR / "training_report.json")
     return report
