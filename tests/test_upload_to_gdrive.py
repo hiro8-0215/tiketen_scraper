@@ -21,6 +21,51 @@ def successful_response():
 
 
 class DriveUploadRetryTest(unittest.TestCase):
+    def test_main_includes_observation_and_anonymous_sold_inventory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in [
+                'group_master.csv',
+                'observation_20260924.jsonl',
+                'anonymous_sold_inventory.jsonl',
+            ]:
+                (root / name).write_text('sample\n', encoding='utf-8')
+            with (
+                patch.dict(upload_to_gdrive.os.environ, {
+                    'GDRIVE_WEBAPP_URL': 'https://example.invalid/exec',
+                    'GDRIVE_UPLOAD_TOKEN': 'token',
+                    'GDRIVE_SOURCE_DIR': directory,
+                    'GDRIVE_INCLUDE_JSONL': 'true',
+                }),
+                patch.object(upload_to_gdrive, 'upload_file') as upload,
+                patch('builtins.print'),
+            ):
+                upload_to_gdrive.main()
+            uploaded = {call.args[2].name for call in upload.call_args_list}
+            self.assertEqual(uploaded, {
+                'group_master.csv',
+                'observation_20260924.jsonl',
+                'anonymous_sold_inventory.jsonl',
+            })
+
+    def test_main_defaults_to_master_only_until_webapp_redeployed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ['group_master.csv', 'observation_20260924.jsonl']:
+                (root / name).write_text('sample\n', encoding='utf-8')
+            with (
+                patch.dict(upload_to_gdrive.os.environ, {
+                    'GDRIVE_WEBAPP_URL': 'https://example.invalid/exec',
+                    'GDRIVE_UPLOAD_TOKEN': 'token',
+                    'GDRIVE_SOURCE_DIR': directory,
+                    'GDRIVE_INCLUDE_JSONL': '',
+                }),
+                patch.object(upload_to_gdrive, 'upload_file') as upload,
+                patch('builtins.print'),
+            ):
+                upload_to_gdrive.main()
+            self.assertEqual([call.args[2].name for call in upload.call_args_list], ['group_master.csv'])
+
     def test_transient_404_is_retried(self):
         error = urllib.error.HTTPError(
             "https://example.invalid/exec", 404, "Not Found", {}, None

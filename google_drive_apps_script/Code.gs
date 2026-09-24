@@ -33,12 +33,12 @@ function doPost(event) {
     if (!/^data_\d{1,2}_\d{1,2}$/.test(payload.subfolderName || "")) {
       return jsonResponse({status: "error", message: "Invalid subfolder name"});
     }
-    if (!/^[A-Za-z0-9._-]+_master\.csv$/.test(payload.filename || "")) {
+    if (!/^(?:[A-Za-z0-9._-]+_master\.csv|observation_\d{8}\.jsonl|anonymous_sold_inventory\.jsonl)$/.test(payload.filename || "")) {
       return jsonResponse({status: "error", message: "Invalid filename"});
     }
 
     const bytes = Utilities.base64Decode(payload.filedata);
-    const blob = Utilities.newBlob(bytes, "text/csv", payload.filename);
+    const blob = Utilities.newBlob(bytes, payload.filename.endsWith('.jsonl') ? 'application/x-ndjson' : 'text/csv', payload.filename);
     const parent = DriveApp.getFolderById(parentFolderId);
     const folder = getOrCreateFolder(parent, payload.subfolderName);
     const file = replaceFile(folder, payload.filename, blob);

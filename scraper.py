@@ -2,9 +2,13 @@ import os
 import re
 import json
 import csv
+import hashlib
 import urllib.request
+import urllib.error
+import urllib.parse
 import time
-from datetime import datetime
+from collections import Counter
+from datetime import datetime, timedelta, timezone
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
@@ -25,6 +29,7 @@ def is_time_remaining():
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 SNAPSHOT_DIR = os.path.join(DATA_DIR, 'snapshot')
 MARKET_DIR = os.path.join(DATA_DIR, 'market_snapshot')
+ANONYMOUS_SOLD_INVENTORY = 'anonymous_sold_inventory.jsonl'
 
 KNOWN_API_STATUSES = {'active', 'sold'}
 MAX_UNEXPLAINED_DISAPPEARANCE_FRACTION = 0.80
@@ -39,10 +44,28 @@ class NoEventsFound(ScrapeIntegrityError):
     """The performer page is valid but currently has no linked events."""
 
 
-def fetch_html(url):
+class UnexplainedDisappearance(ScrapeIntegrityError):
+    """A complete API poll with active shareCodes that cannot be reconciled."""
+
+    def __init__(self, message, active_codes):
+        super().__init__(message)
+        self.active_codes = active_codes
+
+
+def fetch_html(url, redirects=0):
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         return urllib.request.urlopen(req, timeout=15).read().decode('utf-8')
+    except urllib.error.HTTPError as error:
+        if error.code == 308 and redirects < 5:
+            location = error.headers.get('Location')
+            target = urllib.parse.urljoin(url, location or '')
+            original = urllib.parse.urlparse(url)
+            redirected = urllib.parse.urlparse(target)
+            if (location and redirected.scheme == 'https'
+                    and redirected.hostname == original.hostname):
+                return fetch_html(target, redirects + 1)
+        raise ScrapeIntegrityError(f"HTML fetch failed for {url}: {error}") from error
     except Exception as error:
         raise ScrapeIntegrityError(f"HTML fetch failed for {url}: {error}") from error
 
@@ -110,24 +133,27 @@ def fetch_all_tickets(event_id):
     return tickets
 
 
+def _identifier_text(value):
+    text = str(value).strip() if value is not None else ''
+    return '' if text.lower() in {'none', 'null', 'nan'} else text
+
+
 def _ticket_match_key(row, event_id=None):
     event = event_id if event_id is not None else row.get('event_id', '')
-    created_at = str(row.get('created_at_unix', '')).strip()
-    if not event or not created_at:
+    created = _identifier_text(row.get('created_at_unix'))
+    price = _identifier_text(row.get('price'))
+    if not event or not created or not price:
         return None
-    return (
-        f"{str(event)}_{created_at}_"
-        f"{str(row.get('price', ''))}"
-    )
+    return f"{event}_{created}_{price}"
 
 
 def _listing_identity_key(row, event_id=None):
     """Stable listing identity across shareCode and price edits."""
     event = event_id if event_id is not None else row.get('event_id', '')
-    created_at = str(row.get('created_at_unix', '')).strip()
-    if not event or not created_at:
+    created = _identifier_text(row.get('created_at_unix'))
+    if not event or not created:
         return None
-    return f"{str(event)}_{created_at}"
+    return f"{event}_{created}"
 
 
 def _rekey_active_listing(
@@ -138,8 +164,7 @@ def _rekey_active_listing(
     if row is None and identity_key is not None:
         row = by_identity.get(identity_key)
         # A different shareCode after a confirmed sale is a new lifecycle,
-        # not a rotation of the sold listing. Preserve the sold history and
-        # let the caller create a fresh active row.
+        # not a rotation of the sold listing.
         if row is not None and row.get('status') == 'sold':
             return None, False
     if row is None:
@@ -157,9 +182,107 @@ def _rekey_active_listing(
     return row, changed
 
 
+def _sold_match(ticket, event, by_share_code, by_created_at, by_identity):
+    """Never identify a sold listing by event and price alone."""
+    share_code = _identifier_text(ticket.get('shareCode'))
+    if (share_code and share_code in by_share_code
+            and by_share_code[share_code].get('event_id') == event):
+        return by_share_code[share_code]
+    created = _identifier_text(ticket.get('createdAt'))
+    price = _identifier_text(ticket.get('pricePerTicket'))
+    match_key = _ticket_match_key({
+        'created_at_unix': created, 'price': price,
+    }, event)
+    if match_key is not None and match_key in by_created_at:
+        return by_created_at[match_key]
+    identity_key = _listing_identity_key({'created_at_unix': created}, event)
+    if identity_key is not None:
+        return by_identity.get(identity_key)
+    return None
+
+
 def _sold_ticket_id(event_id, created_at_unix, price):
     """Build a stable ID without cross-event timestamp collisions."""
+    if not created_at_unix:
+        raise ValueError('Cannot create a stable sold ID without createdAt')
     return f"sold_{event_id}_{created_at_unix}_{price}"
+
+
+def _anonymous_sold_record(event, ticket):
+    """Retain public sold data without inventing a ticket identity or sale time."""
+    def clean(value):
+        if isinstance(value, str):
+            return sanitize_unicode(value)
+        if isinstance(value, list):
+            return [clean(item) for item in value]
+        if isinstance(value, dict):
+            return {str(key): clean(item) for key, item in value.items()}
+        return value
+
+    fields = (
+        'dateId', 'eventDate', 'eventStartTime', 'venue',
+        'pricePerTicket', 'quantity', 'ticketType', 'nameGender',
+        'deliveryMethod', 'seatType', 'description', 'tags',
+    )
+    values = {key: clean(ticket.get(key, '')) for key in fields}
+    canonical = json.dumps(
+        {'event_id': event, 'ticket': values},
+        ensure_ascii=False, sort_keys=True, default=str,
+    )
+    fingerprint = hashlib.sha256(canonical.encode('utf-8')).hexdigest()
+    return fingerprint, values
+
+
+def save_anonymous_sold_inventory(events, observed_at):
+    """Save anonymous sold observations separately from per-ticket master CSVs.
+
+    Identical API rows may represent multiple sales; max_observed_count keeps
+    multiplicity without asserting a stable per-ticket identity.
+    """
+    if not any(events.values()):
+        return
+    path = os.path.join(DATA_DIR, ANONYMOUS_SOLD_INVENTORY)
+    inventory = {}
+    if os.path.exists(path):
+        with open(path, encoding='utf-8') as stream:
+            for line in stream:
+                if line.strip():
+                    record = json.loads(line)
+                    inventory[record['fingerprint']] = record
+    for event, tickets in events.items():
+        counts = Counter()
+        values_by_fingerprint = {}
+        for ticket in tickets:
+            fingerprint, values = _anonymous_sold_record(event, ticket)
+            counts[fingerprint] += 1
+            values_by_fingerprint[fingerprint] = values
+        for fingerprint, count in counts.items():
+            record = inventory.get(fingerprint)
+            if record is None:
+                record = {
+                    'fingerprint': fingerprint,
+                    'event_id': event,
+                    'ticket': values_by_fingerprint[fingerprint],
+                    'first_observed_at': observed_at,
+                    'identity_source': 'anonymous_sold_api',
+                    'sold_at': None,
+                }
+                inventory[fingerprint] = record
+            record['last_observed_at'] = observed_at
+            record['max_observed_count'] = max(
+                count, int(record.get('max_observed_count', 0))
+            )
+    temporary = path + '.tmp'
+    try:
+        with open(temporary, 'w', encoding='utf-8') as stream:
+            for fingerprint in sorted(inventory):
+                stream.write(json.dumps(
+                    inventory[fingerprint], ensure_ascii=True, default=str,
+                ) + '\n')
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.remove(temporary)
 
 
 def _all_performances_finished(rows, now):
@@ -171,6 +294,25 @@ def _all_performances_finished(rows, now):
         except ValueError:
             return False
     return bool(dates) and max(dates) < now.date()
+
+
+def _events_to_poll(discovered, master, now):
+    """Keep checking previously seen future events even if performer links change."""
+    events = list(dict.fromkeys(discovered))
+    for row in master.values():
+        if row.get('status') != 'listing':
+            continue
+        slug = str(row.get('event_id') or '').strip()
+        if not slug or slug in events:
+            continue
+        date_text = str(row.get('perf_date') or '').strip()[:10]
+        try:
+            performance_date = datetime.fromisoformat(date_text).date()
+        except ValueError:
+            performance_date = None
+        if performance_date is None or performance_date >= now.date() - timedelta(days=1):
+            events.append(slug)
+    return events
 
 
 def validate_event_snapshot(slug, tickets, prior_active, master, now):
@@ -192,6 +334,8 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
     active_codes = set()
     active_identities = set()
     sold_keys = set()
+    sold_identities = set()
+    sold_codes = set()
     for ticket in tickets:
         status = ticket.get('status')
         if status == 'active':
@@ -200,24 +344,43 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
                 raise ScrapeIntegrityError(
                     f"Active ticket without shareCode for {slug}"
                 )
+            existing = master.get(share_code)
+            if existing and existing.get('event_id') != slug:
+                raise ScrapeIntegrityError(
+                    f"shareCode {share_code} belongs to another event"
+                )
             active_codes.add(share_code)
             identity_key = _listing_identity_key({
                 'created_at_unix': ticket.get('createdAt', ''),
             }, slug)
             if identity_key is not None:
+                if identity_key in active_identities:
+                    raise ScrapeIntegrityError(
+                        f"Duplicate active createdAt for {slug}; cannot rekey safely"
+                    )
                 active_identities.add(identity_key)
         elif status == 'sold':
-            sold_key = _ticket_match_key({
+            share_code = _identifier_text(ticket.get('shareCode'))
+            if share_code:
+                sold_codes.add(share_code)
+            match_key = _ticket_match_key({
                 'created_at_unix': ticket.get('createdAt', ''),
                 'price': ticket.get('pricePerTicket', ''),
             }, slug)
-            if sold_key is not None:
-                sold_keys.add(sold_key)
+            if match_key is not None:
+                sold_keys.add(match_key)
+            identity_key = _listing_identity_key({
+                'created_at_unix': ticket.get('createdAt', ''),
+            }, slug)
+            if identity_key is not None:
+                sold_identities.add(identity_key)
 
     unexplained = [
         ticket_id for ticket_id, row in prior_active.items()
         if ticket_id not in active_codes
+        and ticket_id not in sold_codes
         and _listing_identity_key(row) not in active_identities
+        and _listing_identity_key(row) not in sold_identities
         and _ticket_match_key(row) not in sold_keys
     ]
     prior_count = len(prior_active)
@@ -225,9 +388,10 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
         list(prior_active.values()), now
     )
     if prior_count and future_or_unknown and not active_codes and unexplained:
-        raise ScrapeIntegrityError(
+        raise UnexplainedDisappearance(
             f"All active tickets disappeared without sold confirmation for {slug}: "
-            f"{len(unexplained)}/{prior_count}; preserving listings"
+            f"{len(unexplained)}/{prior_count}; preserving listings",
+            active_codes,
         )
     if (
         prior_count >= MIN_LISTINGS_FOR_FRACTION_GUARD
@@ -235,9 +399,10 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
         and len(unexplained) / prior_count
         > MAX_UNEXPLAINED_DISAPPEARANCE_FRACTION
     ):
-        raise ScrapeIntegrityError(
+        raise UnexplainedDisappearance(
             f"Unexplained listing disappearance for {slug}: "
-            f"{len(unexplained)}/{prior_count}; preserving listings"
+            f"{len(unexplained)}/{prior_count}; preserving listings",
+            active_codes,
         )
     return active_codes
 
@@ -389,18 +554,28 @@ def canonicalize_master(master):
     """Collapse historical shareCode rotations before applying a new snapshot."""
     groups = {}
     for row in master.values():
-        identity = _listing_identity_key(row) if row.get('event_id') and row.get('created_at_unix') else f"ticket:{row.get('ticket_id', '')}"
+        identity = _listing_identity_key(row)
+        if identity is None:
+            identity = f"ticket:{row.get('ticket_id', '')}"
         groups.setdefault(identity, []).append(row)
+
     result = {}
     priority = {'deleted': 0, 'listing': 1, 'sold': 2}
-    detail_fields = ('seller_name', 'seller_rating', 'order_num', 'ticket_tags')
+    detail_fields = (
+        'seller_name', 'seller_rating', 'order_num', 'ticket_tags',
+    )
     for rows in groups.values():
         def rank(row):
             try:
                 observed = datetime.fromisoformat(str(row.get('last_observed_at', '')))
             except ValueError:
                 observed = datetime.min
-            return (observed, priority.get(str(row.get('status', '')).lower(), -1), str(row.get('ticket_id', '')))
+            return (
+                observed,
+                priority.get(str(row.get('status', '')).lower(), -1),
+                str(row.get('ticket_id', '')),
+            )
+
         winner = max(rows, key=rank).copy()
         for source in rows:
             for field in detail_fields:
@@ -415,8 +590,8 @@ def sanitize_unicode(value):
     """Preserve valid Unicode and replace only malformed UTF-16 surrogates.
 
     Some upstream descriptions contain a lone half of an emoji (for example
-    ``\\ud83c``). Python can keep that value in memory, but UTF-8 cannot encode
-    it. Valid surrogate pairs are combined into their actual Unicode code
+    ``\\ud83c``).  Python can keep that value in memory, but UTF-8 cannot encode
+    it.  Valid surrogate pairs are combined into their actual Unicode code
     point; a lone surrogate is represented explicitly with U+FFFD instead of
     aborting the entire scrape or silently dropping text.
     """
@@ -453,7 +628,7 @@ def save_master(performer, master):
     master_file = os.path.join(DATA_DIR, f'{performer}_master.csv')
     fieldnames = ['ticket_id', 'created_at_unix', 'event_id', 'perf_date', 'perf_time', 'venue', 
                   'ticket_type', 'name_type', 'delivery_method', 'seller_name', 
-                  'seller_rating', 'order_num', 'ticket_tags', 'first_observed_at', 'last_observed_at', 
+                  'seller_rating', 'order_num', 'ticket_tags', 'first_observed_at', 'first_observed_source', 'last_observed_at',
                   'sold_at', 'sold_at_source', 'status', 'quantity', 'price',
                   'raw_description', 'details_fetched']
                   
@@ -490,9 +665,14 @@ def save_snapshots(performer, master):
         group.to_csv(os.path.join(SNAPSHOT_DIR, f'{performer}_{ym}.csv'), index=False, encoding='utf-8-sig')
         
     market_records = []
+    freshness_cutoff = pd.Timestamp.now() - pd.Timedelta(hours=2)
     for ym, group in df.groupby('year_month'):
         for (ev_id, p_date, p_time), sub in group.groupby(['event_id', 'perf_date', 'perf_time']):
             valid_prices = sub['price'].dropna()
+            last_seen = pd.to_datetime(sub['last_observed_at'], errors='coerce')
+            current = sub[(sub['status'] == 'listing') & last_seen.ge(freshness_cutoff)]
+            # Zero is used for "price on request", not a market price.
+            current_prices = current.loc[current['price'] > 0, 'price'].dropna()
             market_records.append({
                 'year_month': ym,
                 'event_id': ev_id,
@@ -501,6 +681,10 @@ def save_snapshots(performer, master):
                 'venue': sub['venue'].iloc[0] if not sub.empty else '',
                 'total_tickets': len(sub),
                 'active_tickets': len(sub[sub['status'] == 'listing']),
+                'current_active_tickets': len(current),
+                'current_avg_price': current_prices.mean() if not current_prices.empty else 0,
+                'current_min_price': current_prices.min() if not current_prices.empty else 0,
+                'current_max_price': current_prices.max() if not current_prices.empty else 0,
                 'sold_tickets': len(sub[sub['status'] == 'sold']),
                 'deleted_tickets': len(sub[sub['status'] == 'deleted']),
                 'avg_price': valid_prices.mean() if not valid_prices.empty else 0,
@@ -593,7 +777,10 @@ def main():
     with open(targets_file, 'r', encoding='utf-8') as f:
         targets = normalize_targets(json.load(f))
 
-    now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    now_aware = datetime.now().astimezone()
+    now_str = now_aware.strftime('%Y-%m-%d %H:%M:%S')
+    now_utc = now_aware.astimezone(timezone.utc).isoformat()
+    now_timezone = str(now_aware.tzinfo)
 
     time_limit_reached = False
     print(f"Scrape mode: {SCRAPE_MODE}")
@@ -608,7 +795,10 @@ def main():
         master = load_master(performer)
         master, collapsed = canonicalize_master(master)
         if collapsed:
-            print(f"[IDENTITY] Collapsed {collapsed} historical shareCode duplicates for {performer}.")
+            print(
+                f"[IDENTITY] Collapsed {collapsed} historical shareCode "
+                f"duplicates for {performer}."
+            )
 
         if SCRAPE_MODE == 'details':
             pending = [
@@ -630,21 +820,29 @@ def main():
         
         by_share_code = {t['ticket_id']: t for t in master.values() if not t['ticket_id'].startswith('sold_')}
         by_created_at = {
-            _ticket_match_key(t): t
-            for t in master.values() if t.get('created_at_unix')
+            key: t
+            for t in master.values()
+            if (key := _ticket_match_key(t)) is not None
         }
         by_identity = {
-            _listing_identity_key(t): t
-            for t in master.values() if t.get('created_at_unix')
+            key: t
+            for t in master.values()
+            if (key := _listing_identity_key(t)) is not None
         }
         
         new_active_tickets = []
 
         print(f"Fetching events for {performer} ({source_performer})...")
         try:
-            events = get_events(source_performer)
+            discovered_events = get_events(source_performer)
         except NoEventsFound as error:
             print(f"[NO EVENTS] {error}")
+            discovered_events = []
+        except ScrapeIntegrityError as error:
+            print(f"[INTEGRITY] {error}")
+            continue
+        events = _events_to_poll(discovered_events, master, datetime.now())
+        if not events:
             save_master(performer, master)
             save_snapshots(performer, master)
             print(
@@ -652,10 +850,16 @@ def main():
                 "no status transitions applied."
             )
             continue
-        except ScrapeIntegrityError as error:
-            print(f"[INTEGRITY] {error}")
-            continue
+        historical_only = set(events) - set(discovered_events)
+        if historical_only:
+            print(
+                f"[COVERAGE] {performer}: checking {len(historical_only)} "
+                "previously observed future events absent from performer page."
+            )
         active_codes_by_event = {}
+        absence_safe_events = set()
+        event_diagnostics = {}
+        anonymous_sold_by_event = {}
         for slug in events:
             prior_active = {
                 ticket_id: row for ticket_id, row in master.items()
@@ -670,18 +874,29 @@ def main():
 
                 print(f"Fetching API tickets for {slug}...")
                 tickets = fetch_all_tickets(ev_firestore_id)
-                event_active_codes = validate_event_snapshot(
-                    slug, tickets, prior_active, master, datetime.now()
-                )
+                uncertain_identity = False
+                try:
+                    event_active_codes = validate_event_snapshot(
+                        slug, tickets, prior_active, master, datetime.now()
+                    )
+                except UnexplainedDisappearance as warning:
+                    # The API still provides current active and aggregate sold
+                    # rows. Save those, but do not infer what happened to the
+                    # old shareCodes or certify the interval for model labels.
+                    print(f"[IDENTITY UNCERTAIN] {warning}")
+                    event_active_codes = warning.active_codes
+                    uncertain_identity = True
             except ScrapeIntegrityError as error:
                 print(f"[INTEGRITY] {error}")
                 continue
 
             active_codes_by_event[slug] = event_active_codes
+            unresolved_sold = 0
+            anonymous_sold_by_event[slug] = []
             for t in tickets:
                 status = t.get('status')
-                created_at_unix = str(t.get('createdAt', ''))
-                price_val = str(t.get('pricePerTicket', ''))
+                created_at_unix = _identifier_text(t.get('createdAt'))
+                price_val = _identifier_text(t.get('pricePerTicket'))
                 match_key = _ticket_match_key({
                     'created_at_unix': created_at_unix,
                     'price': price_val,
@@ -701,8 +916,8 @@ def main():
                         row['status'] = 'listing'
                         row['sold_at'] = ''
                         row['sold_at_source'] = ''
-                        # Ticketen may omit createdAt. Never erase a previously
-                        # observed identity with an absent upstream field.
+                        # The API may omit createdAt on a later poll. Retain
+                        # the identity previously observed for this shareCode.
                         if created_at_unix:
                             row['created_at_unix'] = created_at_unix
                         row['last_observed_at'] = now_str
@@ -739,13 +954,13 @@ def main():
                             'name_type': t.get('nameGender', ''),
                             'raw_description': t.get('description', ''),
                             'first_observed_at': now_str,
+                            'first_observed_source': 'scrape_observed',
                             'last_observed_at': now_str,
                             'sold_at_source': '',
                             'details_fetched': 'False',
                         }
-                        try:
-                            row['first_observed_at'] = datetime.fromtimestamp(int(created_at_unix)/1000.0).strftime('%Y-%m-%d %H:%M:%S')
-                        except: pass
+                        # created_at_unix records seller creation; first_observed_at
+                        # must remain the actual first collection time.
                             
                         by_share_code[share_code] = row
                         if match_key is not None:
@@ -756,14 +971,8 @@ def main():
                         new_active_tickets.append(share_code)
                         
                 elif status == 'sold':
-                    if match_key is None:
-                        print(
-                            f"[IDENTITY] Skipping unidentifiable sold ticket "
-                            f"for {slug}: createdAt is missing"
-                        )
-                        continue
-                    if match_key in by_created_at:
-                        row = by_created_at[match_key]
+                    row = _sold_match(t, slug, by_share_code, by_created_at, by_identity)
+                    if row is not None:
                         if row.get('status') != 'sold':
                             row['status'] = 'sold'
                             if not row.get('sold_at'):
@@ -771,7 +980,12 @@ def main():
                             row['sold_at_source'] = 'transition_observed'
                         row['last_observed_at'] = now_str
                     else:
-                        t_id = _sold_ticket_id(slug, created_at_unix, price_val)
+                        share_code = _identifier_text(t.get('shareCode'))
+                        if not share_code and not created_at_unix:
+                            unresolved_sold += 1
+                            anonymous_sold_by_event[slug].append(t)
+                            continue
+                        t_id = share_code or _sold_ticket_id(slug, created_at_unix, price_val)
                         row = {
                             'ticket_id': t_id,
                             'created_at_unix': created_at_unix,
@@ -787,28 +1001,84 @@ def main():
                             'name_type': t.get('nameGender', ''),
                             'raw_description': t.get('description', ''),
                             'first_observed_at': now_str,
+                            'first_observed_source': 'scrape_observed',
                             'last_observed_at': now_str,
                             'sold_at': '',
                             'sold_at_source': 'historical_unknown',
                             'details_fetched': 'False',
                         }
-                        try:
-                            row['first_observed_at'] = datetime.fromtimestamp(int(created_at_unix)/1000.0).strftime('%Y-%m-%d %H:%M:%S')
-                        except: pass
-                        by_created_at[match_key] = row
+                        # Historical sales do not imply historical observations.
+                        if match_key is not None:
+                            by_created_at[match_key] = row
+                        identity_key = _listing_identity_key(row)
+                        if identity_key is not None:
+                            by_identity[identity_key] = row
+                        if share_code:
+                            by_share_code[share_code] = row
                         master[t_id] = row
 
+            event_diagnostics[slug] = {
+                'api_active_count': sum(t.get('status') == 'active' for t in tickets),
+                'api_sold_count': sum(t.get('status') == 'sold' for t in tickets),
+                'missing_created_at_count': sum(
+                    not _identifier_text(t.get('createdAt')) for t in tickets
+                ),
+                'unresolved_sold_count': unresolved_sold,
+                'identity_uncertain': uncertain_identity or (
+                    any(not _identifier_text(t.get('createdAt')) for t in tickets)
+                    and any(ticket_id not in event_active_codes for ticket_id in prior_active)
+                ),
+                'api_ticket_keys': sorted({key for t in tickets for key in t}),
+            }
+            if unresolved_sold:
+                print(
+                    f"[INTEGRITY] {slug}: {unresolved_sold} sold API rows lack "
+                    "both shareCode and createdAt; preserving unmatched listings."
+                )
+            elif not event_diagnostics[slug]['identity_uncertain']:
+                absence_safe_events.add(slug)
+
         deleted_count = mark_confirmed_absences_deleted(
-            master, active_codes_by_event, now_str
+            master,
+            {slug: active_codes_by_event[slug] for slug in absence_safe_events},
+            now_str,
         )
         print(
-            f"Validated {len(active_codes_by_event)}/{len(events)} events; "
+            f"Fetched {len(active_codes_by_event)}/{len(events)} events; "
+            f"label-safe {len(absence_safe_events)}/{len(events)}; "
             f"marked {deleted_count} confirmed absences deleted."
         )
+        if event_diagnostics:
+            print(
+                f"[API AUDIT] {performer}: "
+                f"active={sum(d['api_active_count'] for d in event_diagnostics.values())}, "
+                f"sold={sum(d['api_sold_count'] for d in event_diagnostics.values())}, "
+                f"missing_createdAt={sum(d['missing_created_at_count'] for d in event_diagnostics.values())}, "
+                f"unresolved_sold={sum(d['unresolved_sold_count'] for d in event_diagnostics.values())}"
+            )
 
         save_master(performer, master)
         save_snapshots(performer, master)
+        save_anonymous_sold_inventory(anonymous_sold_by_event, now_str)
         print(f"Saved {len(master)} tickets to master for {performer}.")
+        # Persist only after the corresponding master has been saved.
+        coverage_path = os.path.join(DATA_DIR, 'observation_' + datetime.now().strftime('%Y%m%d') + '.jsonl')
+        with open(coverage_path, 'a', encoding='utf-8') as coverage:
+            for event in events:
+                rows = [r for r in master.values() if r.get('event_id') == event]
+                coverage.write(json.dumps({
+                    'event_id': event, 'performer': performer,
+                    'observed_at': now_str,
+                    'observed_at_utc': now_utc,
+                    'observed_at_timezone': now_timezone,
+                    'api_fetch_complete': event in active_codes_by_event,
+                    'complete': event in absence_safe_events,
+                    'listing_count': sum(r.get('status') == 'listing' for r in rows),
+                    'sold_count': sum(r.get('status') == 'sold' for r in rows),
+                    **event_diagnostics.get(event, {}),
+                    'absence_classification_complete': event in absence_safe_events,
+                    'schema_version': 'event_poll_v2',
+                }, ensure_ascii=False) + '\n')
 
         if SCRAPE_MODE != 'api':
             time_limit_reached = enrich_ticket_details(
@@ -834,7 +1104,8 @@ def main():
                 f"API pass did not create all target masters: {missing}"
             )
         print(
-            f"API coverage complete: {len(targets)}/{len(targets)} masters."
+            f"API pass saved all {len(targets)} target master files. "
+            "Check per-event completeness in observation logs."
         )
 
 if __name__ == '__main__':

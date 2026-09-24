@@ -100,7 +100,14 @@ def main() -> None:
     paths = [Path(value) for value in sorted(glob.glob(str(source_dir / "*_master.csv")))]
     if not paths:
         raise RuntimeError(f"No *_master.csv files found under {source_dir.resolve()}")
-    print(f"Uploading {len(paths)} master files to {subfolder}", flush=True)
+    # The deployed Apps Script may still accept only *_master.csv. Enable JSONL
+    # only after redeploying Code.gs with the expanded filename allowlist.
+    if os.environ.get('GDRIVE_INCLUDE_JSONL', '').lower() in {'1', 'true', 'yes'}:
+        paths += sorted(source_dir.glob('observation_*.jsonl'))
+        anonymous_sold = source_dir / 'anonymous_sold_inventory.jsonl'
+        if anonymous_sold.exists():
+            paths.append(anonymous_sold)
+    print(f"Uploading {len(paths)} data files to {subfolder}", flush=True)
     for path in paths:
         upload_file(webapp_url, token, path, subfolder)
     print("Google Drive backup completed.", flush=True)
