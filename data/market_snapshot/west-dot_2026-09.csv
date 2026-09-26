@@ -1,6 +1,6 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-09,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,291,275,89,34668.604651162794,17500,85000,15,1,33290.721649484534,0,85000
-2026-09,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,227,219,70,31927.214285714286,20000,67000,7,1,31543.237885462557,6200,67000
+2026-09,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,292,276,90,34545.97701149425,17500,85000,15,1,33258.90410958904,0,85000
+2026-09,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,227,219,69,32042.101449275364,20000,67000,7,1,31543.237885462557,6200,67000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-18,18:00,Zepp Haneda (TOKYO),8,4,0,0.0,0,0,4,0,12750.0,9000,20000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-19,13:00,Zepp Haneda (TOKYO),3,2,0,0.0,0,0,1,0,9333.333333333334,9000,10000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-19,18:00,Zepp Haneda (TOKYO),4,4,0,0.0,0,0,0,0,13750.0,10000,17000
@@ -9,7 +9,7 @@
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,18:00,Zepp Nagoya,14,13,5,11575.0,9800,15000,0,1,9042.857142857143,0,15000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-14,19:00,Zepp Namba (OSAKA),32,32,10,16300.0,9000,50000,0,0,15875.0,9000,50000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,13:00,Zepp Namba (OSAKA),11,11,3,9666.666666666666,9000,11000,0,0,10090.90909090909,9000,15000
-2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,18:00,Zepp Namba (OSAKA),38,36,11,22199.0,8000,45000,2,0,18747.315789473683,0,45000
+2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,18:00,Zepp Namba (OSAKA),38,36,10,23554.444444444445,8000,45000,2,0,18747.315789473683,0,45000
 2026-09,rocknroll-stage-2026,2026-11-06,18:00,兵庫県立芸術文化センター 阪急 中ホール,2,0,0,0.0,0,0,0,2,30000.0,30000,30000
 2026-09,rocknroll-stage-2026,2026-11-07,13:00,兵庫県立芸術文化センター 阪急 中ホール,22,3,1,0.0,0,0,0,19,0.0,0,0
 2026-09,rocknroll-stage-2026,2026-11-07,18:00,兵庫県立芸術文化センター 阪急 中ホール,23,3,1,30000.0,30000,30000,0,20,29347.82608695652,25000,30000
