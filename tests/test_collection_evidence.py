@@ -60,6 +60,25 @@ class CollectionEvidenceTest(unittest.TestCase):
                 'firestore','2026-09-27 02:00:00')
         self.assertNotIn('canonical_ticket_id',rows['old'])
 
+    def test_inactive_is_not_a_sale_or_confirmed_withdrawal(self):
+        rows = self.rows()
+        evidence.apply_public_evidence(rows, 'old',
+            {'shareCode':'old','eventId':'firestore','status':'inactive'},
+            'firestore','2026-09-27 02:00:00')
+        self.assertEqual(rows['old']['status'], 'listing')
+        self.assertEqual(rows['old']['observation_state'], 'inactive')
+        self.assertEqual(rows['old']['last_observed_at'], '2026-09-26 23:00:00')
+        self.assertNotIn('sold_at', rows['old'])
+
+    def test_confirmed_sale_keeps_explicit_public_price_not_stale_listing_price(self):
+        rows = self.rows()
+        evidence.apply_public_evidence(rows, 'old',
+            {'shareCode':'old','eventId':'firestore','status':'sold',
+             'pricePerTicket':15000,'isPriceOnRequest':False},
+            'firestore','2026-09-27 02:00:00')
+        self.assertEqual(rows['old']['price'], 15000)
+        self.assertEqual(rows['old']['price_source'], 'public_detail')
+
     def test_transport_failure_stays_retryable_and_does_not_update_last_seen(self):
         rows=self.rows()
         with patch.object(evidence,'fetch_public_ticket',side_effect=TimeoutError), patch.object(evidence.time,'sleep'):

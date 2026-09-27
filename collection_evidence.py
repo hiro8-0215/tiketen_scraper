@@ -47,7 +47,7 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     status = ticket.get('status')
     if status == 'completed':
         status = 'sold'
-    if status not in {'active', 'sold', 'cancelled', 'expired'}:
+    if status not in {'active', 'sold', 'cancelled', 'expired', 'inactive'}:
         raise ValueError('Unknown public ticket status')
     if status == 'active' and ticket.get('isSold') is True:
         raise ValueError('Conflicting public ticket state')
@@ -96,10 +96,24 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
         row['status'] = 'deleted'
         row['observation_state'] = 'deleted_confirmed'
         row['last_observed_at'] = now
+    elif status == 'inactive':
+        # Publicly unavailable is not proof of a sale or permanent withdrawal.
+        # Keep the last historical status and sighting; retry on later polls.
+        row['observation_state'] = 'inactive'
     else:
         row['observation_state'] = 'expired'
     if 'isPriceOnRequest' in ticket:
         row['is_price_on_request'] = str(ticket['isPriceOnRequest'] is True)
+    value = ticket.get('pricePerTicket')
+    if value is not None:
+        try:
+            price = float(value)
+        except (ValueError, TypeError):
+            price = float('nan')
+        if 0 <= price < float('inf'):
+            row['price'] = int(price) if price.is_integer() else price
+            row['price_source'] = ('on_request' if ticket.get('isPriceOnRequest') is True
+                                   else 'public_detail' if price > 0 else 'unknown')
     return 'alias' if code != old_code else status
 
 
@@ -111,7 +125,7 @@ def reconcile_public_listings(master, prior, active_codes, event_id, now,
     them. Retry transport failures on a later poll, not as a false deletion.
     """
     counts = {'checked': 0, 'alias': 0, 'sold': 0, 'cancelled': 0,
-              'not_found': 0, 'active': 0, 'expired': 0, 'failed': 0,
+              'not_found': 0, 'active': 0, 'expired': 0, 'inactive': 0, 'failed': 0,
               'pending': 0, 'historical_unresolved': 0}
     cutoff = datetime.fromisoformat(now) - timedelta(hours=36)
     candidates = []

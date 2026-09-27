@@ -11,8 +11,12 @@ timestamps remain unchanged. Linked current codes use
 
 `status` on old rows is the last confirmed historical state. Unmatched rows are
 `absent_unverified`; a successful public null response is `absent_unknown`, not
-proof of sale/withdrawal. Transport failures remain retryable. Sold/cancelled
-individual public responses can confirm a transition; anonymous API sold rows
+proof of sale/withdrawal. Transport failures remain retryable.
+`inactive` is a confirmed unavailable state, not a sale/withdrawal, and remains
+retryable; it is excluded from current active supply. When an individual public
+response includes a numeric price, preserve that explicitly observed price
+rather than an older listing price (including for confirmed sales).
+Sold/cancelled individual public responses can confirm a transition; anonymous API sold rows
 remain separate. Sold timestamps are first confirmation times, not exact
 transaction times. A public null or expired code cannot reconstruct lost history.
 
