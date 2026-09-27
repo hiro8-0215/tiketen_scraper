@@ -76,6 +76,18 @@ class ContentTest(unittest.TestCase):
         updates=public_updates({'description':'','quantity':2},'2026-09-27 02:00:00')
         self.assertEqual(updates['description_is_full'],'True')
 
+    def test_recently_confirmed_inactive_is_not_abandoned_after_36_hours(self):
+        row = {'ticket_id':'code','event_id':'event','status':'listing',
+               'last_observed_at':'2026-09-01 00:00:00','state_checked_at':'2026-09-27 01:00:00',
+               'observation_state':'inactive'}
+        with patch.object(evidence,'fetch_public_ticket',return_value={
+                'shareCode':'code','eventId':'fire','status':'inactive','quantity':4,
+                'description':'full'}), patch.object(evidence.time,'sleep'):
+            report=evidence.reconcile_public_listings({'code':row},{'code':row.copy()},set(),
+                'fire','2026-09-27 02:00:00',{},[10],float('inf'))
+        self.assertEqual(report['checked'],1)
+        self.assertEqual(row['quantity'],4)
+
 
 if __name__ == '__main__':
     unittest.main()

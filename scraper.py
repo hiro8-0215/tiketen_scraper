@@ -665,7 +665,8 @@ def save_ticket_changes(performer, before, master, observed_at, observed_at_utc)
     fields = ['event_id', 'status', 'price', 'quantity'] + EVIDENCE_COLUMNS
     fields += ['raw_description', 'seller_name', 'seller_rating', 'ticket_tags']
     compared = [field for field in fields if field not in
-                {'state_checked_at', 'description_checked_at', 'content_checked_at'}]
+                {'state_checked_at', 'description_checked_at', 'content_checked_at',
+                 'status_source', 'price_source'}]
     records = []
     for code, row in master.items():
         old = before.get(code)

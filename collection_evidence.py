@@ -156,7 +156,12 @@ def reconcile_public_listings(master, prior, active_codes, event_id, now,
             row['absence_first_observed_at'] = now
         row['observation_state'] = 'absent_unverified'
         try:
-            recent = datetime.fromisoformat(previous.get('last_observed_at', '')) >= cutoff
+            last_seen = previous.get('last_observed_at', '')
+            if previous.get('observation_state') in {'inactive', 'paused', 'public_unclassified'}:
+                # A recently verified stopped listing remains worth refreshing;
+                # do not silently abandon it 36h after its last active sighting.
+                last_seen = max(last_seen, previous.get('state_checked_at', ''))
+            recent = datetime.fromisoformat(last_seen) >= cutoff
         except ValueError:
             recent = False
         if not recent:
