@@ -11,3 +11,16 @@
 {"performer": "ambitious", "observed_at_utc": "2026-09-27T12:10:50.675385+00:00", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0}
 {"performer": "boys-be", "observed_at_utc": "2026-09-27T12:10:50.676360+00:00", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0}
 {"performer": "b-and-zai", "observed_at_utc": "2026-09-27T12:10:50.677164+00:00", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0}
+{"performer": "snow-man", "observed_at_utc": "2026-09-27T12:22:51.007080+00:00", "selected": 1493, "checked": 1337, "full": 1337, "failed": 0, "null": 156, "pending": 0}
+{"performer": "sixtones", "observed_at_utc": "2026-09-27T12:25:49.884054+00:00", "selected": 452, "checked": 424, "full": 424, "failed": 0, "null": 28, "pending": 0}
+{"performer": "west-dot", "observed_at_utc": "2026-09-27T12:27:16.742078+00:00", "selected": 221, "checked": 217, "full": 217, "failed": 0, "null": 4, "pending": 0}
+{"performer": "travis-japan", "observed_at_utc": "2026-09-27T12:27:17.109569+00:00", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0}
+{"performer": "naniwa-danshi", "observed_at_utc": "2026-09-27T12:30:24.832030+00:00", "selected": 653, "checked": 653, "full": 653, "failed": 0, "null": 0, "pending": 0}
+{"performer": "hey-say-jump", "observed_at_utc": "2026-09-27T12:32:11.467629+00:00", "selected": 266, "checked": 262, "full": 262, "failed": 0, "null": 4, "pending": 0}
+{"performer": "timelesz", "observed_at_utc": "2026-09-27T12:32:35.886507+00:00", "selected": 59, "checked": 8, "full": 8, "failed": 0, "null": 51, "pending": 0}
+{"performer": "acees", "observed_at_utc": "2026-09-27T12:32:39.345892+00:00", "selected": 5, "checked": 0, "full": 0, "failed": 0, "null": 5, "pending": 0}
+{"performer": "key-to-lit", "observed_at_utc": "2026-09-27T12:35:40.200358+00:00", "selected": 461, "checked": 461, "full": 461, "failed": 0, "null": 0, "pending": 0}
+{"performer": "ae-group", "observed_at_utc": "2026-09-27T12:35:53.786646+00:00", "selected": 198, "checked": 198, "full": 198, "failed": 0, "null": 0, "pending": 0}
+{"performer": "ambitious", "observed_at_utc": "2026-09-27T12:35:53.974317+00:00", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0}
+{"performer": "boys-be", "observed_at_utc": "2026-09-27T12:35:53.975108+00:00", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0}
+{"performer": "b-and-zai", "observed_at_utc": "2026-09-27T12:35:53.975765+00:00", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0}
