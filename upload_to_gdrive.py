@@ -104,6 +104,7 @@ def main() -> None:
     # only after redeploying Code.gs with the expanded filename allowlist.
     if os.environ.get('GDRIVE_INCLUDE_JSONL', '').lower() in {'1', 'true', 'yes'}:
         paths += sorted(source_dir.glob('observation_*.jsonl'))
+        paths += sorted(source_dir.glob('ticket_changes_*.jsonl'))
         anonymous_sold = source_dir / 'anonymous_sold_inventory.jsonl'
         if anonymous_sold.exists():
             paths.append(anonymous_sold)

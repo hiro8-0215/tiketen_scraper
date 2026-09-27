@@ -12,6 +12,14 @@ import scraper
 
 
 class ScraperIdentityTest(unittest.TestCase):
+    def setUp(self):
+        # Unit tests never call the live public endpoint.
+        self.public = patch('collection_evidence.fetch_public_ticket', return_value=None)
+        self.public.start()
+        self.addCleanup(self.public.stop)
+        self.delay = patch('collection_evidence.time.sleep')
+        self.delay.start()
+        self.addCleanup(self.delay.stop)
     def test_future_events_remain_in_poll_set_after_performer_link_disappears(self):
         master = {
             'future': {'status': 'listing', 'event_id': 'future-event',
@@ -289,7 +297,7 @@ class ScraperIdentityTest(unittest.TestCase):
                 'event', tickets, {}, {}, datetime(2026, 9, 24)
             )
 
-    def test_rekey_preserves_row_and_removes_old_master_key(self):
+    def test_rekey_preserves_original_row_as_alias(self):
         row = {
             "ticket_id": "old-code", "event_id": "event",
             "created_at_unix": "123", "status": "listing",
@@ -306,7 +314,9 @@ class ScraperIdentityTest(unittest.TestCase):
 
         self.assertTrue(changed)
         self.assertIs(result, row)
-        self.assertNotIn("old-code", master)
+        self.assertIn("old-code", master)
+        self.assertEqual(master['old-code']['observation_state'], 'alias')
+        self.assertEqual(master['old-code']['canonical_ticket_id'], 'new-code')
         self.assertIs(master["new-code"], row)
         self.assertEqual(row["seller_name"], "preserved seller")
 

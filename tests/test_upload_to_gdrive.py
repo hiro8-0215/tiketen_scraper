@@ -27,6 +27,7 @@ class DriveUploadRetryTest(unittest.TestCase):
             for name in [
                 'group_master.csv',
                 'observation_20260924.jsonl',
+                'ticket_changes_20260927.jsonl',
                 'anonymous_sold_inventory.jsonl',
             ]:
                 (root / name).write_text('sample\n', encoding='utf-8')
@@ -45,6 +46,7 @@ class DriveUploadRetryTest(unittest.TestCase):
             self.assertEqual(uploaded, {
                 'group_master.csv',
                 'observation_20260924.jsonl',
+                'ticket_changes_20260927.jsonl',
                 'anonymous_sold_inventory.jsonl',
             })
 

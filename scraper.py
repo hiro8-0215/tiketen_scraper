@@ -11,6 +11,7 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+from collection_evidence import EVIDENCE_COLUMNS, reconcile_public_listings
 
 # === タイムリミット設定 ===
 # 25分経過で途中保存して正常終了。次回トリガーで続きを自動再開。
@@ -172,9 +173,13 @@ def _rekey_active_listing(
     old_id = str(row.get('ticket_id', ''))
     changed = old_id != share_code
     if changed:
-        master.pop(old_id, None)
-        by_share_code.pop(old_id, None)
+        historical = row.copy()
+        historical['canonical_ticket_id'] = share_code
+        historical['observation_state'] = 'alias'
+        master[old_id] = historical
+        by_share_code[old_id] = historical
         row['ticket_id'] = share_code
+        row['canonical_ticket_id'] = share_code
         master[share_code] = row
     by_share_code[share_code] = row
     if identity_key is not None:
@@ -416,9 +421,15 @@ def mark_confirmed_absences_deleted(master, active_codes_by_event, now_str):
             continue
         if (
             row.get('status') == 'listing'
+            and row.get('observation_state') != 'alias'
+            and not (row.get('observation_state') == 'active'
+                     and row.get('state_checked_at', '') >= now_str
+                     and row.get('status_source') == 'public_detail')
             and ticket_id not in active_codes_by_event[event_id]
         ):
             row['status'] = 'deleted'
+            row['status_source'] = 'complete_api_absence'
+            row['observation_state'] = 'deleted_confirmed'
             row['last_observed_at'] = now_str
             changed += 1
     return changed
@@ -630,7 +641,7 @@ def save_master(performer, master):
                   'ticket_type', 'name_type', 'delivery_method', 'seller_name', 
                   'seller_rating', 'order_num', 'ticket_tags', 'first_observed_at', 'first_observed_source', 'last_observed_at',
                   'sold_at', 'sold_at_source', 'status', 'quantity', 'price',
-                  'raw_description', 'details_fetched']
+                  'raw_description', 'details_fetched'] + EVIDENCE_COLUMNS
                   
     temporary_file = master_file + '.tmp'
     try:
@@ -644,6 +655,28 @@ def save_master(performer, master):
     finally:
         if os.path.exists(temporary_file):
             os.remove(temporary_file)
+
+
+def save_ticket_changes(performer, before, master, observed_at, observed_at_utc):
+    """Append changed facts, preserving intraday price/state/identity history."""
+    fields = ['event_id', 'status', 'price', 'quantity'] + EVIDENCE_COLUMNS
+    compared = [field for field in fields if field != 'state_checked_at']
+    records = []
+    for code, row in master.items():
+        old = before.get(code)
+        if old is not None and all(str(old.get(f, '')) == str(row.get(f, '')) for f in compared):
+            continue
+        records.append({'schema_version': 'ticket_change_v1',
+                        'performer': performer, 'ticket_id': code,
+                        'observed_at': observed_at, 'observed_at_utc': observed_at_utc,
+                        'newly_observed_id': old is None,
+                        'before': _sanitized_row(old or {}, fields),
+                        'after': _sanitized_row(row, fields)})
+    if records:
+        path = os.path.join(DATA_DIR, 'ticket_changes_' + datetime.now().strftime('%Y%m%d') + '.jsonl')
+        with open(path, 'a', encoding='utf-8') as stream:
+            for record in records:
+                stream.write(json.dumps(record, ensure_ascii=True) + '\n')
 
 def save_snapshots(performer, master):
     import pandas as pd
@@ -668,9 +701,11 @@ def save_snapshots(performer, master):
     freshness_cutoff = pd.Timestamp.now() - pd.Timedelta(hours=2)
     for ym, group in df.groupby('year_month'):
         for (ev_id, p_date, p_time), sub in group.groupby(['event_id', 'perf_date', 'perf_time']):
-            valid_prices = sub['price'].dropna()
+            valid_prices = sub.loc[sub['price'] > 0, 'price'].dropna()
             last_seen = pd.to_datetime(sub['last_observed_at'], errors='coerce')
             current = sub[(sub['status'] == 'listing') & last_seen.ge(freshness_cutoff)]
+            if 'observation_state' in current:
+                current = current[current['observation_state'].fillna('').isin(['', 'active'])]
             # Zero is used for "price on request", not a market price.
             current_prices = current.loc[current['price'] > 0, 'price'].dropna()
             market_records.append({
@@ -682,6 +717,8 @@ def save_snapshots(performer, master):
                 'total_tickets': len(sub),
                 'active_tickets': len(sub[sub['status'] == 'listing']),
                 'current_active_tickets': len(current),
+                'unknown_listing_tickets': len(sub[sub.get('observation_state', pd.Series('', index=sub.index)).isin(['absent_unknown', 'absent_unverified'])]),
+                'alias_rows': len(sub[sub.get('observation_state', pd.Series('', index=sub.index)).eq('alias')]),
                 'current_avg_price': current_prices.mean() if not current_prices.empty else 0,
                 'current_min_price': current_prices.min() if not current_prices.empty else 0,
                 'current_max_price': current_prices.max() if not current_prices.empty else 0,
@@ -721,7 +758,8 @@ def enrich_ticket_details(performer, master, ticket_ids):
             if not details:
                 continue
             row = master.get(share_code)
-            if row is None or row.get('status') != 'listing':
+            if (row is None or row.get('status') != 'listing'
+                    or row.get('observation_state', '') not in {'', 'active'}):
                 continue
             if details.get('raw_description'):
                 row['raw_description'] = details['raw_description']
@@ -783,6 +821,9 @@ def main():
     now_timezone = str(now_aware.tzinfo)
 
     time_limit_reached = False
+    public_cache = {}
+    public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '1500')))]
+    public_deadline = time.monotonic() + 15 * 60
     print(f"Scrape mode: {SCRAPE_MODE}")
     for target in targets:
         performer = target['name']
@@ -793,17 +834,14 @@ def main():
             break
         print(f"=== Processing {performer} ===")
         master = load_master(performer)
-        master, collapsed = canonicalize_master(master)
-        if collapsed:
-            print(
-                f"[IDENTITY] Collapsed {collapsed} historical shareCode "
-                f"duplicates for {performer}."
-            )
+        # Retain all original IDs; proven aliases are annotated, not deleted.
+        before_poll = {code: row.copy() for code, row in master.items()}
 
         if SCRAPE_MODE == 'details':
             pending = [
                 ticket_id for ticket_id, row in master.items()
                 if row.get('status') == 'listing'
+                and row.get('observation_state', '') in {'', 'active'}
                 and str(row.get('details_fetched', 'False')) != 'True'
             ]
             time_limit_reached = enrich_ticket_details(
@@ -864,6 +902,7 @@ def main():
             prior_active = {
                 ticket_id: row for ticket_id, row in master.items()
                 if row.get('status') == 'listing' and row.get('event_id') == slug
+                and row.get('observation_state') != 'alias'
             }
             try:
                 ev_firestore_id = get_event_id_from_slug(slug)
@@ -921,6 +960,11 @@ def main():
                         if created_at_unix:
                             row['created_at_unix'] = created_at_unix
                         row['last_observed_at'] = now_str
+                        row['canonical_ticket_id'] = share_code
+                        row['observation_state'] = 'active'
+                        row['state_checked_at'] = now_str
+                        row['absence_first_observed_at'] = ''
+                        row['status_source'] = 'event_api'
                         row['price'] = t.get('pricePerTicket', row.get('price', 0))
                         row['quantity'] = t.get('quantity', row.get('quantity', 0))
                         row['delivery_method'] = t.get(
@@ -958,6 +1002,11 @@ def main():
                             'last_observed_at': now_str,
                             'sold_at_source': '',
                             'details_fetched': 'False',
+                            'canonical_ticket_id': share_code,
+                            'identity_first_observed_at': now_str,
+                            'observation_state': 'active',
+                            'state_checked_at': now_str,
+                            'status_source': 'event_api',
                         }
                         # created_at_unix records seller creation; first_observed_at
                         # must remain the actual first collection time.
@@ -969,6 +1018,9 @@ def main():
                             by_identity[identity_key] = row
                         master[share_code] = row
                         new_active_tickets.append(share_code)
+                    if 'isPriceOnRequest' in t:
+                        row['is_price_on_request'] = str(t['isPriceOnRequest'] is True)
+                    row['price_source'] = 'on_request' if t.get('isPriceOnRequest') is True else ('event_api' if price_val and float(price_val) > 0 else 'unknown')
                         
                 elif status == 'sold':
                     row = _sold_match(t, slug, by_share_code, by_created_at, by_identity)
@@ -979,6 +1031,9 @@ def main():
                                 row['sold_at'] = now_str
                             row['sold_at_source'] = 'transition_observed'
                         row['last_observed_at'] = now_str
+                        row['observation_state'] = 'sold_confirmed'
+                        row['state_checked_at'] = now_str
+                        row['status_source'] = 'event_api'
                     else:
                         share_code = _identifier_text(t.get('shareCode'))
                         if not share_code and not created_at_unix:
@@ -1006,6 +1061,10 @@ def main():
                             'sold_at': '',
                             'sold_at_source': 'historical_unknown',
                             'details_fetched': 'False',
+                            'observation_state': 'sold_historical',
+                            'status_source': 'event_api',
+                            'is_price_on_request': str(t.get('isPriceOnRequest') is True),
+                            'price_source': 'on_request' if t.get('isPriceOnRequest') is True else 'event_api',
                         }
                         # Historical sales do not imply historical observations.
                         if match_key is not None:
@@ -1017,7 +1076,13 @@ def main():
                             by_share_code[share_code] = row
                         master[t_id] = row
 
+            public_counts = reconcile_public_listings(
+                master, prior_active, event_active_codes, ev_firestore_id,
+                now_str, public_cache, public_budget, public_deadline,
+            )
+            print(f"[PUBLIC EVIDENCE] {slug}: {public_counts}")
             event_diagnostics[slug] = {
+                'public_status_checks': public_counts,
                 'api_active_count': sum(t.get('status') == 'active' for t in tickets),
                 'api_sold_count': sum(t.get('status') == 'sold' for t in tickets),
                 'missing_created_at_count': sum(
@@ -1059,6 +1124,7 @@ def main():
 
         save_master(performer, master)
         save_snapshots(performer, master)
+        save_ticket_changes(performer, before_poll, master, now_str, now_utc)
         save_anonymous_sold_inventory(anonymous_sold_by_event, now_str)
         print(f"Saved {len(master)} tickets to master for {performer}.")
         # Persist only after the corresponding master has been saved.

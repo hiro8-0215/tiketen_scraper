@@ -33,7 +33,7 @@ function doPost(event) {
     if (!/^data_\d{1,2}_\d{1,2}$/.test(payload.subfolderName || "")) {
       return jsonResponse({status: "error", message: "Invalid subfolder name"});
     }
-    if (!/^(?:[A-Za-z0-9._-]+_master\.csv|observation_\d{8}\.jsonl|anonymous_sold_inventory\.jsonl)$/.test(payload.filename || "")) {
+    if (!/^(?:[A-Za-z0-9._-]+_master\.csv|(?:observation|ticket_changes)_\d{8}\.jsonl|anonymous_sold_inventory\.jsonl)$/.test(payload.filename || "")) {
       return jsonResponse({status: "error", message: "Invalid filename"});
     }
 
