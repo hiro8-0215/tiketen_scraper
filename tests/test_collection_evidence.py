@@ -138,5 +138,28 @@ class CollectionEvidenceTest(unittest.TestCase):
         scraper.mark_confirmed_absences_deleted(rows,{'event':{'new'}},'2026-09-27 02:00:00')
         self.assertEqual(rows['old']['status'],'listing')
 
+    def test_cached_state_cannot_replace_newer_api_state_or_price(self):
+        rows = self.rows()
+        rows['new'].update(observation_state='active', status_source='event_api',
+                           state_checked_at='2026-09-27 02:05:00')
+        cache = {'old': ({'shareCode':'new','eventId':'firestore','status':'cancelled',
+                          'pricePerTicket':12000}, None, '2026-09-27 02:00:00')}
+        counts = evidence.reconcile_public_listings(rows, {'old':rows['old'].copy()},
+            {'new'}, 'firestore','2026-09-27 02:10:00',cache,[0],time.monotonic()+60)
+        self.assertEqual(counts['alias'], 1)
+        self.assertEqual(rows['old']['state_checked_at'], '2026-09-27 02:00:00')
+        self.assertEqual(rows['new']['status'], 'listing')
+        self.assertEqual(rows['new']['observation_state'], 'active')
+        self.assertEqual(rows['new']['price'], 13000)
+
+    def test_stale_null_cannot_replace_a_newer_known_state(self):
+        rows = self.rows()
+        rows['old'].update(observation_state='active',
+                           state_checked_at='2026-09-27 02:05:00')
+        result = evidence.apply_public_evidence(rows, 'old', None,
+                                                'firestore','2026-09-27 02:00:00')
+        self.assertEqual(result, 'stale')
+        self.assertEqual(rows['old']['observation_state'], 'active')
+
 if __name__=='__main__':
     unittest.main()

@@ -929,6 +929,12 @@ def main():
                 print(f"[INTEGRITY] {error}")
                 continue
 
+            # Each event is observed when its own API response arrives, not at
+            # the start of a potentially 15-minute multi-event run.
+            event_now = datetime.now().astimezone()
+            now_str = event_now.strftime('%Y-%m-%d %H:%M:%S')
+            now_utc = event_now.astimezone(timezone.utc).isoformat()
+            now_timezone = str(event_now.tzinfo)
             active_codes_by_event[slug] = event_active_codes
             unresolved_sold = 0
             anonymous_sold_by_event[slug] = []
@@ -1082,6 +1088,9 @@ def main():
             )
             print(f"[PUBLIC EVIDENCE] {slug}: {public_counts}")
             event_diagnostics[slug] = {
+                'observed_at': now_str,
+                'observed_at_utc': now_utc,
+                'observed_at_timezone': now_timezone,
                 'public_status_checks': public_counts,
                 'api_active_count': sum(t.get('status') == 'active' for t in tickets),
                 'api_active_ids': sorted(event_active_codes),
@@ -1104,11 +1113,10 @@ def main():
             elif not event_diagnostics[slug]['identity_uncertain']:
                 absence_safe_events.add(slug)
 
-        deleted_count = mark_confirmed_absences_deleted(
-            master,
-            {slug: active_codes_by_event[slug] for slug in absence_safe_events},
-            now_str,
-        )
+        deleted_count = sum(mark_confirmed_absences_deleted(
+            master, {slug: active_codes_by_event[slug]},
+            event_diagnostics[slug]['observed_at'],
+        ) for slug in absence_safe_events)
         print(
             f"Fetched {len(active_codes_by_event)}/{len(events)} events; "
             f"label-safe {len(absence_safe_events)}/{len(events)}; "
@@ -1125,7 +1133,10 @@ def main():
 
         save_master(performer, master)
         save_snapshots(performer, master)
-        save_ticket_changes(performer, before_poll, master, now_str, now_utc)
+        written_at = datetime.now().astimezone()
+        save_ticket_changes(performer, before_poll, master,
+                            written_at.strftime('%Y-%m-%d %H:%M:%S'),
+                            written_at.astimezone(timezone.utc).isoformat())
         save_anonymous_sold_inventory(anonymous_sold_by_event, now_str)
         print(f"Saved {len(master)} tickets to master for {performer}.")
         # Persist only after the corresponding master has been saved.

@@ -38,6 +38,8 @@ def fetch_public_ticket(code):
 def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     row = master[old_code]
     if ticket is None:
+        if row.get('state_checked_at', '') > now:
+            return 'stale'
         row['observation_state'] = 'absent_unknown'
         row['state_checked_at'] = now
         row['public_ticket_status'] = ''
@@ -57,8 +59,8 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
         raise ValueError('Conflicting public ticket state')
     if code != old_code:
         target = master.get(code)
-        # Public terminal confirmation may name a canonical code omitted from
-        # the event sold list. Retain that explicitly verified lifecycle too.
+        # A public unavailable/terminal response may name a canonical code
+        # omitted from the event API. Retain its explicitly verified identity.
         if target is None and status in {'sold', 'cancelled', 'inactive', 'expired', 'paused', 'unclassified'}:
             target = row.copy()
             target.update(ticket_id=code, first_observed_at=now, last_observed_at=now,
@@ -81,6 +83,11 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
             if not target.get(field) and row.get(field):
                 target[field] = row[field]
         row = target
+    # A cached response may predate a later API observation in another artist's
+    # copy of the same event. Identity linkage remains valid, but stale state
+    # and price must never replace more recent evidence.
+    if row.get('state_checked_at', '') > now:
+        return 'alias' if code != old_code else 'stale'
     row['state_checked_at'] = now
     row['status_source'] = 'public_detail'
     row['public_ticket_status'] = raw_status
@@ -131,7 +138,7 @@ def reconcile_public_listings(master, prior, active_codes, event_id, now,
     """
     counts = {'checked': 0, 'alias': 0, 'sold': 0, 'cancelled': 0,
               'not_found': 0, 'active': 0, 'expired': 0, 'inactive': 0, 'paused': 0,
-              'unclassified': 0, 'failed': 0,
+              'unclassified': 0, 'stale': 0, 'failed': 0,
               'pending': 0, 'historical_unresolved': 0}
     cutoff = datetime.fromisoformat(now) - timedelta(hours=36)
     candidates = []
@@ -156,27 +163,27 @@ def reconcile_public_listings(master, prior, active_codes, event_id, now,
     candidates.sort(key=lambda c: prior[c].get('last_observed_at', ''), reverse=True)
     def query(code):
         if time.monotonic() >= deadline:
-            return code, None, 'budget'
+            return code, None, 'budget', ''
         if code not in cache:
             try:
-                cache[code] = (fetch_public_ticket(code), None)
+                value = fetch_public_ticket(code)
+                cache[code] = (value, None, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             except Exception as error:
-                cache[code] = (None, type(error).__name__)
+                cache[code] = (None, type(error).__name__, '')
             time.sleep(0.5)  # At most two concurrent public requests.
-        value, error = cache[code]
-        return code, value, error
+        value, error, checked_at = cache[code]
+        return code, value, error, checked_at
     cached = [c for c in candidates if c in cache]
     fresh = [c for c in candidates if c not in cache]
     selected = cached + fresh[:budget[0]]
     budget[0] -= min(len(fresh), budget[0])
     counts['pending'] += len(candidates) - len(selected)
     with ThreadPoolExecutor(max_workers=2) as pool:
-        for code, ticket, error in pool.map(query, selected):
+        for code, ticket, error, checked_at in pool.map(query, selected):
             if error:
                 counts['pending' if error == 'budget' else 'failed'] += 1
                 continue
             try:
-                checked_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 result = apply_public_evidence(master, code, ticket, event_id, checked_at)
             except ValueError:
                 counts['failed'] += 1
