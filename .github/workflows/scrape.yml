@@ -21,6 +21,7 @@ jobs:
       - name: リポジトリのチェックアウト
         uses: actions/checkout@v7
         with:
+          ref: main # 待機後も最新の蓄積とコードから開始する
           fetch-depth: 0 # 全履歴を取得（コミットに必要）
 
       - name: Pythonのセットアップ
