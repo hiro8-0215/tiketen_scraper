@@ -66,12 +66,35 @@ def audit(before_dir, after_dir):
                 if item.get('observed_at', '') >= latest.get(key, {}).get('observed_at', ''):
                     latest[key] = item
     checks = Counter()
+    later_state_updates = 0
     for (performer, event), observation in latest.items():
         if 'public_status_checks' not in observation:
             continue
         checks.update(observation['public_status_checks'])
         rows = read_master(after_dir / f'{performer}_master.csv')
         if observation.get('api_fetch_complete'):
+            api_ids = observation.get('api_active_ids')
+            if api_ids is not None:
+                if len(api_ids) != len(set(api_ids)) or len(api_ids) != observation['api_active_count']:
+                    errors.append(f'{performer}/{event}: inconsistent API ID inventory')
+                for code in api_ids:
+                    row = rows.get(code)
+                    if not row or row.get('event_id') != event:
+                        errors.append(f'{performer}/{event}/{code}: API ID not saved')
+                        continue
+                    if row.get('observation_state') == 'active':
+                        continue
+                    confirmed_later = (
+                        row.get('state_checked_at', '') >= observation['observed_at']
+                        and row.get('observation_state') in {
+                            'alias', 'sold_confirmed', 'deleted_confirmed', 'inactive', 'expired'}
+                        and (row.get('status_source') == 'public_detail'
+                             or row.get('observation_state') == 'alias'))
+                    if confirmed_later:
+                        later_state_updates += 1
+                    else:
+                        errors.append(f'{performer}/{event}/{code}: API state lost without later evidence')
+                continue
             active = sum(r.get('event_id') == event and r.get('observation_state') == 'active'
                          and r.get('last_observed_at') == observation['observed_at']
                          for r in rows.values())
@@ -86,6 +109,7 @@ def audit(before_dir, after_dir):
                 ledger_records += 1
     return {'ok': not errors, 'totals': dict(totals), 'observation_states': dict(states),
             'latest_public_checks': dict(checks), 'change_ledger_records': ledger_records,
+            'api_ids_with_later_confirmed_state_updates': later_state_updates,
             'errors': errors,
             'limitations': 'Unknown historical absences and anonymous API sales remain unlabelled; this audit does not prove all sales were individually recovered.'}
 

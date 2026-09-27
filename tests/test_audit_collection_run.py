@@ -1,4 +1,5 @@
 import csv
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -39,6 +40,26 @@ class CollectionRunAuditTest(unittest.TestCase):
             report = audit(before, after)
             self.assertFalse(report['ok'])
             self.assertEqual(len(report['errors']), 2)
+
+    def test_later_public_transition_is_distinct_from_missing_api_id(self):
+        with tempfile.TemporaryDirectory() as temp:
+            before, after = Path(temp)/'before', Path(temp)/'after'
+            before.mkdir(); after.mkdir()
+            row = {'ticket_id':'one','event_id':'event','status':'listing'}
+            self.write(before, [row])
+            self.write(after, [{**row,'status':'sold','status_source':'public_detail',
+                               'observation_state':'sold_confirmed',
+                               'state_checked_at':'2026-09-27 02:05:00'}])
+            poll = {'performer':'artist','event_id':'event',
+                    'observed_at':'2026-09-27 02:00:00','api_fetch_complete':True,
+                    'api_active_count':1,'api_active_ids':['one'],'public_status_checks':{}}
+            (after/'observation_20260927.jsonl').write_text(json.dumps(poll)+'\n')
+            report = audit(before, after)
+            self.assertTrue(report['ok'])
+            self.assertEqual(report['api_ids_with_later_confirmed_state_updates'], 1)
+            poll['api_active_ids'] = ['missing']
+            (after/'observation_20260927.jsonl').write_text(json.dumps(poll)+'\n')
+            self.assertFalse(audit(before, after)['ok'])
 
 
 if __name__ == '__main__':

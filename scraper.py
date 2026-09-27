@@ -1084,6 +1084,7 @@ def main():
             event_diagnostics[slug] = {
                 'public_status_checks': public_counts,
                 'api_active_count': sum(t.get('status') == 'active' for t in tickets),
+                'api_active_ids': sorted(event_active_codes),
                 'api_sold_count': sum(t.get('status') == 'sold' for t in tickets),
                 'missing_created_at_count': sum(
                     not _identifier_text(t.get('createdAt')) for t in tickets
