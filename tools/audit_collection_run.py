@@ -87,7 +87,8 @@ def audit(before_dir, after_dir):
                     confirmed_later = (
                         row.get('state_checked_at', '') >= observation['observed_at']
                         and row.get('observation_state') in {
-                            'alias', 'sold_confirmed', 'deleted_confirmed', 'inactive', 'expired'}
+                            'alias', 'sold_confirmed', 'deleted_confirmed', 'inactive', 'paused',
+                            'public_unclassified', 'expired'}
                         and (row.get('status_source') == 'public_detail'
                              or row.get('observation_state') == 'alias'))
                     if confirmed_later:

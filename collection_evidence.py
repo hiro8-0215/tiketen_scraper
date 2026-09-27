@@ -9,7 +9,7 @@ PUBLIC_QUERY_URL = 'https://asia-northeast1-ticketen-prod.cloudfunctions.net/tic
 EVIDENCE_COLUMNS = [
     'canonical_ticket_id', 'identity_first_observed_at', 'observation_state',
     'state_checked_at', 'absence_first_observed_at', 'status_source',
-    'is_price_on_request', 'price_source',
+    'is_price_on_request', 'price_source', 'public_ticket_status',
 ]
 
 
@@ -40,22 +40,26 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     if ticket is None:
         row['observation_state'] = 'absent_unknown'
         row['state_checked_at'] = now
+        row['public_ticket_status'] = ''
         return 'not_found'
     code = str(ticket.get('shareCode') or '').strip()
     if not code or ticket.get('eventId') != firestore_event_id:
         raise ValueError('Public ticket identity/event mismatch')
-    status = ticket.get('status')
+    raw_status = ticket.get('status')
+    if not isinstance(raw_status, str) or not raw_status.strip():
+        raise ValueError('Missing public ticket status')
+    status = raw_status
     if status == 'completed':
         status = 'sold'
-    if status not in {'active', 'sold', 'cancelled', 'expired', 'inactive'}:
-        raise ValueError('Unknown public ticket status')
+    if status not in {'active', 'sold', 'cancelled', 'expired', 'inactive', 'paused'}:
+        status = 'unclassified'
     if status == 'active' and ticket.get('isSold') is True:
         raise ValueError('Conflicting public ticket state')
     if code != old_code:
         target = master.get(code)
         # Public terminal confirmation may name a canonical code omitted from
         # the event sold list. Retain that explicitly verified lifecycle too.
-        if target is None and status in {'sold', 'cancelled', 'inactive', 'expired'}:
+        if target is None and status in {'sold', 'cancelled', 'inactive', 'expired', 'paused', 'unclassified'}:
             target = row.copy()
             target.update(ticket_id=code, first_observed_at=now, last_observed_at=now,
                           first_observed_source='public_alias_observed')
@@ -79,6 +83,7 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
         row = target
     row['state_checked_at'] = now
     row['status_source'] = 'public_detail'
+    row['public_ticket_status'] = raw_status
     if status == 'active':
         # Keep the API sighting timestamp when it already confirmed this code;
         # state_checked_at independently records the later public lookup.
@@ -96,10 +101,10 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
         row['status'] = 'deleted'
         row['observation_state'] = 'deleted_confirmed'
         row['last_observed_at'] = now
-    elif status == 'inactive':
+    elif status in {'inactive', 'paused', 'unclassified'}:
         # Publicly unavailable is not proof of a sale or permanent withdrawal.
         # Keep the last historical status and sighting; retry on later polls.
-        row['observation_state'] = 'inactive'
+        row['observation_state'] = 'public_unclassified' if status == 'unclassified' else status
     else:
         row['observation_state'] = 'expired'
     if 'isPriceOnRequest' in ticket:
@@ -125,7 +130,8 @@ def reconcile_public_listings(master, prior, active_codes, event_id, now,
     them. Retry transport failures on a later poll, not as a false deletion.
     """
     counts = {'checked': 0, 'alias': 0, 'sold': 0, 'cancelled': 0,
-              'not_found': 0, 'active': 0, 'expired': 0, 'inactive': 0, 'failed': 0,
+              'not_found': 0, 'active': 0, 'expired': 0, 'inactive': 0, 'paused': 0,
+              'unclassified': 0, 'failed': 0,
               'pending': 0, 'historical_unresolved': 0}
     cutoff = datetime.fromisoformat(now) - timedelta(hours=36)
     candidates = []
