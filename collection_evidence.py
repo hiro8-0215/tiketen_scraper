@@ -55,9 +55,9 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
         target = master.get(code)
         # Public terminal confirmation may name a canonical code omitted from
         # the event sold list. Retain that explicitly verified lifecycle too.
-        if target is None and status in {'sold', 'cancelled'}:
+        if target is None and status in {'sold', 'cancelled', 'inactive', 'expired'}:
             target = row.copy()
-            target.update(ticket_id=code, first_observed_at=now,
+            target.update(ticket_id=code, first_observed_at=now, last_observed_at=now,
                           first_observed_source='public_alias_observed')
             master[code] = target
         if target is None or target.get('event_id') != row.get('event_id'):

@@ -79,6 +79,17 @@ class CollectionEvidenceTest(unittest.TestCase):
         self.assertEqual(rows['old']['price'], 15000)
         self.assertEqual(rows['old']['price_source'], 'public_detail')
 
+    def test_inactive_alias_missing_from_active_api_retains_both_rows(self):
+        rows = self.rows()
+        evidence.apply_public_evidence(rows, 'old',
+            {'shareCode':'inactive-code','eventId':'firestore','status':'inactive'},
+            'firestore','2026-09-27 02:00:00')
+        self.assertEqual(rows['old']['observation_state'], 'alias')
+        self.assertEqual(rows['inactive-code']['observation_state'], 'inactive')
+        self.assertEqual(rows['inactive-code']['status'], 'listing')
+        self.assertEqual(rows['inactive-code']['identity_first_observed_at'], '2026-09-25 01:00:00')
+        self.assertNotIn('sold_at', rows['inactive-code'])
+
     def test_transport_failure_stays_retryable_and_does_not_update_last_seen(self):
         rows=self.rows()
         with patch.object(evidence,'fetch_public_ticket',side_effect=TimeoutError), patch.object(evidence.time,'sleep'):
