@@ -14,7 +14,10 @@ def apply_api_preview(row, ticket):
         raise ValueError('Invalid API description')
     row['api_description'] = preview
     # Neither a legacy browser full text nor a verified public text is replaced.
-    if not row.get('raw_description') or row.get('description_source') == 'event_api_preview':
+    verified_full = (row.get('description_source') == 'public_detail'
+                     and row.get('description_is_full') == 'True')
+    if not verified_full and (not row.get('raw_description')
+                              or row.get('description_source') == 'event_api_preview'):
         row['raw_description'] = preview
         row['description_source'] = 'event_api_preview'
         row['description_is_full'] = 'False'

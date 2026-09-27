@@ -17,6 +17,14 @@ class ContentTest(unittest.TestCase):
             self.assertEqual(row['api_description'], preview)
             self.assertEqual(row['description_is_full'], 'True')
 
+    def test_verified_empty_full_text_is_preserved(self):
+        row = public_updates({'description':''}, 'now')
+        apply_api_preview(row, {'description':'preview...'})
+        self.assertEqual(row['raw_description'], '')
+        self.assertEqual(row['description_is_full'], 'True')
+        self.assertEqual(row['description_source'], 'public_detail')
+        self.assertEqual(row['api_description'], 'preview...')
+
     def test_legacy_full_text_is_preserved(self):
         row = {'raw_description':'legacy browser full text','details_fetched':'True'}
         apply_api_preview(row, {'description':'legacy...'})
