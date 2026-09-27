@@ -807,6 +807,7 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None):
     log = os.path.join(DATA_DIR, 'content_observation_' + now.strftime('%Y%m%d') + '.jsonl')
     with open(log, 'a', encoding='utf-8') as stream:
         stream.write(json.dumps({'performer':performer, 'observed_at_utc':now.isoformat(),
+                                  'scope':'observed_active',
                                   'selected':len(pending), **counts}) + '\n')
     print(f'[PUBLIC CONTENT] {performer}: {counts}')
     return counts['pending'] > 0
@@ -919,7 +920,7 @@ def main():
             pending = [
                 ticket_id for ticket_id, row in master.items()
                 if row.get('status') == 'listing'
-                and row.get('observation_state', '') in {'', 'active'}
+                and row.get('observation_state') == 'active'
             ]
             time_limit_reached = enrich_ticket_details(
                 performer, master, pending, public_cache

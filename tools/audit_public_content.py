@@ -13,7 +13,7 @@ from scraper import sanitize_unicode
 
 
 def audit(folder, live_limit=0):
-    errors, active, samples, latest = [], {}, [], {}
+    errors, active, samples, latest, warnings = [], {}, [], {}, []
     for path in folder.glob('*_master.csv'):
         with path.open(encoding='utf-8-sig', newline='') as stream:
             records = list(csv.DictReader(stream))
@@ -35,9 +35,14 @@ def audit(folder, live_limit=0):
             item = json.loads(line)
             latest[item['performer']] = item
     for performer, item in latest.items():
-        if item.get('failed') or item.get('pending') or item.get('null'):
+        if (item.get('failed') or item.get('pending')
+                or (item.get('null') and item.get('scope') == 'observed_active')):
             errors.append({'performer':performer,'reason':'incomplete_public_refresh',
                            'failed':item.get('failed'),'pending':item.get('pending'),'null':item.get('null')})
+        elif item.get('null'):
+            warnings.append({'performer':performer,'reason':'legacy_refresh_included_unobserved_rows',
+                             'null':item['null'],
+                             'note':'Historical nulls remain unconfirmed; every active row is still checked above.'})
     polls = {}
     for path in sorted(folder.glob('observation_*.jsonl')):
         with path.open(encoding='utf-8') as stream:
@@ -84,7 +89,7 @@ def audit(folder, live_limit=0):
         samples.append(result)
         time.sleep(0.5)
     return {'ok':not errors,'unique_active_rows':len(active),'live_samples':samples,
-            'latest_content_refresh':latest,'errors':errors,
+            'latest_content_refresh':latest,'errors':errors,'warnings':warnings,
             'limitations':'Live values can change after collection. Historical null tickets cannot be reconstructed.'}
 
 
@@ -98,7 +103,8 @@ def main():
     if args.report:
         args.report.write_text(json.dumps(report,ensure_ascii=True,indent=2),encoding='utf-8')
     print(json.dumps({'ok':report['ok'],'unique_active_rows':report['unique_active_rows'],
-                      'live_samples':len(report['live_samples']),'errors':report['errors'][:20]},ensure_ascii=True))
+                      'live_samples':len(report['live_samples']),'errors':report['errors'][:20],
+                      'warnings':report['warnings']},ensure_ascii=True))
     raise SystemExit(0 if report['ok'] else 1)
 
 

@@ -31,6 +31,24 @@ class ContentAuditTest(unittest.TestCase):
             self.assertFalse(report['ok'])
             self.assertEqual(len(report['errors']),2)
 
+    def test_null_observed_active_is_not_hidden(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp);self.write(folder)
+            (folder/'content_observation_20260927.jsonl').write_text(json.dumps({
+                'performer':'group','scope':'observed_active','null':1}))
+            self.assertFalse(module.audit(folder)['ok'])
+
+    def test_legacy_null_warning_does_not_excuse_stale_active_content(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp);self.write(folder)
+            (folder/'content_observation_20260927.jsonl').write_text(json.dumps({
+                'performer':'group','null':1}))
+            report=module.audit(folder)
+            self.assertTrue(report['ok'])
+            self.assertEqual(len(report['warnings']),1)
+            self.write(folder,content_checked_at='2026-09-27 00:00:00')
+            self.assertFalse(module.audit(folder)['ok'])
+
     def test_failed_stopped_listing_query_is_not_hidden(self):
         with tempfile.TemporaryDirectory() as tmp:
             folder=Path(tmp);self.write(folder)
