@@ -1,5 +1,27 @@
 # Listing evidence and retained history
 
+## Full public content (2026-09-27 correction)
+
+Event API descriptions are previews, stored as `api_description`. They never
+overwrite a saved full `raw_description`. The details stage now refreshes all
+confirmed active tickets through the same public lookup used by ticket pages,
+with two workers, 0.5s per-request delay and the existing 25-minute checkpoint
+budget. Repeated performer copies share the same response cache. Each full
+description has `description_source=public_detail`, `description_is_full=True`
+and `description_checked_at`; `content_checked_at` timestamps field refreshes.
+Public responses also refresh quantity, date/time, venue, ticket/name/delivery
+type, seat metadata, seller rating/name and tags, including inactive/paused
+responses checked by the API stage. Old ID observation timestamps do not change.
+Null, failed or stale replies do not erase earlier text. Never overwrite an
+earlier historical snapshot with today's description.
+
+`content_observation_*.jsonl` reports full/failed/null/pending counts. The workflow
+saves resumable data before running `tools/audit_public_content.py --data-dir data`;
+incomplete current full content fails the quality step instead of silently
+claiming success. Retained old unknown rows are not fabricated or counted as
+currently verified full content. Full public text may legitimately be empty or
+contain ellipses typed by the seller; provenance, not text length, proves coverage.
+
 The collector never resets masters. Daily public share codes can resolve to a
 different canonical share code through the same public lookup as the ticket
 page. Only this explicit response (or a previously verified creation identity)

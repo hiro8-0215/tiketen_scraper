@@ -59,3 +59,6 @@ jobs:
           git commit -m "自動更新: チケットデータのスクレイピング"
           git pull --rebase origin main
           git push
+
+      - name: 全文・公開チケット情報の品質確認
+        run: python tools/audit_public_content.py --data-dir data

@@ -4,13 +4,14 @@ import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
+from collection_content import CONTENT_COLUMNS, public_updates
 
 PUBLIC_QUERY_URL = 'https://asia-northeast1-ticketen-prod.cloudfunctions.net/ticket_queries_get'
 EVIDENCE_COLUMNS = [
     'canonical_ticket_id', 'identity_first_observed_at', 'observation_state',
     'state_checked_at', 'absence_first_observed_at', 'status_source',
     'is_price_on_request', 'price_source', 'public_ticket_status',
-]
+] + CONTENT_COLUMNS
 
 
 def fetch_public_ticket(code):
@@ -57,6 +58,7 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
         status = 'unclassified'
     if status == 'active' and ticket.get('isSold') is True:
         raise ValueError('Conflicting public ticket state')
+    content = public_updates(ticket, now)
     if code != old_code:
         target = master.get(code)
         # A public unavailable/terminal response may name a canonical code
@@ -91,6 +93,7 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     row['state_checked_at'] = now
     row['status_source'] = 'public_detail'
     row['public_ticket_status'] = raw_status
+    row.update(content)
     if status == 'active':
         # Keep the API sighting timestamp when it already confirmed this code;
         # state_checked_at independently records the later public lookup.

@@ -53,7 +53,7 @@ class ScraperSafetyTest(unittest.TestCase):
                 "ticket_tags": "tag",
             }),
         ):
-            stopped = scraper.enrich_ticket_details("group", master, ["a"])
+            stopped = scraper.enrich_ticket_details_browser("group", master, ["a"])
         self.assertFalse(stopped)
         self.assertEqual(master["a"]["details_fetched"], "True")
         self.assertEqual(master["a"]["raw_description"], "seat detail")
@@ -68,7 +68,7 @@ class ScraperSafetyTest(unittest.TestCase):
             patch("scraper.save_master") as save,
             patch("builtins.print"),
         ):
-            stopped = scraper.enrich_ticket_details("group", master, ["a"])
+            stopped = scraper.enrich_ticket_details_browser("group", master, ["a"])
         self.assertTrue(stopped)
         save.assert_called_once_with("group", master)
 

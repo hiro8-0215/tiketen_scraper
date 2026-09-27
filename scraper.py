@@ -12,6 +12,9 @@ from datetime import datetime, timedelta, timezone
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from collection_evidence import EVIDENCE_COLUMNS, reconcile_public_listings
+from collection_evidence import fetch_public_ticket, apply_public_evidence
+from collection_content import apply_api_preview
+from concurrent.futures import ThreadPoolExecutor
 
 # === タイムリミット設定 ===
 # 25分経過で途中保存して正常終了。次回トリガーで続きを自動再開。
@@ -660,7 +663,9 @@ def save_master(performer, master):
 def save_ticket_changes(performer, before, master, observed_at, observed_at_utc):
     """Append changed facts, preserving intraday price/state/identity history."""
     fields = ['event_id', 'status', 'price', 'quantity'] + EVIDENCE_COLUMNS
-    compared = [field for field in fields if field != 'state_checked_at']
+    fields += ['raw_description', 'seller_name', 'seller_rating', 'ticket_tags']
+    compared = [field for field in fields if field not in
+                {'state_checked_at', 'description_checked_at', 'content_checked_at'}]
     records = []
     for code, row in master.items():
         old = before.get(code)
@@ -734,7 +739,79 @@ def save_snapshots(performer, master):
         for ym, group in mdf.groupby('year_month'):
             group.to_csv(os.path.join(MARKET_DIR, f'{performer}_{ym}.csv'), index=False, encoding='utf-8-sig')
 
-def enrich_ticket_details(performer, master, ticket_ids):
+def enrich_ticket_details(performer, master, ticket_ids, cache=None):
+    """Refresh full public content each run, including already fetched rows.
+
+    Two workers, 0.5s delay, original 25-minute limit and atomic checkpoints.
+    Failed/null/rotated replies never erase earlier full descriptions.
+    """
+    cache = {} if cache is None else cache
+    before = {code: row.copy() for code, row in master.items()}
+    pending = sorted(set(ticket_ids), key=lambda c: master[c].get('content_checked_at', ''))
+    events = {}
+    counts = {'checked':0, 'full':0, 'failed':0, 'null':0, 'pending':0}
+    for code in pending:
+        row = master[code]
+        event = row.get('event_id')
+        if event not in events:
+            try:
+                events[event] = row.get('public_event_id') or (
+                    get_event_id_from_slug(event) if is_time_remaining() else None)
+            except ScrapeIntegrityError:
+                events[event] = None
+    def query(code):
+        if not is_time_remaining():
+            return code, None, 'time_limit', ''
+        if code not in cache:
+            try:
+                ticket = fetch_public_ticket(code)
+                cache[code] = (ticket, None, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            except Exception as error:
+                cache[code] = (None, type(error).__name__, '')
+            time.sleep(0.5)
+        value, error, checked_at = cache[code]
+        return code, value, error, checked_at
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        for index, (code, ticket, error, checked_at) in enumerate(pool.map(query, pending)):
+            if error:
+                counts['pending' if error == 'time_limit' else 'failed'] += 1
+                continue
+            if ticket is None:
+                counts['null'] += 1
+                continue
+            try:
+                if not events[master[code]['event_id']]:
+                    raise ValueError('Missing public event identity')
+                result = apply_public_evidence(master, code, ticket,
+                                              events[master[code]['event_id']], checked_at)
+                if result == 'stale':
+                    counts['pending'] += 1
+                    continue
+                counts['checked'] += 1
+                canonical = master[code].get('canonical_ticket_id') or code
+                if master[canonical].get('description_checked_at') == checked_at:
+                    counts['full'] += 1
+                else:
+                    counts['failed'] += 1
+            except (ValueError, TypeError, KeyError) as exc:
+                print(f'[CONTENT ERROR] {code}: {type(exc).__name__}')
+                counts['failed'] += 1
+            if (index + 1) % 100 == 0:
+                save_master(performer, master)
+                print(f'[CONTENT CHECKPOINT] {performer}: {index + 1}/{len(pending)}')
+    now = datetime.now().astimezone()
+    save_ticket_changes(performer, before, master, now.strftime('%Y-%m-%d %H:%M:%S'),
+                        now.astimezone(timezone.utc).isoformat())
+    save_master(performer, master)
+    log = os.path.join(DATA_DIR, 'content_observation_' + now.strftime('%Y%m%d') + '.jsonl')
+    with open(log, 'a', encoding='utf-8') as stream:
+        stream.write(json.dumps({'performer':performer, 'observed_at_utc':now.isoformat(),
+                                  'selected':len(pending), **counts}) + '\n')
+    print(f'[PUBLIC CONTENT] {performer}: {counts}')
+    return counts['pending'] > 0
+
+
+def enrich_ticket_details_browser(performer, master, ticket_ids):
     """Incrementally enrich active tickets, returning True on time limit."""
     pending = list(dict.fromkeys(ticket_ids))
     if not pending:
@@ -842,10 +919,9 @@ def main():
                 ticket_id for ticket_id, row in master.items()
                 if row.get('status') == 'listing'
                 and row.get('observation_state', '') in {'', 'active'}
-                and str(row.get('details_fetched', 'False')) != 'True'
             ]
             time_limit_reached = enrich_ticket_details(
-                performer, master, pending
+                performer, master, pending, public_cache
             )
             save_master(performer, master)
             save_snapshots(performer, master)
@@ -982,8 +1058,8 @@ def main():
                         row['name_type'] = t.get(
                             'nameGender', row.get('name_type', '')
                         )
-                        if t.get('description'):
-                            row['raw_description'] = t['description']
+                        apply_api_preview(row, t)
+                        row['public_event_id'] = ev_firestore_id
                         if str(row.get('details_fetched', 'False')) != 'True':
                             new_active_tickets.append(share_code)
                         if match_key is not None:
@@ -1002,7 +1078,7 @@ def main():
                             'delivery_method': t.get('deliveryMethod', ''),
                             'ticket_type': t.get('ticketType', ''),
                             'name_type': t.get('nameGender', ''),
-                            'raw_description': t.get('description', ''),
+                            'raw_description': '',
                             'first_observed_at': now_str,
                             'first_observed_source': 'scrape_observed',
                             'last_observed_at': now_str,
@@ -1024,6 +1100,8 @@ def main():
                             by_identity[identity_key] = row
                         master[share_code] = row
                         new_active_tickets.append(share_code)
+                        apply_api_preview(row, t)
+                        row['public_event_id'] = ev_firestore_id
                     if 'isPriceOnRequest' in t:
                         row['is_price_on_request'] = str(t['isPriceOnRequest'] is True)
                     row['price_source'] = 'on_request' if t.get('isPriceOnRequest') is True else ('event_api' if price_val and float(price_val) > 0 else 'unknown')
@@ -1160,7 +1238,8 @@ def main():
 
         if SCRAPE_MODE != 'api':
             time_limit_reached = enrich_ticket_details(
-                performer, master, new_active_tickets
+                performer, master, [code for code, row in master.items()
+                                    if row.get('observation_state') == 'active'], public_cache
             )
             save_master(performer, master)
             save_snapshots(performer, master)
