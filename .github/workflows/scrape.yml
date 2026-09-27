@@ -45,7 +45,7 @@ jobs:
           SCRAPE_MODE: api
         run: python scraper.py
 
-      - name: 未取得の詳細を差分補完
+      - name: 公開チケット全文を更新（取得済み含む）
         env:
           SCRAPE_MODE: details
         run: python scraper.py

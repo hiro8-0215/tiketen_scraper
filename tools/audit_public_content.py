@@ -38,6 +38,18 @@ def audit(folder, live_limit=0):
         if item.get('failed') or item.get('pending') or item.get('null'):
             errors.append({'performer':performer,'reason':'incomplete_public_refresh',
                            'failed':item.get('failed'),'pending':item.get('pending'),'null':item.get('null')})
+    polls = {}
+    for path in sorted(folder.glob('observation_*.jsonl')):
+        with path.open(encoding='utf-8') as stream:
+            for line in stream:
+                item = json.loads(line)
+                polls[(item.get('performer'),item.get('event_id'))] = item
+    for (performer,event), item in polls.items():
+        checks = item.get('public_status_checks', {})
+        if checks.get('failed') or checks.get('pending'):
+            errors.append({'performer':performer,'event':event,
+                           'reason':'incomplete_public_state_refresh',
+                           'failed':checks.get('failed'),'pending':checks.get('pending')})
     if not active:
         errors.append({'reason':'no_active_rows_to_verify'})
     # Evenly distributed across sorted event/ID population; deterministic.

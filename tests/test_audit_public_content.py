@@ -1,4 +1,5 @@
 import csv
+import json
 import importlib.util
 import tempfile
 import unittest
@@ -29,3 +30,10 @@ class ContentAuditTest(unittest.TestCase):
             report=module.audit(folder)
             self.assertFalse(report['ok'])
             self.assertEqual(len(report['errors']),2)
+
+    def test_failed_stopped_listing_query_is_not_hidden(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp);self.write(folder)
+            (folder/'observation_20260927.jsonl').write_text(json.dumps({
+                'performer':'group','event_id':'event','public_status_checks':{'failed':1}}))
+            self.assertFalse(module.audit(folder)['ok'])
