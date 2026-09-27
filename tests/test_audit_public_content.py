@@ -3,6 +3,7 @@ import json
 import importlib.util
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 spec=importlib.util.spec_from_file_location('audit_public_content',Path(__file__).resolve().parents[1]/'tools/audit_public_content.py')
@@ -30,6 +31,15 @@ class ContentAuditTest(unittest.TestCase):
             report=module.audit(folder)
             self.assertFalse(report['ok'])
             self.assertEqual(len(report['errors']),2)
+
+    def test_empty_saved_time_matches_public_null(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp);self.write(folder,perf_time='')
+            with patch.object(module,'fetch_public_ticket',return_value={
+                    'shareCode':'code','eventId':'fire','eventStartTime':None}), patch.object(module.time,'sleep'):
+                report=module.audit(folder,1)
+            self.assertTrue(report['ok'])
+            self.assertEqual(report['live_samples'][0]['differences'],[])
 
     def test_null_observed_active_is_not_hidden(self):
         with tempfile.TemporaryDirectory() as tmp:

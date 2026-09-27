@@ -81,7 +81,7 @@ def audit(folder, live_limit=0):
                     public = ticket[public_key]
                     equal = (float(row.get(field) or 0) == float(public or 0)
                              if field in {'price','quantity'} else
-                             row.get(field,'') == sanitize_unicode(public))
+                             row.get(field,'') == ('' if public is None else sanitize_unicode(public)))
                     if not equal:
                         result['differences'].append({'field':field,'saved':row.get(field), 'public':public})
         except Exception as exc:
