@@ -1,3 +1,4 @@
+import io
 import json
 import tempfile
 import time
@@ -9,6 +10,26 @@ import scraper
 
 
 class CollectionEvidenceTest(unittest.TestCase):
+    def test_public_query_retries_transient_failure_without_changing_evidence(self):
+        payload = io.BytesIO(json.dumps({'success': True, 'ticket': {
+            'shareCode': 'code', 'eventId': 'event', 'status': 'active'
+        }}).encode('utf-8'))
+        with patch.object(evidence.urllib.request, 'urlopen',
+                          side_effect=[TimeoutError(), payload]) as request, \
+             patch.object(evidence.time, 'sleep') as delay:
+            ticket = evidence.fetch_public_ticket('code')
+        self.assertEqual(ticket['shareCode'], 'code')
+        self.assertEqual(request.call_count, 2)
+        delay.assert_called_once()
+
+    def test_public_query_still_fails_after_bounded_retries(self):
+        with patch.object(evidence.urllib.request, 'urlopen',
+                          side_effect=TimeoutError()) as request, \
+             patch.object(evidence.time, 'sleep'):
+            with self.assertRaises(TimeoutError):
+                evidence.fetch_public_ticket('code')
+        self.assertEqual(request.call_count, 3)
+
     def rows(self):
         return {'old': {'ticket_id': 'old', 'event_id': 'event', 'status': 'listing',
                         'first_observed_at': '2026-09-25 01:00:00',

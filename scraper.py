@@ -769,6 +769,7 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None):
                 cache[code] = (ticket, None, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             except Exception as error:
                 cache[code] = (None, type(error).__name__, '')
+                print(f'[PUBLIC CONTENT FETCH ERROR] {code}: {type(error).__name__}')
             time.sleep(0.5)
         value, error, checked_at = cache[code]
         return code, value, error, checked_at

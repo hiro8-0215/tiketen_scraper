@@ -26,14 +26,22 @@ def fetch_public_ticket(code):
                          'payload': {'shareCode': code}}).encode('utf-8'),
         headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'},
     )
-    with urllib.request.urlopen(request, timeout=15) as response:
-        payload = json.load(response)
-    if payload.get('success') is not True or 'ticket' not in payload:
-        raise ValueError('Invalid public ticket response')
-    ticket = payload['ticket']
-    if ticket is not None and not isinstance(ticket, dict):
-        raise ValueError('Invalid public ticket object')
-    return ticket
+    # A single transient public API failure must not leave an observed active
+    # listing without fresh full text. Still fail closed after bounded retries.
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(request, timeout=15) as response:
+                payload = json.load(response)
+            if payload.get('success') is not True or 'ticket' not in payload:
+                raise ValueError('Invalid public ticket response')
+            ticket = payload['ticket']
+            if ticket is not None and not isinstance(ticket, dict):
+                raise ValueError('Invalid public ticket object')
+            return ticket
+        except Exception:
+            if attempt == 2:
+                raise
+            time.sleep(0.75 * (attempt + 1))
 
 
 def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
