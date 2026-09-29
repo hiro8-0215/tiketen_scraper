@@ -52,6 +52,24 @@ class CollectionEvidenceTest(unittest.TestCase):
         self.assertEqual(rows['sold-code']['status'],'sold')
         self.assertEqual(rows['old']['canonical_ticket_id'],'sold-code')
 
+    def test_public_active_canonical_code_missing_from_api_is_retained(self):
+        rows=self.rows()
+        result=evidence.apply_public_evidence(rows,'old',
+            {'shareCode':'live-code','eventId':'firestore','status':'active',
+             'description':'Full public text','pricePerTicket':12500},
+            'firestore','2026-09-27 02:00:00')
+        self.assertEqual(result,'alias')
+        self.assertEqual(rows['old']['observation_state'],'alias')
+        self.assertEqual(rows['old']['canonical_ticket_id'],'live-code')
+        self.assertEqual(rows['old']['first_observed_at'],'2026-09-25 01:00:00')
+        self.assertEqual(rows['old']['last_observed_at'],'2026-09-26 23:00:00')
+        self.assertEqual(rows['live-code']['observation_state'],'active')
+        self.assertEqual(rows['live-code']['status'],'listing')
+        self.assertEqual(rows['live-code']['first_observed_source'],'public_alias_observed')
+        self.assertEqual(rows['live-code']['identity_first_observed_at'],'2026-09-25 01:00:00')
+        self.assertEqual(rows['live-code']['price'],12500)
+        self.assertEqual(rows['live-code']['raw_description'],'Full public text')
+
     def test_mismatched_event_cannot_link(self):
         rows=self.rows()
         with self.assertRaises(ValueError):
@@ -110,6 +128,19 @@ class CollectionEvidenceTest(unittest.TestCase):
         self.assertEqual(counts['failed'],1)
         self.assertEqual(rows['old']['observation_state'],'absent_unverified')
         self.assertEqual(rows['old']['last_observed_at'],'2026-09-26 23:00:00')
+
+    def test_missing_active_public_code_is_linked_during_state_reconciliation(self):
+        rows=self.rows()
+        rows.pop('new')
+        ticket={'shareCode':'live-code','eventId':'firestore','status':'active'}
+        with patch.object(evidence,'fetch_public_ticket',return_value=ticket), patch.object(evidence.time,'sleep'):
+            counts=evidence.reconcile_public_listings(rows,{'old':rows['old'].copy()},
+                set(),'firestore','2026-09-27 02:00:00',{},[1],time.monotonic()+60)
+        self.assertEqual(counts['alias'],1)
+        self.assertEqual(counts['failed'],0)
+        self.assertEqual(rows['old']['observation_state'],'alias')
+        self.assertEqual(rows['live-code']['observation_state'],'active')
+        self.assertEqual(rows['live-code']['status'],'listing')
 
     def test_zero_budget_makes_no_requests(self):
         rows=self.rows()

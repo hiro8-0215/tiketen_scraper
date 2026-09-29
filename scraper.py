@@ -901,8 +901,11 @@ def main():
 
     time_limit_reached = False
     public_cache = {}
-    public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '1500')))]
-    public_deadline = time.monotonic() + 15 * 60
+    # ShareCode rotations can leave over 2,800 recently observed codes to
+    # verify in one poll. Keep the quality gate strict, but allow the normal
+    # hourly run to finish those checks rather than reporting false success.
+    public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '3000')))]
+    public_deadline = time.monotonic() + 24 * 60
     print(f"Scrape mode: {SCRAPE_MODE}")
     for target in targets:
         performer = target['name']

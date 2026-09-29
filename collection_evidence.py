@@ -61,9 +61,11 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     content = public_updates(ticket, now)
     if code != old_code:
         target = master.get(code)
-        # A public unavailable/terminal response may name a canonical code
-        # omitted from the event API. Retain its explicitly verified identity.
-        if target is None and status in {'sold', 'cancelled', 'inactive', 'expired', 'paused', 'unclassified'}:
+        # The event API can lag a public shareCode rotation even while the
+        # listing is active. The direct public response proves the new code
+        # and event identity; keep the old code as an alias instead of losing
+        # the verified content or inventing a terminal state.
+        if target is None:
             target = row.copy()
             target.update(ticket_id=code, first_observed_at=now, last_observed_at=now,
                           first_observed_source='public_alias_observed')
