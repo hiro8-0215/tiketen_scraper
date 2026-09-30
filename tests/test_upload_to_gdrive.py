@@ -30,7 +30,9 @@ class DriveUploadRetryTest(unittest.TestCase):
                 'ticket_changes_20260927.jsonl',
                 'anonymous_sold_inventory.jsonl',
             ]:
-                (root / name).write_text('sample\n', encoding='utf-8')
+                (root / name).write_text('{}\n', encoding='utf-8')
+            (root / 'ticket_changes_20260928_001.jsonl').write_text('{}\n', encoding='utf-8')
+            (root / 'ticket_changes_20260928_002.jsonl').write_text('{}\n', encoding='utf-8')
             with (
                 patch.dict(upload_to_gdrive.os.environ, {
                     'GDRIVE_WEBAPP_URL': 'https://example.invalid/exec',
@@ -46,7 +48,9 @@ class DriveUploadRetryTest(unittest.TestCase):
             self.assertEqual(uploaded, {
                 'group_master.csv',
                 'observation_20260924.jsonl',
-                'ticket_changes_20260927.jsonl',
+                'ticket_changes_20260927_001.jsonl',
+                'ticket_changes_20260928_001.jsonl',
+                'ticket_changes_20260928_002.jsonl',
                 'anonymous_sold_inventory.jsonl',
             })
 

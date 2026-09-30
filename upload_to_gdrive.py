@@ -11,6 +11,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from ticket_change_log import change_log_paths, migrate_legacy_logs
 
 
 JST = timezone(timedelta(hours=9), "JST")
@@ -103,8 +104,9 @@ def main() -> None:
     # The deployed Apps Script may still accept only *_master.csv. Enable JSONL
     # only after redeploying Code.gs with the expanded filename allowlist.
     if os.environ.get('GDRIVE_INCLUDE_JSONL', '').lower() in {'1', 'true', 'yes'}:
+        migrate_legacy_logs(source_dir)
         paths += sorted(source_dir.glob('observation_*.jsonl'))
-        paths += sorted(source_dir.glob('ticket_changes_*.jsonl'))
+        paths += change_log_paths(source_dir)
         anonymous_sold = source_dir / 'anonymous_sold_inventory.jsonl'
         if anonymous_sold.exists():
             paths.append(anonymous_sold)

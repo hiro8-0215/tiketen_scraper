@@ -14,6 +14,11 @@
 モデルがあり、`hybrid_AI_model13`〜`hybrid_AI_model16`には価格モデルの世代別コードが
 あります。学習前にはsnapshot品質ゲートが実行されます。
 
+変更履歴JSONLは、1レコードの形式を保ったまま1ファイル30 MiB以下に自動分割します。
+CSVの列・値と`ticket_change_v1`の項目は変わりません。ファイル名の変更、既存ログの
+移行、2026-09-30のActions障害の原因と復旧手順は
+[`docs/actions_log_rotation.md`](docs/actions_log_rotation.md)を参照してください。
+
 ## 特徴
 1. **ハイブリッド収集による高速化**: 
    - 隠しAPI（`tickets/all`）を利用し、出品中チケットだけでなく**過去の売り切れ・非表示チケットも高速に一括取得**します。

@@ -37,6 +37,23 @@ GitHubの`Actions` → `Daily Archive to Google Drive` → `Run workflow`を実�
 成功後、Drive保存先に当日名のフォルダと`*_master.csv`があることを確認します。
 以降は`Ticket Scraper`ワークフローが成功すると自動実行されます。
 
+### 変更履歴JSONLも保存する場合
+
+`ticket_changes_YYYYMMDD_001.jsonl`などの分割ファイルを受け付ける更新済み`Code.gs`を
+貼り付け、「デプロイを管理」から新しいバージョンへ再デプロイしてください。
+同じデプロイの更新ならURLは維持できます。新しいデプロイを作った場合は
+`GDRIVE_WEBAPP_URL`も更新します。
+
+再デプロイ後にGitHub Actions変数`GDRIVE_INCLUDE_JSONL=true`を設定すると、観測ログ・
+変更履歴の全part・匿名売却在庫をmaster CSVと一緒に送ります。旧名の変更ログも
+アップロード前に分割します。変更履歴は1ファイル30 MiB以下で、アップローダーの
+35 MiB上限を下回ります。すでにJSONL保存が有効な場合は次回実行前に再デプロイが必要です。
+既定ではmasterのみを保存します。
+
+データ形式の互換性と移行手順は[`Actions復旧とログ分割`](../docs/actions_log_rotation.md)を
+参照してください。過去に保存した旧名ログと分割ログを同時に集計すると重複するため、
+読み込み対象は移行後のファイル集合にそろえてください。
+
 ## 4. 旧Apps Scriptの無効化
 
 旧コードは認証なしの公開URLだったため、Apps Scriptの「デプロイを管理」から旧デプロイを

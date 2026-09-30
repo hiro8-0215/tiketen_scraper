@@ -34,6 +34,6 @@ jobs:
           GDRIVE_WEBAPP_URL: ${{ secrets.GDRIVE_WEBAPP_URL }}
           GDRIVE_UPLOAD_TOKEN: ${{ secrets.GDRIVE_UPLOAD_TOKEN }}
           GDRIVE_SOURCE_DIR: data
-          # Enable only after redeploying Code.gs with JSONL filename support.
+          # Enable only after redeploying Code.gs with numbered JSONL part support.
           GDRIVE_INCLUDE_JSONL: ${{ vars.GDRIVE_INCLUDE_JSONL }}
         run: python upload_to_gdrive.py

@@ -39,6 +39,9 @@ jobs:
 
       - name: 収集・履歴保持の回帰テスト
         run: python -m unittest discover -s tests -q
+
+      - name: 既存の変更履歴を30 MiB以下へ分割（内容一致を検証）
+        run: python ticket_change_log.py --data-dir data
         
       - name: 全対象のAPI状態を収集
         env:

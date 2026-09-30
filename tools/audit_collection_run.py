@@ -2,8 +2,12 @@
 import argparse
 import csv
 import json
+import sys
 from collections import Counter
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from ticket_change_log import change_log_paths
 
 
 def read_master(path):
@@ -103,7 +107,7 @@ def audit(before_dir, after_dir):
             if active != expected:
                 errors.append(f'{performer}/{event}: API active={expected}, saved current={active}')
     ledger_records = 0
-    for path in after_dir.glob('ticket_changes_*.jsonl'):
+    for path in change_log_paths(after_dir):
         with path.open(encoding='utf-8') as stream:
             for line in stream:
                 json.loads(line)

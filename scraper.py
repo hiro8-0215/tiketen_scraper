@@ -15,6 +15,7 @@ from collection_evidence import EVIDENCE_COLUMNS, reconcile_public_listings
 from collection_evidence import fetch_public_ticket, apply_public_evidence
 from collection_content import apply_api_preview
 from concurrent.futures import ThreadPoolExecutor
+from ticket_change_log import append_changes
 
 # === タイムリミット設定 ===
 # 25分経過で途中保存して正常終了。次回トリガーで続きを自動再開。
@@ -679,10 +680,7 @@ def save_ticket_changes(performer, before, master, observed_at, observed_at_utc)
                         'before': _sanitized_row(old or {}, fields),
                         'after': _sanitized_row(row, fields)})
     if records:
-        path = os.path.join(DATA_DIR, 'ticket_changes_' + datetime.now().strftime('%Y%m%d') + '.jsonl')
-        with open(path, 'a', encoding='utf-8') as stream:
-            for record in records:
-                stream.write(json.dumps(record, ensure_ascii=True) + '\n')
+        append_changes(DATA_DIR, datetime.now().strftime('%Y%m%d'), records)
 
 def save_snapshots(performer, master):
     import pandas as pd
