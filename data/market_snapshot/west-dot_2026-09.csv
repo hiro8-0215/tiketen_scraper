@@ -1,11 +1,11 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-09,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,707,685,100,186,396,34005.208333333336,17500,85000,19,3,33769.883040935674,3200,85000
-2026-09,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,523,508,70,149,287,31736.257142857143,20000,67000,13,2,31320.862332695986,6200,67000
+2026-09,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,707,685,100,186,396,34057.291666666664,17500,85000,19,3,33777.19298245614,3200,85000
+2026-09,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,523,508,70,149,287,31879.114285714284,20000,67000,13,2,31339.982791586997,6200,67000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-18,18:00,Zepp Haneda (TOKYO),8,4,0,4,0,0.0,0,0,4,0,12750.0,9000,20000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-19,13:00,Zepp Haneda (TOKYO),3,2,0,2,0,0.0,0,0,1,0,9333.333333333334,9000,10000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-19,18:00,Zepp Haneda (TOKYO),4,4,0,4,0,0.0,0,0,0,0,13750.0,10000,17000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-09-30,19:00,Zepp Nagoya,13,6,0,3,3,0.0,0,0,6,1,29576.923076923078,14000,70000
-2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,13:00,Zepp Nagoya,23,15,2,5,8,16000.0,12000,20000,5,3,24239.130434782608,9000,59000
+2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,13:00,Zepp Nagoya,23,15,2,5,8,14850.0,9700,20000,5,3,24139.130434782608,9000,59000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,18:00,Zepp Nagoya,47,38,8,8,21,10437.5,9000,13000,6,3,19002.380952380954,8000,200000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-14,19:00,Zepp Namba (OSAKA),78,73,10,22,41,20650.0,10000,50000,1,4,16942.30769230769,9000,50000
 2026-09,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,13:00,Zepp Namba (OSAKA),33,31,4,8,19,16375.0,10500,30000,2,0,14606.060606060606,9000,35000
