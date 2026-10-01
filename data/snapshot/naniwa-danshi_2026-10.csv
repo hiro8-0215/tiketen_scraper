@@ -1,0 +1,27 @@
+﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,ticket_type,name_type,delivery_method,seller_name,seller_rating,order_num,ticket_tags,first_observed_at,first_observed_source,last_observed_at,sold_at,sold_at_source,status,quantity,price,raw_description,details_fetched,canonical_ticket_id,identity_first_observed_at,observation_state,state_checked_at,absence_first_observed_at,status_source,is_price_on_request,price_source,public_ticket_status,api_description,description_source,description_checked_at,description_is_full,content_checked_at,public_event_id,seat_type,year_month
+z6mhc419tw,,naniwa-danshi-nd5,2026-10-28,15:00,ららアリーナ 東京ベイ（LaLa arena TOKYO-BAY）,electronic,female,同行,おる,5.0,,QR / 番手 / 同行,2026-10-01 00:02:42,scrape_observed,2026-10-01 00:02:42,,,listing,1,60000,"2名義中2番手
+単番×2名義
+
+FC先行/QR毎/初期当選/下3桁提示可/有効期限内/発送物戻りなし/着ブロ希望なし
+
+※サイチェン不可
+※アンコール前の途中退場や名義に傷つける行為はおやめ下さい。
+
+・当日までお席が不明なため、発券した座席によるクレーム、キャンセルなどは承りません。
+・当日会場付近にて集合して頂きます。詳しい待ち合わせ時間・場所等は、ご入金後にお知らせします。指定時間にお越し頂けない場合は先に入場させて頂きますのでお時間には余裕を持ってお越しください。
+・代理購入は不可
+・公演中止の際は規約に従い手数料を引いた金額を返金いたしますが、その他の体調不良、ランダムエラー、交通事情を含む待ち合わせ遅刻等の如何なる理由でも返金は一切いたしませんのでご了承ください。
+・上記内容に記載がない事は対応出来かねますのでご了承ください。
+・当日はログイン情報をお伝えいたしますので、先方の端末でのQR表示のご協力をお願いします。
+以上、全てご理解頂けましたらご購入をお願いいたします。",True,z6mhc419tw,2026-10-01 00:02:42,active,2026-10-01 00:15:43,,public_detail,False,public_detail,active,"2名義中2番手
+単番×2名義
+
+FC先行/QR毎/初期当選/下3桁提示可/有効期限内/発送物戻りなし/着ブロ希望なし
+
+※サイチェン不可
+※アンコール前の途中退...",public_detail,2026-10-01 00:15:43,True,2026-10-01 00:15:43,oi04S6aJMUNBTATTvUxn,"{""isSpecified"": false, ""value"": """"}",2026-10
+hkq0qa2wfo,,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,electronic,female,同行,Teno,5.0,,同行,2026-10-01 00:02:56,scrape_observed,2026-10-01 00:02:56,,,listing,2,20000,"6名義中4番手/初期当選/有効期限内/すり替えなし/下三桁提示可能
+
+ランダムエラー、出演者変更、体調不良、交通機関の乱れなどの如何なる理由により入場できなかった場合でも受け取り通知をして頂きます。購入後のクレームについては一切受け付けませんのでご了承ください。",True,hkq0qa2wfo,2026-10-01 00:02:56,active,2026-10-01 00:14:16,,public_detail,False,public_detail,active,"6名義中4番手/初期当選/有効期限内/すり替えなし/下三桁提示可能
+
+ランダムエラー、出演者変更、体調不良、交通機関の乱れなどの如何なる理由により入場できなかっ...",public_detail,2026-10-01 00:14:16,True,2026-10-01 00:14:16,1Cl2VvDmJVZqGnDqCyq0,"{""isSpecified"": false, ""value"": """"}",2026-10
