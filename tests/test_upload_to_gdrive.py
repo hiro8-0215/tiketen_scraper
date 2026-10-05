@@ -21,6 +21,80 @@ def successful_response():
 
 
 class DriveUploadRetryTest(unittest.TestCase):
+    def test_exhausted_transient_failure_is_distinct_from_permanent_rejection(self):
+        error = urllib.error.HTTPError('https://example.invalid', 404, 'Not Found', {}, None)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory, 'group_master.csv')
+            path.write_text('ticket_id\n', encoding='utf-8')
+            with (patch.object(upload_to_gdrive.urllib.request, 'urlopen', side_effect=error) as request,
+                  patch.object(upload_to_gdrive.time, 'sleep') as sleep,
+                  patch('builtins.print'),
+                  self.assertRaises(upload_to_gdrive.TransientUploadError)):
+                upload_to_gdrive.upload_file('https://example.invalid', 'token', path, 'data_10_6')
+            self.assertEqual(request.call_count, 5)
+            self.assertEqual([call.args[0] for call in sleep.call_args_list], [10, 20, 40, 60])
+
+    def test_recovery_retries_only_failed_files_after_other_files(self):
+        paths = [Path('first.csv'), Path('second.csv'), Path('third.csv')]
+        attempted = []
+
+        def upload(url, token, path, folder, deadline=None):
+            attempted.append(path.name)
+            if path.name == 'first.csv' and attempted.count(path.name) == 1:
+                raise upload_to_gdrive.TransientUploadError('temporary 404')
+
+        with (patch.object(upload_to_gdrive, 'upload_file', side_effect=upload),
+              patch.object(upload_to_gdrive.time, 'sleep') as sleep,
+              patch('builtins.print')):
+            upload_to_gdrive.upload_files('https://example.invalid', 'token', paths, 'data_10_6')
+        self.assertEqual(attempted, ['first.csv', 'second.csv', 'third.csv', 'first.csv'])
+        sleep.assert_called_once_with(60)
+
+    def test_persistent_failure_is_reported_without_false_success(self):
+        with (patch.object(upload_to_gdrive, 'upload_file',
+                           side_effect=upload_to_gdrive.TransientUploadError('temporary 404')) as upload,
+              patch.object(upload_to_gdrive.time, 'sleep'), patch('builtins.print'),
+              self.assertRaisesRegex(upload_to_gdrive.TransientUploadError, 'group_master.csv')):
+            upload_to_gdrive.upload_files('https://example.invalid', 'token',
+                                          [Path('group_master.csv')], 'data_10_6')
+        self.assertEqual(upload.call_count, 3)
+
+    def test_permanent_failure_does_not_enter_recovery_passes(self):
+        with (patch.object(upload_to_gdrive, 'upload_file', side_effect=RuntimeError('Unauthorized')) as upload,
+              patch.object(upload_to_gdrive.time, 'sleep') as sleep,
+              self.assertRaisesRegex(RuntimeError, 'Unauthorized')):
+            upload_to_gdrive.upload_files('https://example.invalid', 'token',
+                                          [Path('group_master.csv')], 'data_10_6')
+        upload.assert_called_once()
+        sleep.assert_not_called()
+
+    def test_retry_budget_stops_before_sleep_or_network_after_deadline(self):
+        with patch.object(upload_to_gdrive.time, 'monotonic', return_value=100), \
+             patch.object(upload_to_gdrive.time, 'sleep') as sleep, \
+             self.assertRaises(upload_to_gdrive.TransientUploadError):
+            upload_to_gdrive.wait_for_retry(10, deadline=105)
+        sleep.assert_not_called()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory, 'group_master.csv')
+            path.write_text('ticket_id\n', encoding='utf-8')
+            with (patch.object(upload_to_gdrive.time, 'monotonic', return_value=100),
+                  patch.object(upload_to_gdrive.urllib.request, 'urlopen') as request,
+                  self.assertRaises(upload_to_gdrive.TransientUploadError)):
+                upload_to_gdrive.upload_file('https://example.invalid', 'token', path,
+                                            'data_10_6', deadline=99)
+            request.assert_not_called()
+
+    def test_request_timeout_is_bounded_by_remaining_budget(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory, 'group_master.csv')
+            path.write_text('ticket_id\n', encoding='utf-8')
+            with (patch.object(upload_to_gdrive.time, 'monotonic', return_value=100),
+                  patch.object(upload_to_gdrive.urllib.request, 'urlopen',
+                               return_value=successful_response()) as request, patch('builtins.print')):
+                upload_to_gdrive.upload_file('https://example.invalid', 'token', path,
+                                            'data_10_6', deadline=107)
+            self.assertEqual(request.call_args.kwargs['timeout'], 7)
+
     def test_main_includes_observation_and_anonymous_sold_inventory(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -93,7 +167,7 @@ class DriveUploadRetryTest(unittest.TestCase):
                 )
 
         self.assertEqual(urlopen.call_count, 2)
-        sleep.assert_called_once_with(1)
+        sleep.assert_called_once_with(10)
 
     def test_access_denial_is_not_retried(self):
         error = urllib.error.HTTPError(

@@ -37,6 +37,11 @@ GitHubの`Actions` → `Daily Archive to Google Drive` → `Run workflow`を実�
 成功後、Drive保存先に当日名のフォルダと`*_master.csv`があることを確認します。
 以降は`Ticket Scraper`ワークフローが成功すると自動実行されます。
 
+HTTP 404などの一時エラーは10/20/40/60秒間隔で再試行し、なお失敗したファイルは
+他のファイルを保存してから60秒後・120秒後に再試行します。全体の時間予算は15分です。
+全ファイルの保存が完了した場合のみ成功を報告します。原因と運用上の限界は
+[`一時障害と復旧対応`](../docs/actions_transient_recovery.md)を参照してください。
+
 ### 変更履歴JSONLも保存する場合
 
 `ticket_changes_YYYYMMDD_001.jsonl`などの分割ファイルを受け付ける更新済み`Code.gs`を
