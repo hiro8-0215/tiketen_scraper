@@ -5,8 +5,10 @@
 Event API descriptions are previews, stored as `api_description`. They never
 overwrite a saved full `raw_description`. The details stage now refreshes all
 confirmed active tickets through the same public lookup used by ticket pages,
-with two workers, 0.5s per-request delay and the existing 25-minute checkpoint
-budget. Repeated performer copies share the same response cache. Each full
+with two workers, 0.5s per-request delay and a 40-minute checkpoint budget
+(extended from 25 minutes on 2026-10-06). The API and details stages each run in
+their own process with this budget; the Actions job allows 90 minutes including
+setup and persistence. Repeated performer copies share the same response cache. Each full
 description has `description_source=public_detail`, `description_is_full=True`
 and `description_checked_at`; `content_checked_at` timestamps field refreshes.
 Public responses also refresh quantity, date/time, venue, ticket/name/delivery

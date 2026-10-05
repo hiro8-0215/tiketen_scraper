@@ -18,9 +18,9 @@ from concurrent.futures import ThreadPoolExecutor
 from ticket_change_log import append_changes
 
 # === タイムリミット設定 ===
-# 25分経過で途中保存して正常終了。次回トリガーで続きを自動再開。
+# 40分経過で途中保存して正常終了。次回トリガーで続きを自動再開。
 SCRAPE_START_TIME = time.time()
-MAX_RUNTIME_SECONDS = 25 * 60  # 25分
+MAX_RUNTIME_SECONDS = 40 * 60  # 40分
 SCRAPE_MODE = os.environ.get('SCRAPE_MODE', 'full').strip().lower()
 if SCRAPE_MODE not in {'full', 'api', 'details'}:
     raise RuntimeError(
@@ -741,7 +741,7 @@ def save_snapshots(performer, master):
 def enrich_ticket_details(performer, master, ticket_ids, cache=None):
     """Refresh full public content each run, including already fetched rows.
 
-    Two workers, 0.5s delay, original 25-minute limit and atomic checkpoints.
+    Two workers, 0.5s delay, 40-minute limit and atomic checkpoints.
     Failed/null/rotated replies never erase earlier full descriptions.
     """
     cache = {} if cache is None else cache
@@ -910,7 +910,7 @@ def main():
         performer = target['name']
         source_performer = target['source']
         if SCRAPE_MODE != 'api' and not is_time_remaining():
-            print(f"[TIME LIMIT] 25分経過のため残りのperformerをスキップします。次回実行で継続します。")
+            print(f"[TIME LIMIT] {MAX_RUNTIME_SECONDS // 60}分経過のため残りのperformerをスキップします。次回実行で継続します。")
             time_limit_reached = True
             break
         print(f"=== Processing {performer} ===")
