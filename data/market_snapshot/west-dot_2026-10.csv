@@ -1,11 +1,11 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-10,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,857,793,138,0,648,31565.185185185186,17000,85000,29,35,31208.013268998795,6000,85000
-2026-10,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,590,533,83,0,441,30348.0,3500,67000,23,34,30014.06712564544,2500,230000
+2026-10,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,857,793,138,0,648,31498.51851851852,17000,85000,29,35,31197.15681544029,6000,85000
+2026-10,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,591,534,84,0,441,30281.975308641977,3500,67000,23,34,30005.451890034365,2500,230000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,13:00,Zepp Nagoya,4,1,0,0,0,0.0,0,0,1,2,26625.0,10000,65000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,18:00,Zepp Nagoya,17,8,0,0,1,0.0,0,0,0,9,7117.64705882353,500,25000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-14,19:00,Zepp Namba (OSAKA),83,79,17,0,62,19217.647058823528,1000,50000,2,2,18968.67469879518,1000,50000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,13:00,Zepp Namba (OSAKA),38,28,5,0,23,20500.0,1000,50000,6,4,16386.842105263157,1000,50000
-2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,18:00,Zepp Namba (OSAKA),96,90,15,0,74,28286.666666666668,1800,53000,5,1,24889.166666666668,1800,53000
+2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,18:00,Zepp Namba (OSAKA),96,90,15,0,74,28253.333333333332,1800,53000,5,1,24883.958333333332,1800,53000
 2026-10,rocknroll-stage-2026,2026-11-07,13:00,兵庫県立芸術文化センター 阪急 中ホール,6,6,0,0,5,0.0,0,0,0,0,0.0,0,0
 2026-10,rocknroll-stage-2026,2026-11-08,12:00,兵庫県立芸術文化センター 阪急 中ホール,1,0,0,0,0,0.0,0,0,0,1,22000.0,22000,22000
 2026-10,rocknroll-stage-2026,2026-11-14,18:00,東京建物 ぴあ シアター,3,3,1,0,2,26000.0,26000,26000,0,0,26000.0,26000,26000
