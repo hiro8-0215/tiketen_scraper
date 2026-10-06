@@ -1,11 +1,11 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-10,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,858,792,137,0,648,31589.55223880597,16600,85000,30,36,31185.714457831324,6000,85000
-2026-10,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,591,534,84,0,441,30198.024691358023,3500,67000,23,34,29993.768041237112,2500,230000
+2026-10,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,858,791,136,0,648,31654.135338345866,16600,85000,31,36,31188.12409638554,6000,85000
+2026-10,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,592,534,84,0,441,30136.296296296296,3500,67000,23,35,29968.04974271012,2500,230000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,13:00,Zepp Nagoya,4,1,0,0,0,0.0,0,0,1,2,26625.0,10000,65000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,18:00,Zepp Nagoya,17,8,0,0,1,0.0,0,0,0,9,7117.64705882353,500,25000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-14,19:00,Zepp Namba (OSAKA),83,77,15,0,62,20646.666666666668,1000,50000,4,2,18968.67469879518,1000,50000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,13:00,Zepp Namba (OSAKA),38,28,5,0,23,20500.0,1000,50000,6,4,16386.842105263157,1000,50000
-2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,18:00,Zepp Namba (OSAKA),96,90,15,0,74,28253.333333333332,1800,53000,5,1,24883.958333333332,1800,53000
+2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,18:00,Zepp Namba (OSAKA),96,89,14,0,74,30142.85714285714,2000,53000,5,2,24883.958333333332,1800,53000
 2026-10,rocknroll-stage-2026,2026-11-07,13:00,兵庫県立芸術文化センター 阪急 中ホール,6,6,0,0,5,0.0,0,0,0,0,0.0,0,0
 2026-10,rocknroll-stage-2026,2026-11-08,12:00,兵庫県立芸術文化センター 阪急 中ホール,1,0,0,0,0,0.0,0,0,0,1,22000.0,22000,22000
 2026-10,rocknroll-stage-2026,2026-11-14,18:00,東京建物 ぴあ シアター,3,3,1,0,2,26000.0,26000,26000,0,0,26000.0,26000,26000
