@@ -6,12 +6,14 @@ import glob
 import json
 import os
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from ticket_change_log import change_log_paths, migrate_legacy_logs
+from drive_backup_parts import prepare_uploads
 
 
 JST = timezone(timedelta(hours=9), "JST")
@@ -114,9 +116,11 @@ def upload_file(webapp_url: str, token: str, path: Path, subfolder: str,
     print(f"uploaded: {path.name} -> {body.get('fileId')}", flush=True)
 
 
-def upload_files(webapp_url: str, token: str, paths: list[Path], subfolder: str) -> None:
+def upload_files(webapp_url: str, token: str, paths: list[Path], subfolder: str,
+                 deadline: float | None = None) -> None:
     """Keep successful uploads, then recover only transiently failed files."""
-    deadline = time.monotonic() + UPLOAD_BUDGET_SECONDS
+    if deadline is None:
+        deadline = time.monotonic() + UPLOAD_BUDGET_SECONDS
     pending = list(paths)
     failures = {}
     for pass_number in range(len(RECOVERY_DELAYS) + 1):
@@ -158,8 +162,14 @@ def main() -> None:
         anonymous_sold = source_dir / 'anonymous_sold_inventory.jsonl'
         if anonymous_sold.exists():
             paths.append(anonymous_sold)
-    print(f"Uploading {len(paths)} data files to {subfolder}", flush=True)
-    upload_files(webapp_url, token, paths, subfolder)
+    with tempfile.TemporaryDirectory(prefix='drive-backup-') as directory:
+        data, manifests = prepare_uploads(paths, Path(directory), MAX_FILE_BYTES)
+        print(f"Uploading {len(data)} data files and {len(manifests)} manifests to {subfolder}", flush=True)
+        deadline = time.monotonic() + UPLOAD_BUDGET_SECONDS
+        upload_files(webapp_url, token, data, subfolder, deadline=deadline)
+        # Publish metadata only when every part succeeded, using the same budget.
+        if manifests:
+            upload_files(webapp_url, token, manifests, subfolder, deadline=deadline)
     print("Google Drive backup completed.", flush=True)
 
 

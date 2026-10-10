@@ -37,6 +37,13 @@ GitHubの`Actions` → `Daily Archive to Google Drive` → `Run workflow`を実�
 成功後、Drive保存先に当日名のフォルダと`*_master.csv`があることを確認します。
 以降は`Ticket Scraper`ワークフローが成功すると自動実行されます。
 
+35 MiBを超えるmaster CSVは、送信時だけ30 MiB以下の`*.part001_master.csv`などへ
+分割します。全ファイル送信後に`drive_backup_manifest_master.csv`を保存します。
+Apps Scriptの再デプロイは不要です。GitHub上の元CSVの形式・名前は変わりません。
+Driveの日付フォルダは直接モデルへ渡さず、`restore_drive_backups.py`で元の名前へ
+復元してください。SHA-256検証、変更点、制約、復元コマンドは
+[`大きなmaster CSVのバックアップ`](../docs/drive_large_csv_backups.md)を参照してください。
+
 HTTP 404などの一時エラーは10/20/40/60秒間隔で再試行し、なお失敗したファイルは
 他のファイルを保存してから60秒後・120秒後に再試行します。全体の時間予算は15分です。
 全ファイルの保存が完了した場合のみ成功を報告します。原因と運用上の限界は

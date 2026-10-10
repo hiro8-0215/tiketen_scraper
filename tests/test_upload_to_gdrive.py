@@ -126,6 +126,7 @@ class DriveUploadRetryTest(unittest.TestCase):
                 'ticket_changes_20260928_001.jsonl',
                 'ticket_changes_20260928_002.jsonl',
                 'anonymous_sold_inventory.jsonl',
+                'drive_backup_manifest_master.csv',
             })
 
     def test_main_defaults_to_master_only_until_webapp_redeployed(self):
@@ -144,7 +145,8 @@ class DriveUploadRetryTest(unittest.TestCase):
                 patch('builtins.print'),
             ):
                 upload_to_gdrive.main()
-            self.assertEqual([call.args[2].name for call in upload.call_args_list], ['group_master.csv'])
+            self.assertEqual([call.args[2].name for call in upload.call_args_list],
+                             ['group_master.csv', 'drive_backup_manifest_master.csv'])
 
     def test_transient_404_is_retried(self):
         error = urllib.error.HTTPError(

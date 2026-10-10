@@ -10,6 +10,11 @@
 置かず、Google Driveまたはローカルで管理します。Google Drive自動保存の設定は
 `google_drive_apps_script/README.md`を参照してください。
 
+35 MiBを超えるmaster CSVはDriveへの送信時だけ分割します。GitHubのCSVは元のままです。
+Driveから取得した日付フォルダを学習に使う前に`restore_drive_backups.py`で復元してください。
+ファイル名の変更、元CSVとの完全一致検証、復元手順は
+[`大きなmaster CSVのバックアップ`](docs/drive_large_csv_backups.md)に記載しています。
+
 `decision_support_models/`にはModel 16を価格基準として使用する需要・代替出品・買い時
 モデルがあり、`hybrid_AI_model13`〜`hybrid_AI_model16`には価格モデルの世代別コードが
 あります。学習前にはsnapshot品質ゲートが実行されます。
