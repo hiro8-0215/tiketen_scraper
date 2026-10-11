@@ -1,9 +1,9 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-10,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,1647,1557,154,1,1393,28640.098684210527,1000,85000,40,50,30218.26774595268,1000,85000
-2026-10,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,1103,1020,91,1,919,27238.65168539326,500,60000,34,49,28991.6648199446,500,230000
+2026-10,kamigata-expo-park-fes-2026,2026-10-31,,[大阪府] 万博記念公園,1647,1557,153,1,1393,28677.450331125827,1000,85000,40,50,30217.64508094645,1000,85000
+2026-10,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,1103,1018,89,1,919,27347.58620689655,500,60000,34,51,28991.6648199446,500,230000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,13:00,Zepp Nagoya,4,1,0,0,0,0.0,0,0,1,2,26625.0,10000,65000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-01,18:00,Zepp Nagoya,17,8,0,0,1,0.0,0,0,0,9,7117.64705882353,500,25000
-2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-14,19:00,Zepp Namba (OSAKA),169,157,17,0,136,21882.352941176472,10000,50000,6,6,19669.8224852071,900,50000
+2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-14,19:00,Zepp Namba (OSAKA),169,157,17,0,136,21823.529411764706,10000,50000,6,6,19663.905325443786,900,50000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,13:00,Zepp Namba (OSAKA),57,44,3,0,39,36000.0,20000,48000,7,6,21819.298245614034,1000,50000
 2026-10,kamiyama-tomohiro-1st-live-tour-2026-input-output,2026-10-15,18:00,Zepp Namba (OSAKA),173,162,11,0,144,39200.0,30000,50000,8,3,26123.89534883721,900,53000
 2026-10,rocknroll-stage-2026,2026-11-07,13:00,兵庫県立芸術文化センター 阪急 中ホール,11,11,0,0,10,0.0,0,0,0,0,0.0,0,0
