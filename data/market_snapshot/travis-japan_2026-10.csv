@@ -1,9 +1,9 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
 2026-10,knockin-on-locked-door-the-stage,2026-10-21,13:00,[東京都] EX THEATER ARIAKE (東京ドリームパーク内),6,5,0,0,3,0.0,0,0,0,1,14000.0,6000,30000
 2026-10,knockin-on-locked-door-the-stage,2026-10-21,18:00,[東京都] EX THEATER ARIAKE (東京ドリームパーク内),11,6,0,0,5,0.0,0,0,1,4,10350.0,8000,14500
-2026-10,knockin-on-locked-door-the-stage,2026-10-23,13:00,[東京都] EX THEATER ARIAKE (東京ドリームパーク内),23,20,6,0,14,13700.0,9500,20000,0,3,12261.904761904761,5500,22000
+2026-10,knockin-on-locked-door-the-stage,2026-10-23,13:00,[東京都] EX THEATER ARIAKE (東京ドリームパーク内),23,20,6,0,14,13100.0,7000,20000,0,3,12119.047619047618,5500,22000
 2026-10,knockin-on-locked-door-the-stage,2026-10-24,13:00,[東京都] EX THEATER ARIAKE (東京ドリームパーク内),10,9,3,0,6,12833.333333333334,8000,17000,0,1,11850.0,8000,17000
-2026-10,knockin-on-locked-door-the-stage,2026-10-24,18:00,[東京都] EX THEATER ARIAKE (東京ドリームパーク内),21,20,6,0,14,10100.0,8500,14500,0,1,10416.666666666666,8500,14500
+2026-10,knockin-on-locked-door-the-stage,2026-10-24,18:00,[東京都] EX THEATER ARIAKE (東京ドリームパーク内),22,21,7,0,14,9916.666666666666,8500,14500,0,1,10342.105263157895,8500,14500
 2026-10,knockin-on-locked-door-the-stage,2026-10-25,13:00,[東京都] EX THEATER ARIAKE (東京ドリームパーク内),48,46,14,0,31,15461.538461538461,5000,28000,0,2,18200.0,5000,50000
 2026-10,knockin-on-locked-door-the-stage,2026-11-07,18:00,[大阪府] オリックス劇場,27,27,9,0,18,14555.555555555555,6000,20000,0,0,14555.555555555555,6000,20000
 2026-10,knockin-on-locked-door-the-stage,2026-11-08,12:00,[大阪府] オリックス劇場,9,9,3,0,6,13333.333333333334,12000,14000,0,0,13444.444444444445,12000,15000
