@@ -1,5 +1,5 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-11,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,91,71,9,0,2,22666.666666666668,5000,38000,10,10,19938.05617977528,1000,50000
+2026-11,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,91,71,9,0,2,22333.333333333332,5000,38000,10,10,19904.34831460674,1000,50000
 2026-11,twinkle-seven-stars-naniwadanshi,2026-11-08,,コニカミノルタ プラネタリア TOKYO,1,1,1,0,0,2000.0,2000,2000,0,0,2000.0,2000,2000
 2026-11,twinkle-seven-stars-naniwadanshi,2026-11-11,,コニカミノルタ プラネタリア TOKYO,1,1,1,0,0,1500.0,1500,1500,0,0,1500.0,1500,1500
 2026-11,twinkle-seven-stars-naniwadanshi,2026-11-14,,コニカミノルタ プラネタリア TOKYO,1,1,1,0,0,2500.0,2500,2500,0,0,2500.0,2500,2500
