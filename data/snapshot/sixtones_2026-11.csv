@@ -1,0 +1,13 @@
+﻿ticket_id,created_at_unix,event_id,perf_date,perf_time,venue,ticket_type,name_type,delivery_method,seller_name,seller_rating,order_num,ticket_tags,first_observed_at,first_observed_source,last_observed_at,sold_at,sold_at_source,status,quantity,price,raw_description,details_fetched,canonical_ticket_id,identity_first_observed_at,observation_state,state_checked_at,absence_first_observed_at,status_source,is_price_on_request,price_source,public_ticket_status,api_description,description_source,description_checked_at,description_is_full,content_checked_at,public_event_id,seat_type,year_month
+jatz0637e1,,milesixtones-2026,2026-11-07,17:00,ヤンマースタジアム長居,electronic,female,同行,mchan,5.0,,ランダム,2026-11-01 00:12:34,scrape_observed,2026-11-01 00:12:34,,,listing,1,35000,"FC先行　座席未定 複数名義ランダム配布。全て初期当選有効期限内名義。
+
+チケット持ち逃げ防止の為、ご購入者様ご自身の使用しているスマートフォン又は、顔写真付きの身分証明書の原本、場合によっては両方を入場前にお預かりいたします。発券したチケットと引き換えでお預かりした物を返却させていただきます。
+
+開場時間より10分前に集合予定。お時間に余裕を持って待ち合わせに来られる方のみでお願いいたします。体調不良や到着が大幅に遅れる場合は先に入場いたしますが受け取りしていただきますのでご了承ください。入場後一旦チケットを回収させて頂き、当方が席を選択した後、開演10分前までにチケットをお渡し致します。その際に受け取り連絡をお願いいたします。座席を確認するのにお時間を頂く可能性がございます。座席に関するクレームは一切受け付けません。ご了承ください。
+
+入場時・入場後の本人確認等で入場頂けなかった場合や公演をご覧になれなかった場合などを含め、公演中止以外の如何なる場合でも返金は致しかねます。また、購入後のキャンセルもご遠慮ください。
+チケットお渡し、解散後のトラブルに対しても対応は致しかねます。チケットをお渡しした時点でお取引終了となります。また、お渡ししたチケットに何か問題がある場合は、解散後に連絡ボードにてではなく、解散前に直接仰ってください。デジタルチケットの為、座席へのクレームは受け付けません。
+
+公演中止を除き入場エラーによるトラブルなど如何なる場合も返金は対応致しかねますのでご了承ください。連絡が迅速に取れる方、時間を守れる方、日本人成人女性のみでお願いいたします。スムーズにお取引するため、公演当日に電話番号をお伺いする場合がございます。以上、すべてご了承いただける方のみご購入をお願いいたします。詳しい待ち合わせ時間・場所等は、ご入金後にマイページの連絡ボードでお知らせします。",True,jatz0637e1,2026-11-01 00:12:34,active,2026-11-01 00:22:38,,public_detail,False,public_detail,active,"FC先行　座席未定 複数名義ランダム配布。全て初期当選有効期限内名義。
+
+チケット持ち逃げ防止の為、ご購入者様ご自身の使用しているスマートフォン又は、顔写真付き...",public_detail,2026-11-01 00:22:38,True,2026-11-01 00:22:38,xng29IdgvpyH1KhxG0ye,"{""isSpecified"": false, ""value"": """"}",2026-11
