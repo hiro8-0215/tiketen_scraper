@@ -910,11 +910,10 @@ def main():
 
     time_limit_reached = False
     public_cache = load_run_cache()
-    # ShareCode rotations can leave over 2,800 recently observed codes to
-    # verify in one poll. Keep the quality gate strict, but allow the normal
-    # hourly run to finish those checks rather than reporting false success.
-    public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '3000')))]
-    public_deadline = time.monotonic() + 24 * 60
+    # Recent hourly polls need >3,200 checks. Keep two workers and the strict
+    # quality gate, with headroom inside the existing 40-minute phase budget.
+    public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '6000')))]
+    public_deadline = time.monotonic() + max(0, MAX_RUNTIME_SECONDS - 5 * 60)
     print(f"Scrape mode: {SCRAPE_MODE}")
     for target in targets:
         performer = target['name']
