@@ -9,6 +9,7 @@ from unittest.mock import MagicMock, patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import upload_to_gdrive
+import repository_data_storage
 
 
 def successful_response():
@@ -21,6 +22,24 @@ def successful_response():
 
 
 class DriveUploadRetryTest(unittest.TestCase):
+    def test_main_expands_git_gzip_before_preparing_drive_csv(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory, 'group_master.csv')
+            original = b'ticket_id,description\r\n1,"full text"\r\n'
+            source.write_bytes(original)
+            repository_data_storage.pack_csv(source, threshold=1)
+            observed = []
+            def upload(url, token, path, folder, deadline=None):
+                observed.append(path.name)
+                if path.name == source.name:
+                    self.assertEqual(path.read_bytes(), original)
+            with (patch.dict(upload_to_gdrive.os.environ, {
+                    'GDRIVE_WEBAPP_URL': 'https://example.invalid', 'GDRIVE_UPLOAD_TOKEN': 'test',
+                    'GDRIVE_SOURCE_DIR': directory, 'GDRIVE_INCLUDE_JSONL': ''}),
+                  patch.object(upload_to_gdrive, 'upload_file', side_effect=upload), patch('builtins.print')):
+                upload_to_gdrive.main()
+            self.assertEqual(observed, ['group_master.csv', 'drive_backup_manifest_master.csv'])
+
     def test_exhausted_transient_failure_is_distinct_from_permanent_rejection(self):
         error = urllib.error.HTTPError('https://example.invalid', 404, 'Not Found', {}, None)
         with tempfile.TemporaryDirectory() as directory:

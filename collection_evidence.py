@@ -5,6 +5,7 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from collection_content import CONTENT_COLUMNS, public_updates
+from public_ticket_cache import remember_verified
 
 PUBLIC_QUERY_URL = 'https://asia-northeast1-ticketen-prod.cloudfunctions.net/ticket_queries_get'
 EVIDENCE_COLUMNS = [
@@ -208,6 +209,8 @@ def reconcile_public_listings(master, prior, active_codes, event_id, now,
                 continue
             counts['checked'] += 1
             counts[result] += 1
+            if result != 'stale':
+                remember_verified(cache, ticket, error, checked_at)
     # Persist direct canonical links even after several proved code rotations.
     for code, row in master.items():
         target = row.get('canonical_ticket_id', code)

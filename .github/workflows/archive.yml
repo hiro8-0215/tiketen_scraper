@@ -23,11 +23,30 @@ jobs:
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/*/
+            /.github/
+            /data/*_master.csv
+            /data/*_master.csv.gz
 
       - name: Pythonのセットアップ
         uses: actions/setup-python@v7
         with:
           python-version: "3.11"
+
+      - name: 明示的に有効な場合だけJSONLを取得
+        env:
+          GDRIVE_INCLUDE_JSONL: ${{ vars.GDRIVE_INCLUDE_JSONL }}
+        run: |
+          python - <<'PY'
+          import os, subprocess
+          if os.environ.get('GDRIVE_INCLUDE_JSONL', '').lower() in {'1', 'true', 'yes'}:
+              subprocess.run(['git', 'sparse-checkout', 'add', '--no-cone', '/data/*.jsonl'], check=True)
+          PY
 
       - name: Google Driveへmasterをバックアップ
         env:

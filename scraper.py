@@ -16,6 +16,7 @@ from collection_evidence import fetch_public_ticket, apply_public_evidence
 from collection_content import apply_api_preview
 from concurrent.futures import ThreadPoolExecutor
 from ticket_change_log import append_changes
+from public_ticket_cache import load_run_cache, save_run_cache, remember_verified
 
 # === タイムリミット設定 ===
 # 40分経過で途中保存して正常終了。次回トリガーで続きを自動再開。
@@ -749,6 +750,14 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None):
     pending = sorted(set(ticket_ids), key=lambda c: master[c].get('content_checked_at', ''))
     events = {}
     counts = {'checked':0, 'full':0, 'failed':0, 'null':0, 'pending':0}
+    reusable = {code for code in pending if code in cache and cache[code][1] is None
+                and cache[code][0] is not None
+                and isinstance(cache[code][0].get('description'), str)
+                and cache[code][0].get('shareCode') == code
+                and cache[code][0].get('eventId') == master[code].get('public_event_id')
+                and cache[code][2] >= max(master[code].get('state_checked_at', ''),
+                                        master[code].get('last_observed_at', ''))}
+    print(f'[PUBLIC CONTENT CACHE] {performer}: {len(reusable)}/{len(pending)} replies reusable', flush=True)
     for code in pending:
         row = master[code]
         event = row.get('event_id')
@@ -761,7 +770,7 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None):
     def query(code):
         if not is_time_remaining():
             return code, None, 'time_limit', ''
-        if code not in cache:
+        if code not in reusable:
             try:
                 ticket = fetch_public_ticket(code)
                 cache[code] = (ticket, None, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
@@ -787,6 +796,7 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None):
                 if result == 'stale':
                     counts['pending'] += 1
                     continue
+                remember_verified(cache, ticket, error, checked_at)
                 counts['checked'] += 1
                 canonical = master[code].get('canonical_ticket_id') or code
                 if master[canonical].get('description_checked_at') == checked_at:
@@ -899,7 +909,7 @@ def main():
     now_timezone = str(now_aware.tzinfo)
 
     time_limit_reached = False
-    public_cache = {}
+    public_cache = load_run_cache()
     # ShareCode rotations can leave over 2,800 recently observed codes to
     # verify in one poll. Keep the quality gate strict, but allow the normal
     # hourly run to finish those checks rather than reporting false success.
@@ -927,7 +937,6 @@ def main():
             time_limit_reached = enrich_ticket_details(
                 performer, master, pending, public_cache
             )
-            save_master(performer, master)
             save_snapshots(performer, master)
             if time_limit_reached:
                 print(
@@ -1245,7 +1254,6 @@ def main():
                 performer, master, [code for code, row in master.items()
                                     if row.get('observation_state') == 'active'], public_cache
             )
-            save_master(performer, master)
             save_snapshots(performer, master)
             if time_limit_reached:
                 print(
@@ -1268,6 +1276,7 @@ def main():
             f"API pass saved all {len(targets)} target master files. "
             "Check per-event completeness in observation logs."
         )
+    save_run_cache(public_cache)
 
 if __name__ == '__main__':
     main()

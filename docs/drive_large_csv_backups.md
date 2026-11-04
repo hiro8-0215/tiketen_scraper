@@ -1,5 +1,9 @@
 # Google Driveの大きなmaster CSVへの対応（2026-10-10）
 
+2026-11-05追記: Git保存時は50 MiB以上のCSVを`.csv.gz`にする対応を追加しました。
+CSVの内容、Driveのpart分割・復元手順は維持します。Git保存形式と展開手順は
+[`Actionsの速度と保存失敗の修正`](actions_performance_20261105.md)を参照してください。
+
 ## 障害の原因
 
 `Daily Archive to Google Drive`は、`snow-man_master.csv`が約37 MiBとなり、

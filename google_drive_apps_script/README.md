@@ -1,5 +1,9 @@
 # Google Drive自動バックアップ設定
 
+Gitの`.csv.gz`形式は送信前に自動展開します。Drive側のファイル形式と復元手順は同じです。
+Git保存形式の変更とActionsの取得量削減は
+[`Actionsの速度と保存失敗の修正`](../docs/actions_performance_20261105.md)を参照してください。
+
 GitHub Actionsから認証付きGoogle Apps Scriptへmaster CSVを送り、指定したGoogle Drive
 フォルダの`data_月_日/`へ保存します。同じ日・同じファイル名は置き換えます。
 

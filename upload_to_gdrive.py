@@ -14,6 +14,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from ticket_change_log import change_log_paths, migrate_legacy_logs
 from drive_backup_parts import prepare_uploads
+from repository_data_storage import restore_data
 
 
 JST = timezone(timedelta(hours=9), "JST")
@@ -148,6 +149,7 @@ def main() -> None:
     webapp_url = required_environment("GDRIVE_WEBAPP_URL")
     token = required_environment("GDRIVE_UPLOAD_TOKEN")
     source_dir = Path(os.environ.get("GDRIVE_SOURCE_DIR", "data"))
+    restore_data(source_dir, masters_only=True, skip_existing=True)
     now = datetime.now(JST)
     subfolder = f"data_{now.month}_{now.day}"
     paths = [Path(value) for value in sorted(glob.glob(str(source_dir / "*_master.csv")))]

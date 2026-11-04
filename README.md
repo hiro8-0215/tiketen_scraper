@@ -10,7 +10,13 @@
 置かず、Google Driveまたはローカルで管理します。Google Drive自動保存の設定は
 `google_drive_apps_script/README.md`を参照してください。
 
-35 MiBを超えるmaster CSVはDriveへの送信時だけ分割します。GitHubのCSVは元のままです。
+50 MiB以上のCSVはGit保存時に`.csv.gz`へ可逆圧縮します。列・値は変わりません。
+Actionsは自動展開します。ローカル分析前は
+`python repository_data_storage.py restore --data-dir data`を実行してください。
+保存形式の変更、手動コミット時の注意、速度・失敗原因は
+[`Actionsの速度と保存失敗の修正`](docs/actions_performance_20261105.md)を参照してください。
+
+35 MiBを超えるmaster CSVはDriveへの送信時に分割します。
 Driveから取得した日付フォルダを学習に使う前に`restore_drive_backups.py`で復元してください。
 ファイル名の変更、元CSVとの完全一致検証、復元手順は
 [`大きなmaster CSVのバックアップ`](docs/drive_large_csv_backups.md)に記載しています。

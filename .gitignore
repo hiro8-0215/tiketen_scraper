@@ -4,6 +4,10 @@ __pycache__/
 .venv/
 venv/
 .pytest_cache/
+.test-temp/
+.run-cache/
+node_modules/
+.pptx-work/
 
 # Secrets
 .env
