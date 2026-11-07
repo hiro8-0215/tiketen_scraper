@@ -1,6 +1,6 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-11,knockin-on-locked-door-the-stage,2026-11-07,18:00,[大阪府] オリックス劇場,119,101,9,1,89,10666.666666666666,5000,25000,2,16,12326.89075630252,2000,35000
-2026-11,knockin-on-locked-door-the-stage,2026-11-08,12:00,[大阪府] オリックス劇場,51,45,4,1,40,14000.0,11000,19000,0,6,15160.0,5000,33000
-2026-11,knockin-on-locked-door-the-stage,2026-11-08,17:00,[大阪府] オリックス劇場,63,58,10,2,45,7500.0,4000,12000,0,5,11190.47619047619,4000,25000
+2026-11,knockin-on-locked-door-the-stage,2026-11-07,18:00,[大阪府] オリックス劇場,119,99,6,1,89,8166.666666666667,5000,12000,2,18,12326.89075630252,2000,35000
+2026-11,knockin-on-locked-door-the-stage,2026-11-08,12:00,[大阪府] オリックス劇場,51,45,4,1,40,15500.0,11000,19000,0,6,15280.0,5000,33000
+2026-11,knockin-on-locked-door-the-stage,2026-11-08,17:00,[大阪府] オリックス劇場,63,58,10,2,45,7400.0,4000,12000,0,5,11174.603174603175,4000,25000
 2026-11,knockin-on-locked-door-the-stage,2026-11-10,12:00,[大阪府] オリックス劇場,47,45,5,1,39,16400.0,3000,31000,1,1,15265.95744680851,3000,31000
 2026-11,knockin-on-locked-door-the-stage,2026-11-10,17:00,[大阪府] オリックス劇場,271,259,40,0,219,9640.0,2300,33000,4,8,12025.177777777777,2300,39999
