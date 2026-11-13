@@ -1,17 +1,17 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
 2026-11,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,91,67,0,0,2,0.0,0,0,11,13,19904.34831460674,1000,50000
-2026-11,naniwadanshi-dome-live-nd5-plus,2026-12-31,22:00,京セラドーム大阪,7,7,1,0,6,0.0,0,0,0,0,0.0,0,0
+2026-11,naniwadanshi-dome-live-nd5-plus,2026-12-31,22:00,京セラドーム大阪,8,8,1,0,7,0.0,0,0,0,0,0.0,0,0
 2026-11,twinkle-seven-stars-naniwadanshi,2026-11-06,,コニカミノルタ プラネタリア TOKYO,1,1,0,0,0,0.0,0,0,0,0,1500.0,1500,1500
 2026-11,twinkle-seven-stars-naniwadanshi,2026-11-08,,コニカミノルタ プラネタリア TOKYO,11,11,0,0,9,0.0,0,0,0,0,1827.2727272727273,1200,2000
 2026-11,twinkle-seven-stars-naniwadanshi,2026-11-10,,コニカミノルタ プラネタリア TOKYO,2,1,0,0,1,0.0,0,0,0,1,4000.0,4000,4000
 2026-11,twinkle-seven-stars-naniwadanshi,2026-11-11,,コニカミノルタ プラネタリア TOKYO,9,7,0,0,7,0.0,0,0,1,1,1183.3333333333333,750,1500
 2026-11,twinkle-seven-stars-naniwadanshi,2026-11-12,,コニカミノルタ プラネタリア TOKYO,5,4,0,0,4,0.0,0,0,0,1,1800.0,1500,2000
-2026-11,twinkle-seven-stars-naniwadanshi,2026-11-13,,コニカミノルタ プラネタリア TOKYO,2,2,1,0,1,1600.0,1600,1600,0,0,1800.0,1600,2000
-2026-11,twinkle-seven-stars-naniwadanshi,2026-11-14,,コニカミノルタ プラネタリア TOKYO,12,12,0,0,11,0.0,0,0,0,0,2225.0,1900,2500
-2026-11,twinkle-seven-stars-naniwadanshi,2026-11-15,,コニカミノルタ プラネタリア TOKYO,12,12,1,0,11,1700.0,1700,1700,0,0,1700.0,1700,1700
-2026-11,twinkle-seven-stars-naniwadanshi,2026-11-28,,コニカミノルタ プラネタリア TOKYO,7,7,1,0,6,2100.0,2100,2100,0,0,2100.0,2100,2100
-2026-11,twinkle-seven-stars-naniwadanshi,2026-12-09,,コニカミノルタ プラネタリア TOKYO,1,1,1,0,0,3000.0,3000,3000,0,0,3000.0,3000,3000
-2026-11,twinkle-seven-stars-naniwadanshi-manten,2026-11-14,,コニカミノルタ プラネタリウム満天（池袋）,12,12,1,0,11,2900.0,2900,2900,0,0,2941.6666666666665,2900,3000
+2026-11,twinkle-seven-stars-naniwadanshi,2026-11-13,,コニカミノルタ プラネタリア TOKYO,3,3,1,0,2,1600.0,1600,1600,0,0,1733.3333333333333,1600,2000
+2026-11,twinkle-seven-stars-naniwadanshi,2026-11-14,,コニカミノルタ プラネタリア TOKYO,13,13,0,0,12,0.0,0,0,0,0,2200.0,1900,2500
+2026-11,twinkle-seven-stars-naniwadanshi,2026-11-15,,コニカミノルタ プラネタリア TOKYO,13,13,1,0,12,1700.0,1700,1700,0,0,1700.0,1700,1700
+2026-11,twinkle-seven-stars-naniwadanshi,2026-11-28,,コニカミノルタ プラネタリア TOKYO,8,8,1,0,7,2100.0,2100,2100,0,0,2100.0,2100,2100
+2026-11,twinkle-seven-stars-naniwadanshi,2026-12-09,,コニカミノルタ プラネタリア TOKYO,2,2,1,0,1,3000.0,3000,3000,0,0,3000.0,3000,3000
+2026-11,twinkle-seven-stars-naniwadanshi-manten,2026-11-14,,コニカミノルタ プラネタリウム満天（池袋）,13,13,1,0,12,2900.0,2900,2900,0,0,2938.4615384615386,2900,3000
 2026-11,twinkle-seven-stars-naniwadanshi-skytree,2026-11-06,,コニカミノルタ プラネタリウム 天空,2,1,0,0,1,0.0,0,0,1,0,1350.0,1200,1500
 2026-11,twinkle-seven-stars-naniwadanshi-skytree,2026-11-08,,コニカミノルタ プラネタリウム 天空,5,4,0,0,4,0.0,0,0,0,1,2100.0,2100,2100
 2026-11,twinkle-seven-stars-naniwadanshi-skytree,2026-11-10,,コニカミノルタ プラネタリウム 天空,2,1,0,0,1,0.0,0,0,0,1,3500.0,3500,3500
