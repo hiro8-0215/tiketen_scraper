@@ -180,3 +180,6 @@
 {"performer": "ambitious", "observed_at_utc": "2026-11-15T13:35:16.168116+00:00", "scope": "observed_active", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0}
 {"performer": "boys-be", "observed_at_utc": "2026-11-15T13:35:16.169640+00:00", "scope": "observed_active", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0}
 {"performer": "b-and-zai", "observed_at_utc": "2026-11-15T13:35:20.523549+00:00", "scope": "observed_active", "selected": 9, "checked": 9, "full": 9, "failed": 0, "null": 0, "pending": 0}
+{"performer": "snow-man", "observed_at_utc": "2026-11-15T14:33:41.360559+00:00", "scope": "observed_active", "selected": 1074, "checked": 372, "full": 372, "failed": 702, "null": 0, "pending": 0}
+{"performer": "sixtones", "observed_at_utc": "2026-11-15T14:48:23.151620+00:00", "scope": "observed_active", "selected": 643, "checked": 227, "full": 227, "failed": 416, "null": 0, "pending": 0}
+{"performer": "west-dot", "observed_at_utc": "2026-11-15T14:49:50.975105+00:00", "scope": "observed_active", "selected": 279, "checked": 16, "full": 16, "failed": 39, "null": 0, "pending": 224}
