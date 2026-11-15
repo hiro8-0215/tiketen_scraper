@@ -191,3 +191,6 @@
 {"performer": "west-dot", "observed_at_utc": "2026-11-15T16:50:01.991790+00:00", "scope": "observed_active", "selected": 278, "checked": 6, "full": 6, "failed": 28, "null": 0, "pending": 244}
 {"performer": "snow-man", "observed_at_utc": "2026-11-15T17:35:50.643077+00:00", "scope": "observed_active", "selected": 1078, "checked": 394, "full": 394, "failed": 684, "null": 0, "pending": 0}
 {"performer": "sixtones", "observed_at_utc": "2026-11-15T17:51:09.379052+00:00", "scope": "observed_active", "selected": 650, "checked": 219, "full": 219, "failed": 399, "null": 0, "pending": 32}
+{"performer": "snow-man", "observed_at_utc": "2026-11-15T18:32:59.574185+00:00", "scope": "observed_active", "selected": 1079, "checked": 357, "full": 357, "failed": 722, "null": 0, "pending": 0}
+{"performer": "sixtones", "observed_at_utc": "2026-11-15T18:47:20.533477+00:00", "scope": "observed_active", "selected": 650, "checked": 230, "full": 230, "failed": 420, "null": 0, "pending": 0}
+{"performer": "west-dot", "observed_at_utc": "2026-11-15T18:49:17.469505+00:00", "scope": "observed_active", "selected": 283, "checked": 26, "full": 26, "failed": 55, "null": 0, "pending": 202}
