@@ -229,15 +229,19 @@ class ScraperIdentityTest(unittest.TestCase):
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         rows = {
             'fresh': {'ticket_id': 'fresh', 'event_id': 'event',
+                      'observation_state': 'active', 'quantity': '2',
                       'perf_date': '2026-12-01', 'perf_time': '18:00',
                       'venue': 'venue', 'status': 'listing', 'price': '12000',
                       'first_observed_at': now, 'last_observed_at': now},
             'stale': {'ticket_id': 'stale', 'event_id': 'event',
+                      'observation_state': 'active', 'quantity': '1',
                       'perf_date': '2026-12-01', 'perf_time': '18:00',
                       'venue': 'venue', 'status': 'listing', 'price': '9000',
                       'first_observed_at': now,
                       'last_observed_at': '2026-01-01 00:00:00'},
         }
+        rows['alias'] = dict(rows['fresh'], ticket_id='alias',
+                             observation_state='alias', canonical_ticket_id='fresh')
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             with (patch.object(scraper, 'SNAPSHOT_DIR', str(root / 'snapshot')),
@@ -248,8 +252,12 @@ class ScraperIdentityTest(unittest.TestCase):
                 encoding='utf-8-sig', newline=''
             ) as stream:
                 record = next(csv.DictReader(stream))
-            self.assertEqual(record['active_tickets'], '2')
+            self.assertEqual(record['active_tickets'], '1')
+            self.assertEqual(record['historical_listing_rows'], '2')
             self.assertEqual(record['current_active_tickets'], '1')
+            self.assertEqual(record['current_active_quantity'], '2')
+            self.assertEqual(record['alias_rows'], '1')
+            self.assertEqual(record['total_tickets'], '2')
             self.assertEqual(record['current_avg_price'], '12000.0')
 
     def test_existing_rotations_are_collapsed_and_details_are_preserved(self):

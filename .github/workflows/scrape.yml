@@ -72,6 +72,7 @@ jobs:
       - name: 全対象のAPI状態を収集
         env:
           SCRAPE_MODE: api
+          COLLECTION_COVERAGE_PATH: ${{ runner.temp }}/ticket-collection-coverage.json
         run: python scraper.py
 
       - name: 公開チケット全文を更新（取得済み含む）
@@ -97,6 +98,10 @@ jobs:
           git commit -m "自動更新: チケットデータのスクレイピング"
           git pull --rebase origin main
           git push
+
+      - name: 公演取得漏れを報告（回収済みデータは保存済み）
+        if: always() && !cancelled()
+        run: python tools/check_collection_coverage.py "$RUNNER_TEMP/ticket-collection-coverage.json"
 
       - name: 品質確認結果を反映
         if: steps.audit.outcome == 'failure'

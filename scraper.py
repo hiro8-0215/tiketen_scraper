@@ -3,6 +3,7 @@ import re
 import json
 import csv
 import hashlib
+import html as html_entities
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -50,6 +51,10 @@ class NoEventsFound(ScrapeIntegrityError):
     """The performer page is valid but currently has no linked events."""
 
 
+class UnverifiedEmptyInventory(ScrapeIntegrityError):
+    """An empty response cannot establish outcomes of previously seen listings."""
+
+
 class UnexplainedDisappearance(ScrapeIntegrityError):
     """A complete API poll with active shareCodes that cannot be reconciled."""
 
@@ -90,19 +95,48 @@ def get_events(performer):
     return events
 
 def get_event_id_from_slug(slug):
-    html = fetch_html(f'https://ticketen.jp/events/{slug}')
-    html = html.replace('\\"', '"')
-    
-    match = re.search(rf'"id":"([a-zA-Z0-9]{{20}})","name":"[^"]+","slug":"{slug}"', html)
-    if match: return match.group(1)
-    
-    match = re.search(rf'"slug":"{slug}","id":"([a-zA-Z0-9]{{20}})"', html)
-    if match: return match.group(1)
-    
-    match = re.search(rf'"id":"([a-zA-Z0-9]{{20}})","slug":"{slug}"', html)
-    if match: return match.group(1)
-    
-    return None
+    return extract_event_id(fetch_html(f'https://ticketen.jp/events/{slug}'), slug)
+
+
+def extract_event_id(document, slug):
+    """Resolve only the requested event, not a performer or recommendation."""
+    document = html_entities.unescape(document)
+    decoder = json.JSONDecoder()
+    candidates = set()
+    # Next.js serializes JSON inside script strings. Decode that string layer
+    # rather than destroying the escaping around quotes inside event names.
+    serialized = re.compile(r'"(?:[^"\\]|\\.)*"')
+    embedded = []
+    for script in re.findall(r'<script\b[^>]*>(.*?)</script>', document, re.S | re.I):
+        if r'\"event\"' not in script:
+            continue
+        for token in serialized.finditer(script):
+            if r'\"event\"' in token.group():
+                try:
+                    embedded.append(json.loads(token.group()))
+                except ValueError:
+                    continue
+    if document.startswith('"') and document.endswith('"'):
+        try:
+            embedded.append(json.loads(document))
+        except ValueError:
+            pass
+    for value in (document, *embedded, document.replace('\\"', '"')):
+        if not isinstance(value, str):
+            continue
+        for match in re.finditer(r'"event"\s*:\s*(?=\{)', value):
+            try:
+                event, _ = decoder.raw_decode(value, match.end())
+            except ValueError:
+                continue
+            event_id = event.get('id')
+            if (isinstance(event_id, str)
+                    and re.fullmatch(r'[A-Za-z0-9_-]{1,128}', event_id)
+                    and (event.get('slug') == slug or event_id == slug)):
+                candidates.add(event_id)
+    if len(candidates) > 1:
+        raise ScrapeIntegrityError(f'Ambiguous event ID for {slug}')
+    return next(iter(candidates), None)
 
 def fetch_all_tickets(event_id):
     tickets = []
@@ -114,18 +148,20 @@ def fetch_all_tickets(event_id):
             req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
             res = urllib.request.urlopen(req, timeout=15).read().decode('utf-8')
             data = json.loads(res)
-            batch = data.get('tickets', [])
+            batch = data.get('tickets')
             if not isinstance(batch, list):
                 raise ScrapeIntegrityError(
                     f"Invalid ticket page for {event_id} offset {offset}"
                 )
             tickets.extend(batch)
             has_more = data.get('hasMore')
+            if type(has_more) is not bool:
+                raise ScrapeIntegrityError(f'Missing or invalid hasMore for {event_id} offset {offset}')
             time.sleep(1)  # サーバー負荷軽減: 最終ページ含め全リクエスト後に1秒待機
             if not has_more:
                 break
             next_offset = data.get('nextOffset')
-            if next_offset is None or next_offset == offset:
+            if type(next_offset) is not int or next_offset <= offset or not batch:
                 raise ScrapeIntegrityError(
                     f"Invalid pagination for {event_id} offset {offset}"
                 )
@@ -185,6 +221,7 @@ def _rekey_active_listing(
         by_share_code[old_id] = historical
         row['ticket_id'] = share_code
         row['canonical_ticket_id'] = share_code
+        row['first_observed_source'] = 'created_at_alias_observed'
         master[share_code] = row
     by_share_code[share_code] = row
     if identity_key is not None:
@@ -197,17 +234,26 @@ def _sold_match(ticket, event, by_share_code, by_created_at, by_identity):
     share_code = _identifier_text(ticket.get('shareCode'))
     if (share_code and share_code in by_share_code
             and by_share_code[share_code].get('event_id') == event):
-        return by_share_code[share_code]
+        row = by_share_code[share_code]
+        # Do not convert an archived URL into an independent sale. The current
+        # code may still be active; only its own evidence can conclude its state.
+        if row.get('observation_state') == 'alias':
+            return None
+        return row
     created = _identifier_text(ticket.get('createdAt'))
     price = _identifier_text(ticket.get('pricePerTicket'))
     match_key = _ticket_match_key({
         'created_at_unix': created, 'price': price,
     }, event)
     if match_key is not None and match_key in by_created_at:
-        return by_created_at[match_key]
+        row = by_created_at[match_key]
+        if row.get('observation_state') != 'alias':
+            return row
     identity_key = _listing_identity_key({'created_at_unix': created}, event)
     if identity_key is not None:
-        return by_identity.get(identity_key)
+        row = by_identity.get(identity_key)
+        if row is not None and row.get('observation_state') != 'alias':
+            return row
     return None
 
 
@@ -329,8 +375,10 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
     """Validate a complete event response before changing stored states."""
     if not isinstance(tickets, list):
         raise ScrapeIntegrityError(f"Ticket response for {slug} is not a list")
+    if any(not isinstance(ticket, dict) for ticket in tickets):
+        raise ScrapeIntegrityError(f'Invalid ticket row for {slug}')
     if prior_active and not tickets:
-        raise ScrapeIntegrityError(
+        raise UnverifiedEmptyInventory(
             f"Empty ticket response for {slug} with {len(prior_active)} stored listings"
         )
 
@@ -359,6 +407,8 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
                 raise ScrapeIntegrityError(
                     f"shareCode {share_code} belongs to another event"
                 )
+            if share_code in active_codes:
+                raise ScrapeIntegrityError(f'Duplicate active shareCode for {slug}: {share_code}')
             active_codes.add(share_code)
             identity_key = _listing_identity_key({
                 'created_at_unix': ticket.get('createdAt', ''),
@@ -427,6 +477,9 @@ def mark_confirmed_absences_deleted(master, active_codes_by_event, now_str):
         if (
             row.get('status') == 'listing'
             and row.get('observation_state') != 'alias'
+            and row.get('observation_state') not in {
+                'absent_unknown', 'absent_unverified', 'inactive', 'paused',
+                'public_unclassified', 'expired'}
             and not (row.get('observation_state') == 'active'
                      and row.get('state_checked_at', '') >= now_str
                      and row.get('status_source') == 'public_detail')
@@ -674,10 +727,16 @@ def save_ticket_changes(performer, before, master, observed_at, observed_at_utc)
         old = before.get(code)
         if old is not None and all(str(old.get(f, '')) == str(row.get(f, '')) for f in compared):
             continue
+        first = row.get('first_observed_at')
+        origin = row.get('identity_first_observed_at')
         records.append({'schema_version': 'ticket_change_v1',
                         'performer': performer, 'ticket_id': code,
                         'observed_at': observed_at, 'observed_at_utc': observed_at_utc,
                         'newly_observed_id': old is None,
+                        'newly_observed_listing': bool(
+                            old is None and row.get('observation_state') == 'active'
+                            and row.get('first_observed_source') == 'scrape_observed'
+                            and (not origin or origin == first)),
                         'before': _sanitized_row(old or {}, fields),
                         'after': _sanitized_row(row, fields)})
     if records:
@@ -706,11 +765,14 @@ def save_snapshots(performer, master):
     freshness_cutoff = pd.Timestamp.now() - pd.Timedelta(hours=2)
     for ym, group in df.groupby('year_month'):
         for (ev_id, p_date, p_time), sub in group.groupby(['event_id', 'perf_date', 'perf_time']):
+            states = sub.get('observation_state', pd.Series('', index=sub.index)).fillna('')
+            alias_count = int(states.eq('alias').sum())
+            sub = sub[~states.eq('alias')]
             valid_prices = sub.loc[sub['price'] > 0, 'price'].dropna()
             last_seen = pd.to_datetime(sub['last_observed_at'], errors='coerce')
             current = sub[(sub['status'] == 'listing') & last_seen.ge(freshness_cutoff)]
             if 'observation_state' in current:
-                current = current[current['observation_state'].fillna('').isin(['', 'active'])]
+                current = current[current['observation_state'].eq('active')]
             # Zero is used for "price on request", not a market price.
             current_prices = current.loc[current['price'] > 0, 'price'].dropna()
             market_records.append({
@@ -720,10 +782,14 @@ def save_snapshots(performer, master):
                 'perf_time': p_time,
                 'venue': sub['venue'].iloc[0] if not sub.empty else '',
                 'total_tickets': len(sub),
-                'active_tickets': len(sub[sub['status'] == 'listing']),
+                'active_tickets': len(current),
                 'current_active_tickets': len(current),
+                'current_active_quantity': int(pd.to_numeric(
+                    current.get('quantity', pd.Series(0, index=current.index)),
+                    errors='coerce').fillna(0).sum()),
+                'historical_listing_rows': int(sub['status'].eq('listing').sum()),
                 'unknown_listing_tickets': len(sub[sub.get('observation_state', pd.Series('', index=sub.index)).isin(['absent_unknown', 'absent_unverified'])]),
-                'alias_rows': len(sub[sub.get('observation_state', pd.Series('', index=sub.index)).eq('alias')]),
+                'alias_rows': alias_count,
                 'current_avg_price': current_prices.mean() if not current_prices.empty else 0,
                 'current_min_price': current_prices.min() if not current_prices.empty else 0,
                 'current_max_price': current_prices.max() if not current_prices.empty else 0,
@@ -909,6 +975,8 @@ def main():
     now_timezone = str(now_aware.tzinfo)
 
     time_limit_reached = False
+    coverage_issues = []
+    expected_events = fetched_events = 0
     public_cache = load_run_cache()
     # Recent hourly polls need >3,200 checks. Keep two workers and the strict
     # quality gate, with headroom inside the existing 40-minute phase budget.
@@ -948,12 +1016,14 @@ def main():
         by_created_at = {
             key: t
             for t in master.values()
-            if (key := _ticket_match_key(t)) is not None
+            if t.get('observation_state') != 'alias'
+            and (key := _ticket_match_key(t)) is not None
         }
         by_identity = {
             key: t
             for t in master.values()
-            if (key := _listing_identity_key(t)) is not None
+            if t.get('observation_state') != 'alias'
+            and (key := _listing_identity_key(t)) is not None
         }
         
         new_active_tickets = []
@@ -966,8 +1036,11 @@ def main():
             discovered_events = []
         except ScrapeIntegrityError as error:
             print(f"[INTEGRITY] {error}")
+            coverage_issues.append(dict(performer=performer, event_id=None,
+                                        reason='performer_discovery_failed', detail=str(error)))
             continue
         events = _events_to_poll(discovered_events, master, datetime.now())
+        expected_events += len(events)
         if not events:
             save_master(performer, master)
             save_snapshots(performer, master)
@@ -985,6 +1058,7 @@ def main():
         active_codes_by_event = {}
         absence_safe_events = set()
         event_diagnostics = {}
+        event_errors = {}
         anonymous_sold_by_event = {}
         for slug in events:
             prior_active = {
@@ -1015,6 +1089,17 @@ def main():
                     uncertain_identity = True
             except ScrapeIntegrityError as error:
                 print(f"[INTEGRITY] {error}")
+                failure_time = datetime.now().astimezone()
+                reason = ('empty_inventory_unverified' if isinstance(error, UnverifiedEmptyInventory)
+                          else 'event_poll_failed')
+                event_errors[slug] = {
+                    'observed_at': failure_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    'observed_at_utc': failure_time.astimezone(timezone.utc).isoformat(),
+                    'observed_at_timezone': str(failure_time.tzinfo),
+                    'failure_reason': reason,
+                }
+                coverage_issues.append(dict(performer=performer, event_id=slug,
+                                            reason=reason, detail=str(error)))
                 continue
 
             # Each event is observed when its own API response arrives, not at
@@ -1024,6 +1109,7 @@ def main():
             now_utc = event_now.astimezone(timezone.utc).isoformat()
             now_timezone = str(event_now.tzinfo)
             active_codes_by_event[slug] = event_active_codes
+            fetched_events += 1
             unresolved_sold = 0
             anonymous_sold_by_event[slug] = []
             for t in tickets:
@@ -1132,6 +1218,13 @@ def main():
                         row['status_source'] = 'event_api'
                     else:
                         share_code = _identifier_text(t.get('shareCode'))
+                        if share_code and share_code in by_share_code and by_share_code[
+                            share_code].get('observation_state') == 'alias':
+                            # Inconsistent with the canonical code's current
+                            # lifecycle. Retain the sale only as unresolved.
+                            unresolved_sold += 1
+                            anonymous_sold_by_event[slug].append(t)
+                            continue
                         if not share_code and not created_at_unix:
                             unresolved_sold += 1
                             anonymous_sold_by_event[slug].append(t)
@@ -1197,8 +1290,8 @@ def main():
             }
             if unresolved_sold:
                 print(
-                    f"[INTEGRITY] {slug}: {unresolved_sold} sold API rows lack "
-                    "both shareCode and createdAt; preserving unmatched listings."
+                    f"[INTEGRITY] {slug}: {unresolved_sold} sold API rows cannot be "
+                    "linked reliably to a listing; preserving unmatched listings."
                 )
             elif not event_diagnostics[slug]['identity_uncertain']:
                 absence_safe_events.add(slug)
@@ -1241,9 +1334,14 @@ def main():
                     'observed_at_timezone': now_timezone,
                     'api_fetch_complete': event in active_codes_by_event,
                     'complete': event in absence_safe_events,
-                    'listing_count': sum(r.get('status') == 'listing' for r in rows),
+                    'listing_count': sum(r.get('status') == 'listing' and
+                                         r.get('observation_state') != 'alias' for r in rows),
+                    'confirmed_active_count': sum(r.get('observation_state') == 'active' and
+                                                  r.get('last_observed_at') ==
+                                                  event_diagnostics.get(event, {}).get('observed_at')
+                                                  for r in rows),
                     'sold_count': sum(r.get('status') == 'sold' for r in rows),
-                    **event_diagnostics.get(event, {}),
+                    **event_diagnostics.get(event, event_errors.get(event, {})),
                     'absence_classification_complete': event in absence_safe_events,
                     'schema_version': 'event_poll_v2',
                 }, ensure_ascii=False) + '\n')
@@ -1275,6 +1373,13 @@ def main():
             f"API pass saved all {len(targets)} target master files. "
             "Check per-event completeness in observation logs."
         )
+        report = dict(expected_events=expected_events, fetched_events=fetched_events,
+                      issues=coverage_issues)
+        print('[COLLECTION COVERAGE] ' + json.dumps(report, ensure_ascii=True), flush=True)
+        path = os.environ.get('COLLECTION_COVERAGE_PATH')
+        if path:
+            with open(path, 'w', encoding='utf-8') as stream:
+                json.dump(report, stream, ensure_ascii=True)
     save_run_cache(public_cache)
 
 if __name__ == '__main__':
