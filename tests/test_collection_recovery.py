@@ -1,0 +1,195 @@
+import io
+import json
+import tempfile
+import unittest
+import urllib.error
+from datetime import datetime, timezone
+from pathlib import Path
+from unittest.mock import patch
+
+import collection_evidence as evidence
+import scraper
+from tools import check_collection_coverage
+
+
+def http_error(code, **headers):
+    return urllib.error.HTTPError('https://example.invalid', code, 'test', headers, None)
+
+
+def response(**payload):
+    return io.BytesIO(json.dumps(payload).encode())
+
+
+class PublicRequestRecoveryTest(unittest.TestCase):
+    def test_permanent_http_errors_get_one_attempt_and_log_the_status(self):
+        for status in (401, 403, 404):
+            with self.subTest(status=status), patch.object(
+                    evidence.urllib.request, 'urlopen', side_effect=http_error(status)) as request:
+                with self.assertRaises(urllib.error.HTTPError) as failure:
+                    evidence.fetch_public_ticket('code')
+                request.assert_called_once()
+                self.assertEqual(evidence.public_error_label(failure.exception), f'HTTP {status}')
+
+    def test_429_cooldown_is_shared_and_can_defer_another_listing(self):
+        policy = evidence.PublicRequestPolicy()
+        clock = [100.0]
+
+        def sleep(seconds):
+            clock[0] += seconds
+
+        with (patch.object(evidence.time, 'monotonic', side_effect=lambda: clock[0]),
+              patch.object(evidence.time, 'sleep', side_effect=sleep) as wait,
+              patch.object(evidence.urllib.request, 'urlopen', side_effect=[
+                  http_error(429, **{'Retry-After': '45'}),
+                  response(success=True, ticket={'shareCode': 'recovered'})
+              ]) as request):
+            with self.assertRaises(evidence.PublicLookupDeferred):
+                evidence.fetch_public_ticket('rate-limited', policy=policy, deadline=140)
+            with self.assertRaises(evidence.PublicLookupDeferred):
+                evidence.fetch_public_ticket('no-room-left', policy=policy, deadline=140)
+            self.assertEqual(request.call_count, 1)
+            wait.assert_not_called()
+            ticket = evidence.fetch_public_ticket('recovered', policy=policy, deadline=150)
+            self.assertEqual(ticket['shareCode'], 'recovered')
+            wait.assert_called_once_with(45)
+            self.assertEqual(request.call_args.kwargs['timeout'], 5)
+
+    def test_single_throttle_can_recover_and_cooldown_survives_phase_boundary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'cooldown'
+            clock = [100.0]
+
+            def sleep(seconds):
+                clock[0] += seconds
+
+            with (patch.object(evidence.time, 'monotonic', side_effect=lambda: clock[0]),
+                  patch.object(evidence.time, 'time', side_effect=lambda: clock[0] + 10_000),
+                  patch.object(evidence.time, 'sleep', side_effect=sleep) as wait,
+                  patch.object(evidence.urllib.request, 'urlopen', side_effect=[
+                      http_error(429, **{'Retry-After': '30'}),
+                      http_error(429, **{'Retry-After': '10'}),
+                      response(success=True, ticket={'shareCode': 'code'}),
+                  ]) as request):
+                policy = evidence.PublicRequestPolicy(path)
+                with self.assertRaises(evidence.PublicLookupDeferred):
+                    evidence.fetch_public_ticket('previous', policy=policy, deadline=120)
+                policy.save_cooldown()
+                policy = evidence.PublicRequestPolicy(path)
+                ticket = evidence.fetch_public_ticket('code', policy=policy, deadline=180)
+                self.assertEqual(ticket['shareCode'], 'code')
+                self.assertEqual(request.call_count, 3)
+                self.assertEqual([call.args[0] for call in wait.call_args_list], [30, 10])
+
+    def test_repeated_access_denials_stop_other_requests(self):
+        policy = evidence.PublicRequestPolicy()
+        with patch.object(evidence.urllib.request, 'urlopen',
+                          side_effect=[http_error(403) for _ in range(4)]) as request:
+            for _ in range(4):
+                with self.assertRaises(urllib.error.HTTPError):
+                    evidence.fetch_public_ticket('code', policy=policy)
+            with self.assertRaises(evidence.PublicLookupDeferred):
+                evidence.fetch_public_ticket('another', policy=policy)
+            self.assertEqual(request.call_count, 4)
+
+    def test_invalid_json_shape_is_not_a_successful_null_ticket(self):
+        with patch.object(evidence.urllib.request, 'urlopen',
+                          return_value=response(success=False, ticket=None)) as request:
+            with self.assertRaises(ValueError):
+                evidence.fetch_public_ticket('code')
+            request.assert_called_once()
+
+    def test_valid_same_event_alias_chain_is_flattened_without_merging_rows(self):
+        rows = {
+            'a': {'event_id': 'e1', 'canonical_ticket_id': 'b', 'price': '10'},
+            'b': {'event_id': 'e1', 'canonical_ticket_id': 'c', 'price': '20'},
+            'c': {'event_id': 'e1', 'canonical_ticket_id': 'c', 'price': '30'},
+            'other': {'event_id': 'e2', 'canonical_ticket_id': 'a', 'price': '40'},
+            'cycle1': {'event_id': 'e1', 'canonical_ticket_id': 'cycle2', 'price': '50'},
+            'cycle2': {'event_id': 'e1', 'canonical_ticket_id': 'cycle1', 'price': '60'},
+        }
+        evidence.flatten_canonical_links(rows)
+        self.assertEqual(rows['a']['canonical_ticket_id'], 'c')
+        self.assertEqual(rows['other']['canonical_ticket_id'], 'a')
+        self.assertEqual(rows['cycle1']['canonical_ticket_id'], 'cycle2')
+        self.assertEqual(rows['cycle2']['canonical_ticket_id'], 'cycle1')
+        self.assertEqual([row['price'] for row in rows.values()], ['10', '20', '30', '40', '50', '60'])
+
+
+class CoverageRecoveryTest(unittest.TestCase):
+    def run_empty_event(self, active_response):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            (folder / 'targets.json').write_text('["group"]', encoding='utf-8')
+            path = folder / 'coverage.json'
+            now = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+            old_ticket = {
+                'ticket_id': 'old', 'canonical_ticket_id': 'old', 'event_id': 'event',
+                'status': 'listing', 'observation_state': 'active', 'last_observed_at': now,
+                'raw_description': 'retain this', 'price': '2000',
+            }
+            with (patch.object(scraper, 'DATA_DIR', directory),
+                  patch.object(scraper, 'SCRAPE_MODE', 'api'),
+                  patch.dict(scraper.os.environ, {'COLLECTION_COVERAGE_PATH': str(path),
+                                                   'PUBLIC_TICKET_CACHE_PATH': ''}),
+                  patch.object(scraper, 'get_events', return_value=['event']),
+                  patch.object(scraper, 'get_event_id_from_slug', return_value='fire-id'),
+                  patch.object(scraper, 'fetch_all_tickets', side_effect=[[], active_response]) as fetch,
+                  patch.object(evidence, 'fetch_public_ticket', return_value=None),
+                  patch.object(evidence.time, 'sleep'),
+                  patch.object(scraper, 'save_snapshots')):
+                scraper.save_master('group', {'old': old_ticket})
+                scraper.main()
+                saved = scraper.load_master('group')['old']
+            self.assertEqual(fetch.call_args_list[1].kwargs, {'active_only': True})
+            observation = json.loads(next(folder.glob('observation_*.jsonl')).read_text(encoding='utf-8'))
+            return saved, observation, json.loads(path.read_text(encoding='utf-8'))
+
+    def test_confirmed_empty_inventory_counts_as_fetched_but_not_as_sale(self):
+        saved, observation, coverage = self.run_empty_event([])
+        self.assertEqual(coverage, {'expected_events': 1, 'fetched_events': 1, 'issues': []})
+        self.assertTrue(observation['api_fetch_complete'])
+        self.assertTrue(observation['empty_inventory_confirmed'])
+        self.assertFalse(observation['absence_classification_complete'])
+        self.assertEqual(saved['observation_state'], 'absent_unknown')
+        self.assertEqual(saved['status'], 'listing')
+        self.assertEqual(saved['raw_description'], 'retain this')
+
+    def test_inconsistent_empty_inventory_keeps_stored_state_and_flags_coverage(self):
+        saved, observation, coverage = self.run_empty_event([{'status': 'active'}])
+        self.assertFalse(observation['api_fetch_complete'])
+        self.assertEqual(coverage['fetched_events'], 0)
+        self.assertEqual(coverage['issues'][0]['reason'], 'empty_inventory_unverified')
+        self.assertEqual(saved['observation_state'], 'active')
+
+    def test_false_success_or_empty_listing_without_zero_total_is_rejected(self):
+        for success, total in [(False, 0), (True, 3), (True, None)]:
+            with self.subTest(success=success, total=total), patch.object(
+                    scraper.urllib.request, 'urlopen',
+                    return_value=response(success=success, tickets=[], hasMore=False, totalCount=total)):
+                with self.assertRaises(scraper.ScrapeIntegrityError):
+                    scraper.fetch_all_tickets('event', active_only=True)
+
+    def test_unvisited_group_precedes_recently_attempted_group(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'content_observation_20261116.jsonl'
+            items = [
+                {'performer': 'attempted', 'scope': 'observed_active', 'failed': 15,
+                 'observed_at_utc': '2026-11-16T01:20:00+00:00'},
+                {'performer': 'only_pending', 'scope': 'observed_active', 'pending': 5,
+                 'observed_at_utc': '2026-11-16T01:21:00+00:00'},
+            ]
+            path.write_text(''.join(json.dumps(item) + '\n' for item in items), encoding='utf-8')
+            with patch.object(scraper, 'DATA_DIR', directory):
+                ordered = scraper.detail_refresh_order([{'name': 'attempted'}, {'name': 'only_pending'}])
+            self.assertEqual(ordered[0]['name'], 'only_pending')
+
+    def test_incomplete_coverage_fails_after_the_save_step(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'coverage.json'
+            path.write_text(json.dumps({'expected_events': 2, 'fetched_events': 1,
+                                        'issues': [{'reason': 'event_poll_failed'}]}), encoding='utf-8')
+            with (patch('sys.argv', ['check_collection_coverage.py', str(path)]),
+                  patch.dict(check_collection_coverage.os.environ, {'GITHUB_STEP_SUMMARY': ''}),
+                  self.assertRaises(SystemExit) as failure):
+                check_collection_coverage.main()
+            self.assertEqual(failure.exception.code, 1)

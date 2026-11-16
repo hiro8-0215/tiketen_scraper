@@ -1,6 +1,7 @@
 """Surface partial collection after preserving the successful checkpoints."""
 import argparse
 import json
+import os
 from pathlib import Path
 
 
@@ -12,19 +13,18 @@ def main():
     if report['expected_events'] != report['fetched_events'] or report['issues']:
         for issue in report['issues']:
             print('::warning title=Incomplete event coverage::' + json.dumps(issue, ensure_ascii=True))
-        # Archive workflow is triggered only by successful collection jobs.
-        # Keep the data and its backup, but make partial coverage visible.
+        # Git already has the successful observations. Keep the last verified
+        # Drive snapshot by marking this incomplete run as a failure.
         message = ('Partial collection: '
                    f"{report['fetched_events']}/{report['expected_events']} events; "
                    f"{len(report['issues'])} issues. Saved successful observations.")
         print(message)
-        import os
         if summary := os.environ.get('GITHUB_STEP_SUMMARY'):
             with open(summary, 'a', encoding='utf-8') as stream:
                 stream.write('## ' + message + '\n\n')
                 for issue in report['issues']:
                     stream.write('- ' + json.dumps(issue, ensure_ascii=True) + '\n')
-        return
+        raise SystemExit(1)
     print(f"API coverage complete: {report['fetched_events']} events")
 
 

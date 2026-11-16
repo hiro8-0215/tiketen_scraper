@@ -26,6 +26,7 @@ jobs:
           echo "today=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
           echo "tomorrow=$(date -u --date=tomorrow +%Y%m%d)" >> "$GITHUB_OUTPUT"
           echo "PUBLIC_TICKET_CACHE_PATH=$RUNNER_TEMP/public-ticket-${{ github.run_id }}-${{ github.run_attempt }}.json" >> "$GITHUB_ENV"
+          echo "PUBLIC_API_COOLDOWN_PATH=$RUNNER_TEMP/public-ticket-${{ github.run_id }}-${{ github.run_attempt }}.cooldown" >> "$GITHUB_ENV"
 
       - name: リポジトリのチェックアウト
         uses: actions/checkout@v7
@@ -90,19 +91,29 @@ jobs:
         run: python repository_data_storage.py pack --data-dir data
 
       - name: 取得したデータを保存（コミット＆プッシュ）
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add --sparse data/
           git diff --cached --quiet && echo "No changes to commit" && exit 0
           git commit -m "自動更新: チケットデータのスクレイピング"
-          git pull --rebase origin main
-          git push
+          push_log="$RUNNER_TEMP/ticket-scraper-push.log"
+          for attempt in 1 2 3; do
+            git pull --rebase origin main
+            if git push 2>&1 | tee "$push_log"; then
+              exit 0
+            fi
+            if [[ "$attempt" -eq 3 ]] || ! grep -Eiq 'fatal error in commit_refs_rules|requested URL returned error: (502|503|504)|connection (reset|timed out)' "$push_log"; then
+              exit 1
+            fi
+            echo "Temporary git push failure; retrying in $((15 * attempt)) seconds"
+            sleep "$((15 * attempt))"
+          done
 
       - name: 公演取得漏れを報告（回収済みデータは保存済み）
-        if: always() && !cancelled()
         run: python tools/check_collection_coverage.py "$RUNNER_TEMP/ticket-collection-coverage.json"
 
       - name: 品質確認結果を反映
-        if: steps.audit.outcome == 'failure'
+        if: always() && !cancelled() && steps.audit.outcome == 'failure'
         run: exit 1

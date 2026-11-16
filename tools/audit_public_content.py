@@ -4,6 +4,7 @@ import csv
 import json
 import sys
 import time
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -103,6 +104,7 @@ def main():
     if args.report:
         args.report.write_text(json.dumps(report,ensure_ascii=True,indent=2),encoding='utf-8')
     print(json.dumps({'ok':report['ok'],'unique_active_rows':report['unique_active_rows'],
+                      'error_counts':dict(Counter(item['reason'] for item in report['errors'])),
                       'live_samples':len(report['live_samples']),'errors':report['errors'][:20],
                       'warnings':report['warnings']},ensure_ascii=True))
     raise SystemExit(0 if report['ok'] else 1)

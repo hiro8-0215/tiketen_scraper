@@ -115,7 +115,7 @@ class DriveBackupPartsTest(unittest.TestCase):
 
     def test_manifest_upload_is_last_and_shares_budget_and_staging_is_cleaned(self):
         attempted = []
-        def upload(url, token, path, folder, deadline=None):
+        def upload(url, token, path, folder, deadline=None, *, max_attempts):
             attempted.append((path, deadline))
             self.assertTrue(path.exists())
         with (patch.dict(uploader.os.environ, {
@@ -131,7 +131,7 @@ class DriveBackupPartsTest(unittest.TestCase):
 
     def test_manifest_is_not_published_after_part_failure(self):
         attempted = []
-        def upload(url, token, path, folder, deadline=None):
+        def upload(url, token, path, folder, deadline=None, *, max_attempts):
             attempted.append(path.name)
             raise RuntimeError('permanent rejection')
         with (patch.dict(uploader.os.environ, {

@@ -20,7 +20,8 @@ from repository_data_storage import restore_data
 JST = timezone(timedelta(hours=9), "JST")
 MAX_FILE_BYTES = 35 * 1024 * 1024
 MAX_UPLOAD_ATTEMPTS = 5
-UPLOAD_BUDGET_SECONDS = 15 * 60
+INITIAL_UPLOAD_ATTEMPTS = 2
+UPLOAD_BUDGET_SECONDS = 25 * 60
 RECOVERY_DELAYS = (60, 120)
 RETRYABLE_HTTP_CODES = {404, 408, 429, 500, 502, 503, 504}
 
@@ -43,7 +44,9 @@ def required_environment(name: str) -> str:
 
 
 def upload_file(webapp_url: str, token: str, path: Path, subfolder: str,
-                deadline: float | None = None) -> None:
+                deadline: float | None = None, *, max_attempts: int = MAX_UPLOAD_ATTEMPTS) -> None:
+    if deadline is not None and time.monotonic() >= deadline:
+        raise TransientUploadError('Google Drive upload time budget exhausted')
     size = path.stat().st_size
     if size > MAX_FILE_BYTES:
         raise RuntimeError(
@@ -63,7 +66,7 @@ def upload_file(webapp_url: str, token: str, path: Path, subfolder: str,
         method="POST",
     )
     body = None
-    for attempt in range(1, MAX_UPLOAD_ATTEMPTS + 1):
+    for attempt in range(1, max_attempts + 1):
         remaining = 120 if deadline is None else deadline - time.monotonic()
         if remaining <= 0:
             raise TransientUploadError('Google Drive upload time budget exhausted')
@@ -84,26 +87,26 @@ def upload_file(webapp_url: str, token: str, path: Path, subfolder: str,
                     f"Upload failed for {path.name}: HTTP {error.code} "
                     f"after {attempt} attempt(s)"
                 ) from error
-            if attempt == MAX_UPLOAD_ATTEMPTS:
+            if attempt == max_attempts:
                 raise TransientUploadError(
                     f"Upload failed for {path.name}: HTTP {error.code} after {attempt} attempts"
                 ) from error
             delay = min(60, 10 * 2 ** (attempt - 1))
             print(
                 f"retrying: {path.name} after HTTP {error.code} "
-                f"({attempt}/{MAX_UPLOAD_ATTEMPTS}, wait {delay}s)",
+                f"({attempt}/{max_attempts}, wait {delay}s)",
                 flush=True,
             )
             wait_for_retry(delay, deadline)
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
-            if attempt == MAX_UPLOAD_ATTEMPTS:
+            if attempt == max_attempts:
                 raise TransientUploadError(
                     f"Upload failed for {path.name} after {attempt} attempts: {error}"
                 ) from error
             delay = min(60, 10 * 2 ** (attempt - 1))
             print(
                 f"retrying: {path.name} after transient error "
-                f"({attempt}/{MAX_UPLOAD_ATTEMPTS}, wait {delay}s): {error}",
+                f"({attempt}/{max_attempts}, wait {delay}s): {error}",
                 flush=True,
             )
             wait_for_retry(delay, deadline)
@@ -125,6 +128,7 @@ def upload_files(webapp_url: str, token: str, paths: list[Path], subfolder: str,
     pending = list(paths)
     failures = {}
     for pass_number in range(len(RECOVERY_DELAYS) + 1):
+        attempts = MAX_UPLOAD_ATTEMPTS if pass_number else INITIAL_UPLOAD_ATTEMPTS
         if pass_number:
             delay = RECOVERY_DELAYS[pass_number - 1]
             print(f'Retrying {len(pending)} failed files after {delay}s', flush=True)
@@ -132,9 +136,13 @@ def upload_files(webapp_url: str, token: str, paths: list[Path], subfolder: str,
         retry = []
         for path in pending:
             try:
-                upload_file(webapp_url, token, path, subfolder, deadline=deadline)
+                if time.monotonic() >= deadline:
+                    raise TransientUploadError('Google Drive upload time budget exhausted')
+                upload_file(webapp_url, token, path, subfolder, deadline=deadline, max_attempts=attempts)
                 failures.pop(path.name, None)
             except TransientUploadError as error:
+                if time.monotonic() >= deadline:
+                    raise
                 failures[path.name] = str(error)
                 retry.append(path)
                 print(f'Deferred transient failure: {path.name}', flush=True)

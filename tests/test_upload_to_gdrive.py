@@ -29,7 +29,7 @@ class DriveUploadRetryTest(unittest.TestCase):
             source.write_bytes(original)
             repository_data_storage.pack_csv(source, threshold=1)
             observed = []
-            def upload(url, token, path, folder, deadline=None):
+            def upload(url, token, path, folder, deadline=None, *, max_attempts):
                 observed.append(path.name)
                 if path.name == source.name:
                     self.assertEqual(path.read_bytes(), original)
@@ -57,16 +57,16 @@ class DriveUploadRetryTest(unittest.TestCase):
         paths = [Path('first.csv'), Path('second.csv'), Path('third.csv')]
         attempted = []
 
-        def upload(url, token, path, folder, deadline=None):
-            attempted.append(path.name)
-            if path.name == 'first.csv' and attempted.count(path.name) == 1:
+        def upload(url, token, path, folder, deadline=None, *, max_attempts):
+            attempted.append((path.name, max_attempts))
+            if path.name == 'first.csv' and max_attempts == 2:
                 raise upload_to_gdrive.TransientUploadError('temporary 404')
 
         with (patch.object(upload_to_gdrive, 'upload_file', side_effect=upload),
               patch.object(upload_to_gdrive.time, 'sleep') as sleep,
               patch('builtins.print')):
             upload_to_gdrive.upload_files('https://example.invalid', 'token', paths, 'data_10_6')
-        self.assertEqual(attempted, ['first.csv', 'second.csv', 'third.csv', 'first.csv'])
+        self.assertEqual(attempted, [('first.csv', 2), ('second.csv', 2), ('third.csv', 2), ('first.csv', 5)])
         sleep.assert_called_once_with(60)
 
     def test_persistent_failure_is_reported_without_false_success(self):

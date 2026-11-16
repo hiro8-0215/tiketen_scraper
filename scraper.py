@@ -10,19 +10,24 @@ import urllib.parse
 import time
 from collections import Counter
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from collection_evidence import EVIDENCE_COLUMNS, reconcile_public_listings
-from collection_evidence import fetch_public_ticket, apply_public_evidence
+from collection_evidence import (
+    fetch_public_ticket, apply_public_evidence, PublicRequestPolicy,
+    public_error_label, flatten_canonical_links,
+)
 from collection_content import apply_api_preview
 from concurrent.futures import ThreadPoolExecutor
 from ticket_change_log import append_changes
 from public_ticket_cache import load_run_cache, save_run_cache, remember_verified
 
 # === タイムリミット設定 ===
-# 40分経過で途中保存して正常終了。次回トリガーで続きを自動再開。
+# 40分で取得を止めて途中保存。Actionsの品質判定が未取得分を検知する。
 SCRAPE_START_TIME = time.time()
 MAX_RUNTIME_SECONDS = 40 * 60  # 40分
+PUBLIC_DETAIL_DEADLINE = time.monotonic() + MAX_RUNTIME_SECONDS
 SCRAPE_MODE = os.environ.get('SCRAPE_MODE', 'full').strip().lower()
 if SCRAPE_MODE not in {'full', 'api', 'details'}:
     raise RuntimeError(
@@ -138,16 +143,21 @@ def extract_event_id(document, slug):
         raise ScrapeIntegrityError(f'Ambiguous event ID for {slug}')
     return next(iter(candidates), None)
 
-def fetch_all_tickets(event_id):
+def fetch_all_tickets(event_id, *, active_only=False):
     tickets = []
     offset = 0
     limit = 1000
     while True:
-        url = f"https://ticketen.jp/api/tickets/all?context=event&eventId={event_id}&activeOnly=0&limit={limit}&offset={offset}"
+        query = urllib.parse.urlencode(dict(context='event', eventId=event_id,
+                                            activeOnly=int(active_only), limit=limit, offset=offset))
+        url = f"https://ticketen.jp/api/tickets/all?{query}"
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-            res = urllib.request.urlopen(req, timeout=15).read().decode('utf-8')
+            with urllib.request.urlopen(req, timeout=15) as response:
+                res = response.read().decode('utf-8')
             data = json.loads(res)
+            if not isinstance(data, dict) or data.get('success') is not True:
+                raise ScrapeIntegrityError(f'Unsuccessful ticket response for {event_id} offset {offset}')
             batch = data.get('tickets')
             if not isinstance(batch, list):
                 raise ScrapeIntegrityError(
@@ -157,6 +167,8 @@ def fetch_all_tickets(event_id):
             has_more = data.get('hasMore')
             if type(has_more) is not bool:
                 raise ScrapeIntegrityError(f'Missing or invalid hasMore for {event_id} offset {offset}')
+            if active_only and not batch and data.get('totalCount') != 0:
+                raise ScrapeIntegrityError(f'Empty active response without zero total for {event_id}')
             time.sleep(1)  # サーバー負荷軽減: 最終ページ含め全リクエスト後に1秒待機
             if not has_more:
                 break
@@ -805,7 +817,7 @@ def save_snapshots(performer, master):
         for ym, group in mdf.groupby('year_month'):
             group.to_csv(os.path.join(MARKET_DIR, f'{performer}_{ym}.csv'), index=False, encoding='utf-8-sig')
 
-def enrich_ticket_details(performer, master, ticket_ids, cache=None):
+def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None):
     """Refresh full public content each run, including already fetched rows.
 
     Two workers, 0.5s delay, 40-minute limit and atomic checkpoints.
@@ -816,6 +828,7 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None):
     pending = sorted(set(ticket_ids), key=lambda c: master[c].get('content_checked_at', ''))
     events = {}
     counts = {'checked':0, 'full':0, 'failed':0, 'null':0, 'pending':0}
+    request_errors = Counter()
     reusable = {code for code in pending if code in cache and cache[code][1] is None
                 and cache[code][0] is not None
                 and isinstance(cache[code][0].get('description'), str)
@@ -838,18 +851,26 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None):
             return code, None, 'time_limit', ''
         if code not in reusable:
             try:
-                ticket = fetch_public_ticket(code)
+                ticket = (fetch_public_ticket(code) if policy is None else
+                          fetch_public_ticket(code, policy=policy, deadline=PUBLIC_DETAIL_DEADLINE))
                 cache[code] = (ticket, None, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             except Exception as error:
-                cache[code] = (None, type(error).__name__, '')
-                print(f'[PUBLIC CONTENT FETCH ERROR] {code}: {type(error).__name__}')
-            time.sleep(0.5)
+                label = public_error_label(error)
+                cache[code] = (None, label, '')
+                if label != 'budget':
+                    print(f'[PUBLIC CONTENT FETCH ERROR] {code}: {label}', flush=True)
+            if cache[code][1] != 'budget':
+                time.sleep(0.5)
         value, error, checked_at = cache[code]
         return code, value, error, checked_at
     with ThreadPoolExecutor(max_workers=2) as pool:
         for index, (code, ticket, error, checked_at) in enumerate(pool.map(query, pending)):
             if error:
-                counts['pending' if error == 'time_limit' else 'failed'] += 1
+                if error in {'time_limit', 'budget'}:
+                    counts['pending'] += 1
+                else:
+                    counts['failed'] += 1
+                    request_errors[error] += 1
                 continue
             if ticket is None:
                 counts['null'] += 1
@@ -875,6 +896,8 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None):
             if (index + 1) % 100 == 0:
                 save_master(performer, master)
                 print(f'[CONTENT CHECKPOINT] {performer}: {index + 1}/{len(pending)}')
+    # Detail lookups can establish new rotations after the event API phase.
+    flatten_canonical_links(master)
     now = datetime.now().astimezone()
     save_ticket_changes(performer, before, master, now.strftime('%Y-%m-%d %H:%M:%S'),
                         now.astimezone(timezone.utc).isoformat())
@@ -883,8 +906,11 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None):
     with open(log, 'a', encoding='utf-8') as stream:
         stream.write(json.dumps({'performer':performer, 'observed_at_utc':now.isoformat(),
                                   'scope':'observed_active',
-                                  'selected':len(pending), **counts}) + '\n')
+                                  'selected':len(pending), **counts,
+                                  'request_errors':dict(request_errors)}) + '\n')
     print(f'[PUBLIC CONTENT] {performer}: {counts}')
+    if request_errors:
+        print(f'[PUBLIC CONTENT HTTP SUMMARY] {performer}: {dict(request_errors)}', flush=True)
     return counts['pending'] > 0
 
 
@@ -959,6 +985,25 @@ def normalize_targets(raw_targets):
     return targets
 
 
+def detail_refresh_order(targets):
+    """Give skipped groups the first chance on the following run."""
+    last_attempt = {}
+    paths = sorted(Path(DATA_DIR).glob('content_observation_*.jsonl'))[-3:]
+    for path in paths:
+        with path.open(encoding='utf-8') as stream:
+            for line in stream:
+                if not line.strip():
+                    continue
+                item = json.loads(line)
+                if (item.get('scope') == 'observed_active'
+                        and any(item.get(key) for key in ('checked', 'failed', 'null'))):
+                    last_attempt[item['performer']] = item['observed_at_utc']
+    # Rotate equal-priority groups, including groups with no successful pass.
+    offset = datetime.now(timezone.utc).hour % len(targets)
+    rotated = targets[offset:] + targets[:offset]
+    return sorted(rotated, key=lambda target: last_attempt.get(target['name'], ''))
+
+
 def main():
     targets_file = os.path.join(DATA_DIR, 'targets.json')
     if not os.path.exists(targets_file):
@@ -978,11 +1023,15 @@ def main():
     coverage_issues = []
     expected_events = fetched_events = 0
     public_cache = load_run_cache()
+    public_policy = PublicRequestPolicy(os.environ.get('PUBLIC_API_COOLDOWN_PATH'))
     # Recent hourly polls need >3,200 checks. Keep two workers and the strict
     # quality gate, with headroom inside the existing 40-minute phase budget.
     public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '6000')))]
     public_deadline = time.monotonic() + max(0, MAX_RUNTIME_SECONDS - 5 * 60)
     print(f"Scrape mode: {SCRAPE_MODE}")
+    if SCRAPE_MODE == 'details':
+        targets = detail_refresh_order(targets)
+        print('[PUBLIC CONTENT ORDER] ' + ', '.join(target['name'] for target in targets), flush=True)
     for target in targets:
         performer = target['name']
         source_performer = target['source']
@@ -992,9 +1041,6 @@ def main():
             break
         print(f"=== Processing {performer} ===")
         master = load_master(performer)
-        # Retain all original IDs; proven aliases are annotated, not deleted.
-        before_poll = {code: row.copy() for code, row in master.items()}
-
         if SCRAPE_MODE == 'details':
             pending = [
                 ticket_id for ticket_id, row in master.items()
@@ -1002,15 +1048,17 @@ def main():
                 and row.get('observation_state') == 'active'
             ]
             time_limit_reached = enrich_ticket_details(
-                performer, master, pending, public_cache
+                performer, master, pending, public_cache, public_policy
             )
             save_snapshots(performer, master)
-            if time_limit_reached:
+            if time_limit_reached and not is_time_remaining():
                 print(
                     f"[TIME LIMIT] {performer}までの詳細を保存しました。"
                 )
                 break
             continue
+        # Retain all original IDs; proven aliases are annotated, not deleted.
+        before_poll = {code: row.copy() for code, row in master.items()}
         
         by_share_code = {t['ticket_id']: t for t in master.values() if not t['ticket_id'].startswith('sold_')}
         by_created_at = {
@@ -1076,6 +1124,7 @@ def main():
                 print(f"Fetching API tickets for {slug}...")
                 tickets = fetch_all_tickets(ev_firestore_id)
                 uncertain_identity = False
+                empty_inventory_confirmed = False
                 try:
                     event_active_codes = validate_event_snapshot(
                         slug, tickets, prior_active, master, datetime.now()
@@ -1087,6 +1136,15 @@ def main():
                     print(f"[IDENTITY UNCERTAIN] {warning}")
                     event_active_codes = warning.active_codes
                     uncertain_identity = True
+                except UnverifiedEmptyInventory:
+                    # The all-ticket and active-only lists must agree. This
+                    # confirms zero public inventory, never a sale/withdrawal.
+                    if fetch_all_tickets(ev_firestore_id, active_only=True):
+                        raise
+                    print(f'[EMPTY INVENTORY] {slug}: both API views returned zero; prior outcomes remain unverified.', flush=True)
+                    event_active_codes = set()
+                    uncertain_identity = True
+                    empty_inventory_confirmed = True
             except ScrapeIntegrityError as error:
                 print(f"[INTEGRITY] {error}")
                 failure_time = datetime.now().astimezone()
@@ -1267,7 +1325,7 @@ def main():
 
             public_counts = reconcile_public_listings(
                 master, prior_active, event_active_codes, ev_firestore_id,
-                now_str, public_cache, public_budget, public_deadline,
+                now_str, public_cache, public_budget, public_deadline, public_policy,
             )
             print(f"[PUBLIC EVIDENCE] {slug}: {public_counts}")
             event_diagnostics[slug] = {
@@ -1282,6 +1340,7 @@ def main():
                     not _identifier_text(t.get('createdAt')) for t in tickets
                 ),
                 'unresolved_sold_count': unresolved_sold,
+                'empty_inventory_confirmed': empty_inventory_confirmed,
                 'identity_uncertain': uncertain_identity or (
                     any(not _identifier_text(t.get('createdAt')) for t in tickets)
                     and any(ticket_id not in event_active_codes for ticket_id in prior_active)
@@ -1349,7 +1408,8 @@ def main():
         if SCRAPE_MODE != 'api':
             time_limit_reached = enrich_ticket_details(
                 performer, master, [code for code, row in master.items()
-                                    if row.get('observation_state') == 'active'], public_cache
+                                    if row.get('observation_state') == 'active'], public_cache,
+                public_policy,
             )
             save_snapshots(performer, master)
             if time_limit_reached:
@@ -1380,6 +1440,7 @@ def main():
         if path:
             with open(path, 'w', encoding='utf-8') as stream:
                 json.dump(report, stream, ensure_ascii=True)
+    public_policy.save_cooldown()
     save_run_cache(public_cache)
 
 if __name__ == '__main__':
