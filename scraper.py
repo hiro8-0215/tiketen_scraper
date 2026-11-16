@@ -1034,7 +1034,9 @@ def main():
     time_limit_reached = False
     coverage_issues = []
     expected_events = fetched_events = 0
-    public_cache = load_run_cache()
+    # A new API observation starts a new cache. Only the following details
+    # phase can reuse the verified responses associated with that observation.
+    public_cache = load_run_cache() if SCRAPE_MODE == 'details' else {}
     public_policy = PublicRequestPolicy(
         os.environ.get('PUBLIC_API_COOLDOWN_PATH'), min_interval=3.1,
     )

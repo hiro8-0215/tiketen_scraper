@@ -162,6 +162,7 @@ class CoverageRecoveryTest(unittest.TestCase):
                   patch.dict(scraper.os.environ, {'COLLECTION_COVERAGE_PATH': str(path),
                                                    'PUBLIC_TICKET_CACHE_PATH': ''}),
                   patch.object(scraper, 'get_events', return_value=['event']),
+                  patch.object(scraper, 'load_run_cache') as old_cache,
                   patch.object(scraper, 'get_event_id_from_slug', return_value='fire-id'),
                   patch.object(scraper, 'fetch_all_tickets', side_effect=[[], active_response]) as fetch,
                   patch.object(evidence, 'fetch_public_ticket', return_value=None),
@@ -170,6 +171,7 @@ class CoverageRecoveryTest(unittest.TestCase):
                 scraper.save_master('group', {'old': old_ticket})
                 scraper.main()
                 saved = scraper.load_master('group')['old']
+            old_cache.assert_not_called()
             self.assertEqual(fetch.call_args_list[1].kwargs, {'active_only': True})
             observation = json.loads(next(folder.glob('observation_*.jsonl')).read_text(encoding='utf-8'))
             return saved, observation, json.loads(path.read_text(encoding='utf-8'))
