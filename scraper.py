@@ -16,7 +16,8 @@ from playwright.sync_api import sync_playwright
 from collection_evidence import EVIDENCE_COLUMNS, reconcile_public_listings
 from collection_evidence import (
     fetch_public_ticket, apply_public_evidence, PublicRequestPolicy,
-    public_error_label, flatten_canonical_links,
+    public_error_label, flatten_canonical_links, prepare_public_listings,
+    query_public_listings, apply_public_listing_check,
 )
 from collection_content import apply_event_content, content_refresh_reason, has_public_full_text
 from concurrent.futures import ThreadPoolExecutor
@@ -1036,6 +1037,65 @@ def public_state_attempts():
     return attempts
 
 
+def set_observed_counts(record, master):
+    rows = [row for row in master.values() if row.get('event_id') == record['event_id']]
+    record.update(
+        listing_count=sum(row.get('status') == 'listing' and row.get('observation_state') != 'alias'
+                          for row in rows),
+        confirmed_active_count=sum(record['api_fetch_complete'] and row.get('observation_state') == 'active'
+                                   and row.get('last_observed_at') == record['observed_at'] for row in rows),
+        sold_count=sum(row.get('status') == 'sold' for row in rows),
+    )
+
+
+def write_observations(records):
+    path = os.path.join(DATA_DIR, 'observation_' + datetime.now().strftime('%Y%m%d') + '.jsonl')
+    with open(path, 'a', encoding='utf-8') as stream:
+        for record in records:
+            stream.write(json.dumps(record, ensure_ascii=False) + '\n')
+
+
+def public_state_order(batches):
+    ranked = []
+    for events in batches.values():
+        for _, _, candidates, _ in events:
+            ranks = Counter()
+            for code, newly_missing in candidates:
+                ranked.append((not newly_missing, ranks[newly_missing], code))
+                ranks[newly_missing] += 1
+    ranked.sort(key=lambda item: item[:2])
+    return list(dict.fromkeys(code for _, _, code in ranked))
+
+
+def finish_public_state_poll(batches, observations, cache, budget, deadline, policy):
+    responses = query_public_listings(public_state_order(batches), cache, budget, deadline, policy)
+    for performer, events in batches.items():
+        checked = [
+            (event_id, counts, code)
+            for _, event_id, candidates, counts in events
+            for code, _ in candidates if code in responses
+        ]
+        if checked:
+            master = load_master(performer)
+            before = {code: row.copy() for code, row in master.items()}
+            for event_id, counts, code in checked:
+                apply_public_listing_check(master, code, event_id, responses[code], cache, counts)
+            flatten_canonical_links(master)
+            now = datetime.now().astimezone()
+            save_master(performer, master)
+            save_snapshots(performer, master)
+            save_ticket_changes(performer, before, master, now.strftime('%Y-%m-%d %H:%M:%S'),
+                                now.astimezone(timezone.utc).isoformat())
+            for record in observations[performer]:
+                set_observed_counts(record, master)
+        for slug, _, candidates, counts in events:
+            new_absences = [code for code, newly_missing in candidates if newly_missing]
+            counts['newly_missing'] = len(new_absences)
+            counts['newly_missing_pending'] = sum(code not in responses for code in new_absences)
+            print(f'[PUBLIC EVIDENCE] {slug}: {counts}')
+    write_observations(record for records in observations.values() for record in records)
+
+
 def main():
     targets_file = os.path.join(DATA_DIR, 'targets.json')
     if not os.path.exists(targets_file):
@@ -1067,6 +1127,8 @@ def main():
         raise ValueError('PUBLIC_STATUS_RUNTIME_MINUTES must be between 0 and 35')
     public_deadline = time.monotonic() + status_minutes * 60
     state_attempts = {}
+    public_state_batches = {}
+    observations = {}
     print(f"Scrape mode: {SCRAPE_MODE}")
     if SCRAPE_MODE == 'details':
         targets = detail_refresh_order(targets)
@@ -1391,11 +1453,16 @@ def main():
                             by_share_code[share_code] = row
                         master[t_id] = row
 
-            public_counts = reconcile_public_listings(
-                master, prior_active, event_active_codes, ev_firestore_id,
-                now_str, public_cache, public_budget, public_deadline, public_policy,
-            )
-            print(f"[PUBLIC EVIDENCE] {slug}: {public_counts}")
+            if SCRAPE_MODE == 'api':
+                public_counts, candidates = prepare_public_listings(master, prior_active, event_active_codes, now_str)
+                public_state_batches.setdefault(performer, []).append(
+                    (slug, ev_firestore_id, candidates, public_counts))
+            else:
+                public_counts = reconcile_public_listings(
+                    master, prior_active, event_active_codes, ev_firestore_id,
+                    now_str, public_cache, public_budget, public_deadline, public_policy,
+                )
+                print(f"[PUBLIC EVIDENCE] {slug}: {public_counts}")
             event_diagnostics[slug] = {
                 'observed_at': now_str,
                 'observed_at_utc': now_utc,
@@ -1449,29 +1516,24 @@ def main():
                             written_at.astimezone(timezone.utc).isoformat())
         save_anonymous_sold_inventory(anonymous_sold_by_event, now_str)
         print(f"Saved {len(master)} tickets to master for {performer}.")
-        # Persist only after the corresponding master has been saved.
-        coverage_path = os.path.join(DATA_DIR, 'observation_' + datetime.now().strftime('%Y%m%d') + '.jsonl')
-        with open(coverage_path, 'a', encoding='utf-8') as coverage:
-            for event in events:
-                rows = [r for r in master.values() if r.get('event_id') == event]
-                coverage.write(json.dumps({
-                    'event_id': event, 'performer': performer,
-                    'observed_at': now_str,
-                    'observed_at_utc': now_utc,
-                    'observed_at_timezone': now_timezone,
-                    'api_fetch_complete': event in active_codes_by_event,
-                    'complete': event in absence_safe_events,
-                    'listing_count': sum(r.get('status') == 'listing' and
-                                         r.get('observation_state') != 'alias' for r in rows),
-                    'confirmed_active_count': sum(r.get('observation_state') == 'active' and
-                                                  r.get('last_observed_at') ==
-                                                  event_diagnostics.get(event, {}).get('observed_at')
-                                                  for r in rows),
-                    'sold_count': sum(r.get('status') == 'sold' for r in rows),
-                    **event_diagnostics.get(event, event_errors.get(event, {})),
-                    'absence_classification_complete': event in absence_safe_events,
-                    'schema_version': 'event_poll_v2',
-                }, ensure_ascii=False) + '\n')
+        # Retain only actual polls, including failures, when several URLs resolve
+        # to the same event. In API mode, publish the final reconciliation counts.
+        records = []
+        for event, result in {**event_errors, **event_diagnostics}.items():
+            record = {
+                'event_id': event, 'performer': performer,
+                'api_fetch_complete': event in active_codes_by_event,
+                'complete': event in absence_safe_events,
+                **result,
+                'absence_classification_complete': event in absence_safe_events,
+                'schema_version': 'event_poll_v2',
+            }
+            set_observed_counts(record, master)
+            records.append(record)
+        if SCRAPE_MODE == 'api':
+            observations[performer] = records
+        else:
+            write_observations(records)
 
         if SCRAPE_MODE != 'api':
             time_limit_reached = enrich_ticket_details(
@@ -1487,6 +1549,9 @@ def main():
                 break
 
     if SCRAPE_MODE == 'api':
+        print('[PUBLIC STATE] Inventory saved; checking newly absent listings first.', flush=True)
+        finish_public_state_poll(public_state_batches, observations, public_cache, public_budget,
+                                 time.monotonic() + status_minutes * 60, public_policy)
         missing = [
             target['name'] for target in targets
             if not os.path.exists(

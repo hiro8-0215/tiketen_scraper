@@ -3,7 +3,7 @@ import json
 import tempfile
 import unittest
 import urllib.error
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -241,6 +241,51 @@ class CoverageRecoveryTest(unittest.TestCase):
                     return_value=response(success=success, tickets=[], hasMore=False, totalCount=total)):
                 with self.assertRaises(scraper.ScrapeIntegrityError):
                     scraper.fetch_all_tickets('event', active_only=True)
+
+    def test_api_prioritizes_new_absences_in_later_performer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            (folder / 'targets.json').write_text('["early","late"]', encoding='utf-8')
+            seen_at = (datetime.now() - timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            common = {'event_id':'event', 'public_event_id':'fire-id', 'status':'listing',
+                      'last_observed_at':seen_at, 'perf_date':'2099-01-01'}
+            old = {**common, 'ticket_id':'old', 'observation_state':'absent_unverified',
+                   'absence_first_observed_at':seen_at}
+            sale = {**common, 'ticket_id':'sale', 'observation_state':'active'}
+            cancelled = {**common, 'ticket_id':'cancelled', 'observation_state':'active'}
+
+            def lookup(code, **kwargs):
+                return {'shareCode':code, 'eventId':'fire-id',
+                        'status':{'sale':'sold', 'cancelled':'cancelled'}[code]}
+
+            with (patch.object(scraper, 'DATA_DIR', directory),
+                  patch.object(scraper, 'SCRAPE_MODE', 'api'),
+                  patch.dict(scraper.os.environ, {'PUBLIC_STATUS_CHECK_LIMIT':'2',
+                                                   'PUBLIC_STATUS_RUNTIME_MINUTES':'5',
+                                                   'PUBLIC_TICKET_CACHE_PATH':'',
+                                                   'PUBLIC_API_COOLDOWN_PATH':''}),
+                  patch.object(scraper, 'get_events', return_value=['event']),
+                  patch.object(scraper, 'get_event_id_from_slug', return_value='fire-id'),
+                  patch.object(scraper, 'fetch_all_tickets', return_value=[
+                      {'status':'active', 'shareCode':'still-live', 'eventId':'fire-id',
+                       'pricePerTicket':3000, 'quantity':1}]),
+                  patch.object(evidence, 'fetch_public_ticket', side_effect=lookup) as request,
+                  patch.object(evidence.time, 'sleep'),
+                  patch.object(scraper, 'save_snapshots')):
+                scraper.save_master('early', {'old':old})
+                scraper.save_master('late', {'sale':sale, 'cancelled':cancelled})
+                scraper.main()
+                early, late = scraper.load_master('early'), scraper.load_master('late')
+            self.assertCountEqual([call.args[0] for call in request.call_args_list], ['sale','cancelled'])
+            self.assertEqual(early['old']['observation_state'], 'absent_unverified')
+            self.assertEqual(late['sale']['observation_state'], 'sold_confirmed')
+            self.assertEqual(late['cancelled']['observation_state'], 'deleted_confirmed')
+            polls = [json.loads(line) for line in next(folder.glob('observation_*.jsonl')).read_text(
+                encoding='utf-8').splitlines()]
+            counts = {r['performer']:r['public_status_checks'] for r in polls}
+            self.assertEqual(counts['early']['pending'], 1)
+            self.assertEqual(counts['late']['newly_missing'], 2)
+            self.assertEqual(counts['late']['newly_missing_pending'], 0)
 
     def test_state_priority_counts_real_attempts_and_ignores_pending_only(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -20,9 +20,11 @@ The public API requests are spaced across both workers, and HTTP 429 waits are
 shared and carried to the next phase within the same run. Checkpoints allow
 later runs to continue with unverified rows. Regular Actions polls use a
 5-minute shared deadline for missing-ID lookups and 8 minutes for descriptions.
-Inventory collection continues for all configured events after the individual
-lookup deadline. Per-group and per-event priority favors the least recently
-attempted status work, so a large event cannot always take the whole budget.
+The collector saves inventory for every event first. It then checks newly
+absent IDs across events before older unresolved IDs, sharing the available
+requests among events in each priority band. Observation logs include
+`newly_missing` and `newly_missing_pending`; an older backlog cannot consume
+the request budget before a newly missing ID has a chance to be checked.
 For initial collection or a large backlog, manually select
 `recover_details` in Ticket Scraper for a longer detail pass, or use
 `SCRAPE_MODE=details` with `PUBLIC_DETAIL_RUNTIME_MINUTES` locally. The recovery

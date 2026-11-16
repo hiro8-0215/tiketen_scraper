@@ -245,13 +245,8 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     return 'alias' if code != old_code else status
 
 
-def reconcile_public_listings(master, prior, active_codes, event_id, now,
-                              cache, budget, deadline, policy=None):
-    """Bounded, resumable checks prioritizing shareCodes before they expire.
-
-    Old historical rows are retained as unknown; text similarity never links
-    them. Retry transport failures on a later poll, not as a false deletion.
-    """
+def prepare_public_listings(master, prior, active_codes, now):
+    """Mark missing listings and rank new absences ahead of earlier ones."""
     counts = {'checked': 0, 'alias': 0, 'sold': 0, 'cancelled': 0,
               'not_found': 0, 'active': 0, 'expired': 0, 'inactive': 0, 'paused': 0,
               'unclassified': 0, 'stale': 0, 'failed': 0,
@@ -264,7 +259,8 @@ def reconcile_public_listings(master, prior, active_codes, event_id, now,
             continue
         if row.get('observation_state') in {'alias', 'expired', 'absent_unknown'}:
             continue
-        row.setdefault('absence_first_observed_at', now)
+        newly_missing = (not row.get('absence_first_observed_at')
+                         and previous.get('observation_state') in {None, '', 'active'})
         if not row.get('absence_first_observed_at'):
             row['absence_first_observed_at'] = now
         row['observation_state'] = 'absent_unverified'
@@ -280,8 +276,15 @@ def reconcile_public_listings(master, prior, active_codes, event_id, now,
         if not recent:
             counts['historical_unresolved'] += 1
             continue
-        candidates.append(code)
-    candidates.sort(key=lambda c: prior[c].get('last_observed_at', ''), reverse=True)
+        candidates.append((code, newly_missing))
+    candidates.sort(key=lambda item: prior[item[0]].get('last_observed_at', ''), reverse=True)
+    candidates.sort(key=lambda item: not item[1])
+    counts['pending'] = len(candidates)
+    return counts, candidates
+
+
+def query_public_listings(codes, cache, budget, deadline, policy):
+    """Share the deadline, rate policy and response cache across listings."""
     def query(code):
         if time.monotonic() >= deadline:
             return code, None, 'budget', ''
@@ -296,30 +299,42 @@ def reconcile_public_listings(master, prior, active_codes, event_id, now,
                 time.sleep(0.5)  # At most two concurrent public requests.
         value, error, checked_at = cache[code]
         return code, value, error, checked_at
-    cached = [c for c in candidates if c in cache]
-    fresh = [c for c in candidates if c not in cache]
+    cached = [c for c in codes if c in cache]
+    fresh = [c for c in codes if c not in cache]
     selected = cached + fresh[:budget[0]]
     budget[0] -= min(len(fresh), budget[0])
-    counts['pending'] += len(candidates) - len(selected)
-    errors = {}
     with ThreadPoolExecutor(max_workers=2) as pool:
-        for code, ticket, error, checked_at in pool.map(query, selected):
-            if error:
-                counts['pending' if error == 'budget' else 'failed'] += 1
-                if error != 'budget':
-                    errors[error] = errors.get(error, 0) + 1
-                continue
-            try:
-                result = apply_public_evidence(master, code, ticket, event_id, checked_at)
-            except ValueError:
-                counts['failed'] += 1
-                continue
-            counts['checked'] += 1
-            counts[result] += 1
-            if result != 'stale':
-                remember_verified(cache, ticket, error, checked_at)
-    if errors:
-        counts['request_errors'] = errors
+        return {code: (ticket, error, checked_at)
+                for code, ticket, error, checked_at in pool.map(query, selected)
+                if error != 'budget'}
+
+
+def apply_public_listing_check(master, code, event_id, response, cache, counts):
+    ticket, error, checked_at = response
+    counts['pending'] -= 1
+    if error:
+        counts['failed'] += 1
+        errors = counts.setdefault('request_errors', {})
+        errors[error] = errors.get(error, 0) + 1
+        return
+    try:
+        result = apply_public_evidence(master, code, ticket, event_id, checked_at)
+    except ValueError:
+        counts['failed'] += 1
+        return
+    counts['checked'] += 1
+    counts[result] += 1
+    if result != 'stale':
+        remember_verified(cache, ticket, error, checked_at)
+
+
+def reconcile_public_listings(master, prior, active_codes, event_id, now,
+                              cache, budget, deadline, policy=None):
+    """Reconcile one event immediately for callers outside the inventory batch."""
+    counts, candidates = prepare_public_listings(master, prior, active_codes, now)
+    responses = query_public_listings([code for code, _ in candidates], cache, budget, deadline, policy)
+    for code, response in responses.items():
+        apply_public_listing_check(master, code, event_id, response, cache, counts)
     flatten_canonical_links(master)
     return counts
 
