@@ -394,7 +394,7 @@ def _events_to_poll(discovered, master, now):
     return events
 
 
-def validate_event_snapshot(slug, tickets, prior_active, master, now):
+def validate_event_snapshot(slug, tickets, prior_active, master, now, *, public_event_id=None):
     """Validate a complete event response before changing stored states."""
     if not isinstance(tickets, list):
         raise ScrapeIntegrityError(f"Ticket response for {slug} is not a list")
@@ -418,6 +418,8 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
     sold_identities = set()
     sold_codes = set()
     for ticket in tickets:
+        if public_event_id and ticket.get('eventId') not in (None, '', public_event_id):
+            raise ScrapeIntegrityError(f'Ticket response contains an unrelated public event for {slug}')
         status = ticket.get('status')
         if status == 'active':
             share_code = ticket.get('shareCode')
@@ -426,10 +428,12 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
                     f"Active ticket without shareCode for {slug}"
                 )
             existing = master.get(share_code)
-            if existing and existing.get('event_id') != slug:
-                raise ScrapeIntegrityError(
-                    f"shareCode {share_code} belongs to another event"
-                )
+            if existing:
+                stored_public_id = existing.get('public_event_id')
+                same_event = (stored_public_id == public_event_id if stored_public_id and public_event_id
+                              else existing.get('event_id') == slug)
+                if not same_event:
+                    raise ScrapeIntegrityError(f"shareCode {share_code} belongs to another event")
             if share_code in active_codes:
                 raise ScrapeIntegrityError(f'Duplicate active shareCode for {slug}: {share_code}')
             active_codes.add(share_code)
@@ -462,9 +466,9 @@ def validate_event_snapshot(slug, tickets, prior_active, master, now):
         ticket_id for ticket_id, row in prior_active.items()
         if ticket_id not in active_codes
         and ticket_id not in sold_codes
-        and _listing_identity_key(row) not in active_identities
-        and _listing_identity_key(row) not in sold_identities
-        and _ticket_match_key(row) not in sold_keys
+        and _listing_identity_key(row, slug) not in active_identities
+        and _listing_identity_key(row, slug) not in sold_identities
+        and _ticket_match_key(row, slug) not in sold_keys
     ]
     prior_count = len(prior_active)
     future_or_unknown = not _all_performances_finished(
@@ -1151,18 +1155,34 @@ def main():
         event_diagnostics = {}
         event_errors = {}
         anonymous_sold_by_event = {}
-        for slug in events:
-            prior_active = {
-                ticket_id: row for ticket_id, row in master.items()
-                if row.get('status') == 'listing' and row.get('event_id') == slug
-                and row.get('observation_state') != 'alias'
-            }
+        stored_event_slugs = {}
+        for row in master.values():
+            if row.get('public_event_id') and row.get('event_id'):
+                stored_event_slugs.setdefault(row['public_event_id'], Counter())[row['event_id']] += 1
+        polled_public_events = set()
+        for requested_slug in events:
+            slug = requested_slug
             try:
-                ev_firestore_id = get_event_id_from_slug(slug)
+                ev_firestore_id = get_event_id_from_slug(requested_slug)
                 if not ev_firestore_id:
                     raise ScrapeIntegrityError(
-                        f"Could not find firestore ID for {slug}"
+                        f"Could not find firestore ID for {requested_slug}"
                     )
+                if ev_firestore_id in polled_public_events:
+                    expected_events -= 1
+                    print(f'[EVENT URL ALIAS] {requested_slug}: already polled public event {ev_firestore_id}')
+                    continue
+                polled_public_events.add(ev_firestore_id)
+                if ev_firestore_id in stored_event_slugs:
+                    slug = stored_event_slugs[ev_firestore_id].most_common(1)[0][0]
+                if slug != requested_slug:
+                    print(f'[EVENT URL ALIAS] {requested_slug}: retaining stored event key {slug}')
+                prior_active = {
+                    ticket_id: row for ticket_id, row in master.items()
+                    if row.get('status') == 'listing' and row.get('observation_state') != 'alias'
+                    and (row.get('public_event_id') == ev_firestore_id
+                         or (not row.get('public_event_id') and row.get('event_id') == slug))
+                }
 
                 print(f"Fetching API tickets for {slug}...")
                 tickets = fetch_all_tickets(ev_firestore_id)
@@ -1170,7 +1190,8 @@ def main():
                 empty_inventory_confirmed = False
                 try:
                     event_active_codes = validate_event_snapshot(
-                        slug, tickets, prior_active, master, datetime.now()
+                        slug, tickets, prior_active, master, datetime.now(),
+                        public_event_id=ev_firestore_id,
                     )
                 except UnexplainedDisappearance as warning:
                     # The API still provides current active and aggregate sold
@@ -1209,6 +1230,9 @@ def main():
             now_str = event_now.strftime('%Y-%m-%d %H:%M:%S')
             now_utc = event_now.astimezone(timezone.utc).isoformat()
             now_timezone = str(event_now.tzinfo)
+            for row in prior_active.values():
+                if row.get('public_event_id') == ev_firestore_id:
+                    row['event_id'] = slug
             active_codes_by_event[slug] = event_active_codes
             fetched_events += 1
             unresolved_sold = 0
@@ -1234,6 +1258,7 @@ def main():
                     )
                     if row is not None:
                         row['status'] = 'listing'
+                        row['event_id'] = slug
                         row['sold_at'] = ''
                         row['sold_at_source'] = ''
                         # The API may omit createdAt on a later poll. Retain

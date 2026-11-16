@@ -193,6 +193,47 @@ class CoverageRecoveryTest(unittest.TestCase):
         self.assertEqual(coverage['issues'][0]['reason'], 'empty_inventory_unverified')
         self.assertEqual(saved['observation_state'], 'active')
 
+    def test_url_alias_retains_stored_event_and_fetches_inventory_once(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            (folder / 'targets.json').write_text('["group"]', encoding='utf-8')
+            coverage = folder / 'coverage.json'
+            old = {
+                'ticket_id': 'ticket', 'event_id': 'old-url', 'public_event_id': 'fire-id',
+                'status': 'listing', 'observation_state': 'active', 'perf_date': '2099-02-01',
+                'first_observed_at': '2026-11-16 08:00:00',
+                'last_observed_at': '2026-11-16 08:00:00',
+            }
+            ticket = {
+                'status': 'active', 'eventId': 'fire-id', 'shareCode': 'ticket',
+                'pricePerTicket': 2500, 'quantity': 1,
+            }
+            with (patch.object(scraper, 'DATA_DIR', directory),
+                  patch.object(scraper, 'SCRAPE_MODE', 'api'),
+                  patch.dict(scraper.os.environ, {'COLLECTION_COVERAGE_PATH': str(coverage),
+                                                   'PUBLIC_TICKET_CACHE_PATH': ''}),
+                  patch.object(scraper, 'get_events', return_value=['new-url', 'old-url']),
+                  patch.object(scraper, 'get_event_id_from_slug', return_value='fire-id'),
+                  patch.object(scraper, 'fetch_all_tickets', return_value=[ticket]) as fetch,
+                  patch.object(scraper, 'save_snapshots')):
+                scraper.save_master('group', {'ticket': old})
+                scraper.main()
+                saved = scraper.load_master('group')
+            fetch.assert_called_once_with('fire-id')
+            self.assertEqual(set(saved), {'ticket'})
+            self.assertEqual(saved['ticket']['event_id'], 'old-url')
+            self.assertEqual(saved['ticket']['first_observed_at'], old['first_observed_at'])
+            self.assertEqual(saved['ticket']['price'], '2500')
+            self.assertEqual(json.loads(coverage.read_text(encoding='utf-8')),
+                             {'expected_events':1, 'fetched_events':1, 'issues':[]})
+
+    def test_different_public_event_identity_still_rejects_share_code_collision(self):
+        event = {'event_id':'other-url','public_event_id':'other-fire'}
+        ticket = {'status':'active','shareCode':'ticket','eventId':'current-fire'}
+        with self.assertRaisesRegex(scraper.ScrapeIntegrityError, 'belongs to another event'):
+            scraper.validate_event_snapshot('current-url', [ticket], {}, {'ticket':event},
+                                            datetime.now(), public_event_id='current-fire')
+
     def test_false_success_or_empty_listing_without_zero_total_is_rejected(self):
         for success, total in [(False, 0), (True, 3), (True, None)]:
             with self.subTest(success=success, total=total), patch.object(

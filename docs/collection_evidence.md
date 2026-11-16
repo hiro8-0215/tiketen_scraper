@@ -39,6 +39,10 @@ The longer recovery mode uses `tools/audit_public_content.py --data-dir data
 checks. GitHub persists the collected data before surfacing audit errors.
 Only a successful scrape starts the automatic Drive archive.
 
+If an event gains a new URL, matching public event IDs preserve the stored
+event key and let the collector fetch its inventory once. A share code from a
+different public event still fails validation.
+
 The collector never resets masters. Daily public share codes can resolve to a
 different canonical share code through the same public lookup as the ticket
 page. Only this explicit response (or a previously verified creation identity)
