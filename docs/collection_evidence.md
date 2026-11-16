@@ -18,19 +18,26 @@ formats are unchanged.
 
 The public API requests are spaced across both workers, and HTTP 429 waits are
 shared and carried to the next phase within the same run. Checkpoints allow
-later runs to continue with unverified rows. The ordinary detail phase has a
-40-minute budget. For initial collection or a large backlog, manually select
+later runs to continue with unverified rows. Regular Actions polls use a
+5-minute shared deadline for missing-ID lookups and 8 minutes for descriptions.
+Inventory collection continues for all configured events after the individual
+lookup deadline. Per-group and per-event priority favors the least recently
+attempted status work, so a large event cannot always take the whole budget.
+For initial collection or a large backlog, manually select
 `recover_details` in Ticket Scraper for a longer detail pass, or use
 `SCRAPE_MODE=details` with `PUBLIC_DETAIL_RUNTIME_MINUTES` locally. The recovery
 run uses the same request pacing and honors the site's retry instructions.
 
 `content_observation_*.jsonl` records each batch's full/failed/null/pending
-counts. GitHub persists available data even if the quality audit fails.
-`tools/audit_public_content.py --data-dir data --rolling` verifies each active
-row's full-text provenance, age and visible preview consistency. Current
-unresolved state checks also fail the audit. A completed backlog in an older
-batch is reported as a warning when the current rows meet the coverage rule.
-Only a successful scrape automatically starts the Drive archive.
+counts. The regular workflow validates the current inventory and publishes the
+pending individual lookups separately in the Actions summary
+(`public_coverage_complete=false` while they remain). Backup copies all
+currently saved masters, including last verified text and explicit provenance.
+Listing coverage, structural errors and failed requests still fail the run.
+The longer recovery mode uses `tools/audit_public_content.py --data-dir data
+--rolling` to require verified active descriptions and completed recent state
+checks. GitHub persists the collected data before surfacing audit errors.
+Only a successful scrape starts the automatic Drive archive.
 
 The collector never resets masters. Daily public share codes can resolve to a
 different canonical share code through the same public lookup as the ticket

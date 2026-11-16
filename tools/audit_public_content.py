@@ -2,6 +2,7 @@
 import argparse
 import csv
 import json
+import os
 import sys
 import time
 from collections import Counter
@@ -15,8 +16,14 @@ from collection_evidence import fetch_public_ticket
 from scraper import sanitize_unicode
 
 
-def audit(folder, live_limit=0, *, rolling=False):
+DEFERRED_CONTENT_REASONS = {
+    'unverified_full_description', 'expired_full_description', 'public_description_preview_changed',
+}
+
+
+def audit(folder, live_limit=0, *, rolling=False, inventory_first=False):
     errors, active, samples, latest, warnings = [], {}, [], {}, []
+    backlog = []
     now = datetime.now()
     for path in folder.glob('*_master.csv'):
         with path.open(encoding='utf-8-sig', newline='') as stream:
@@ -25,10 +32,11 @@ def audit(folder, live_limit=0, *, rolling=False):
             if row.get('observation_state') != 'active':
                 continue
             code = row['ticket_id']
-            if rolling:
+            if rolling or inventory_first:
                 reason = content_refresh_reason(row, now)
                 if reason:
-                    errors.append({'id': code, 'reason': reason})
+                    findings = backlog if inventory_first and reason in DEFERRED_CONTENT_REASONS else errors
+                    findings.append({'id': code, 'reason': reason})
             else:
                 if row.get('description_source') != 'public_detail' or row.get('description_is_full') != 'True':
                     errors.append({'id':code,'reason':'unverified_full_description'})
@@ -46,7 +54,9 @@ def audit(folder, live_limit=0, *, rolling=False):
     for performer, item in latest.items():
         if (item.get('failed') or item.get('pending')
                 or (item.get('null') and item.get('scope') == 'observed_active')):
-            findings = warnings if rolling else errors
+            findings = warnings if rolling or inventory_first else errors
+            if inventory_first and item.get('failed'):
+                findings = errors
             findings.append({'performer':performer,'reason':'incomplete_public_refresh',
                            'failed':item.get('failed'),'pending':item.get('pending'),'null':item.get('null')})
         elif item.get('null'):
@@ -62,9 +72,10 @@ def audit(folder, live_limit=0, *, rolling=False):
     for (performer,event), item in polls.items():
         checks = item.get('public_status_checks', {})
         if checks.get('failed') or checks.get('pending'):
-            errors.append({'performer':performer,'event':event,
-                           'reason':'incomplete_public_state_refresh',
-                           'failed':checks.get('failed'),'pending':checks.get('pending')})
+            findings = backlog if inventory_first and not checks.get('failed') else errors
+            findings.append({'performer':performer,'event':event,
+                             'reason':'incomplete_public_state_refresh',
+                             'failed':checks.get('failed', 0),'pending':checks.get('pending', 0)})
     if not active:
         errors.append({'reason':'no_active_rows_to_verify'})
     # Evenly distributed across sorted event/ID population; deterministic.
@@ -98,8 +109,9 @@ def audit(folder, live_limit=0, *, rolling=False):
             errors.append({'id':key[1],'reason':'live_query_failed','error':type(exc).__name__})
         samples.append(result)
         time.sleep(0.5)
-    return {'ok':not errors,'unique_active_rows':len(active),'live_samples':samples,
-            'latest_content_refresh':latest,'errors':errors,'warnings':warnings,
+    return {'ok':not errors,'public_coverage_complete':not errors and not backlog,
+            'unique_active_rows':len(active),'live_samples':samples,
+            'latest_content_refresh':latest,'errors':errors,'warnings':warnings,'backlog':backlog,
             'limitations':'Live values can change after collection. Historical null tickets cannot be reconstructed.'}
 
 
@@ -108,13 +120,29 @@ def main():
     parser.add_argument('--data-dir',type=Path,required=True)
     parser.add_argument('--live-limit',type=int,default=0)
     parser.add_argument('--report',type=Path)
-    parser.add_argument('--rolling', action='store_true',
+    policy = parser.add_mutually_exclusive_group()
+    policy.add_argument('--rolling', action='store_true',
                         help='Require verified active descriptions within the rolling refresh policy.')
+    policy.add_argument('--inventory-first', action='store_true',
+                        help='Record deferred lookups separately from inventory errors.')
     args=parser.parse_args()
-    report=audit(args.data_dir,max(0,args.live_limit),rolling=args.rolling)
+    report=audit(args.data_dir,max(0,args.live_limit),rolling=args.rolling,
+                 inventory_first=args.inventory_first)
     if args.report:
         args.report.write_text(json.dumps(report,ensure_ascii=True,indent=2),encoding='utf-8')
-    print(json.dumps({'ok':report['ok'],'unique_active_rows':report['unique_active_rows'],
+    backlog_counts = Counter()
+    for item in report['backlog']:
+        backlog_counts[item['reason']] += item.get('pending', 1)
+    summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+    if summary_path:
+        with open(summary_path, 'a', encoding='utf-8') as summary:
+            summary.write('### Public ticket evidence\n\n')
+            summary.write(f"- Active listing rows: {report['unique_active_rows']:,}\n")
+            summary.write(f"- Public evidence fully checked: {report['public_coverage_complete']}\n")
+            for reason, count in sorted(backlog_counts.items()):
+                summary.write(f'- Deferred {reason}: {count:,}\n')
+    print(json.dumps({'ok':report['ok'],'public_coverage_complete':report['public_coverage_complete'],
+                      'unique_active_rows':report['unique_active_rows'],'backlog_counts':dict(backlog_counts),
                       'error_counts':dict(Counter(item['reason'] for item in report['errors'])),
                       'live_samples':len(report['live_samples']),'errors':report['errors'][:20],
                       'warnings':report['warnings']},ensure_ascii=True))

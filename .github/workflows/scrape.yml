@@ -20,7 +20,7 @@ concurrency:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.recover_details && 360 || 90 }}
+    timeout-minutes: ${{ inputs.recover_details && 360 || 35 }}
 
     env:
       PYTHONUNBUFFERED: "1"
@@ -78,20 +78,23 @@ jobs:
       - name: 全対象のAPI状態を収集
         env:
           SCRAPE_MODE: api
+          PUBLIC_STATUS_RUNTIME_MINUTES: ${{ inputs.recover_details && '35' || '5' }}
           COLLECTION_COVERAGE_PATH: ${{ runner.temp }}/ticket-collection-coverage.json
         run: python scraper.py
 
       - name: 公開チケット全文を順次取得・再確認
         env:
           SCRAPE_MODE: details
-          PUBLIC_DETAIL_RUNTIME_MINUTES: ${{ inputs.recover_details && '300' || '40' }}
+          PUBLIC_DETAIL_RUNTIME_MINUTES: ${{ inputs.recover_details && '300' || '8' }}
         run: python scraper.py
         
       # Audit before packing; keep checkpoints even if quality is incomplete.
       - name: 全文・公開チケット情報の品質確認
         id: audit
         continue-on-error: true
-        run: python tools/audit_public_content.py --data-dir data --rolling
+        env:
+          AUDIT_MODE: ${{ inputs.recover_details && '--rolling' || '--inventory-first' }}
+        run: python tools/audit_public_content.py --data-dir data "$AUDIT_MODE"
 
       - name: 大きなCSVを内容一致検証付きgzipへ変換
         run: python repository_data_storage.py pack --data-dir data

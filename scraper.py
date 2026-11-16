@@ -1015,6 +1015,23 @@ def detail_refresh_order(targets):
     return sorted(rotated, key=lambda target: last_attempt.get(target['name'], ''))
 
 
+def public_state_attempts():
+    attempts = {}
+    for path in sorted(Path(DATA_DIR).glob('observation_*.jsonl'))[-3:]:
+        with path.open(encoding='utf-8') as stream:
+            for line in stream:
+                if not line.strip():
+                    continue
+                item = json.loads(line)
+                checks = item.get('public_status_checks', {})
+                when = item.get('observed_at_utc')
+                if when and (checks.get('checked') or checks.get('failed')):
+                    events = attempts.setdefault(item['performer'], {})
+                    slug = item['event_id']
+                    events[slug] = max(when, events.get(slug, ''))
+    return attempts
+
+
 def main():
     targets_file = os.path.join(DATA_DIR, 'targets.json')
     if not os.path.exists(targets_file):
@@ -1040,15 +1057,21 @@ def main():
     public_policy = PublicRequestPolicy(
         os.environ.get('PUBLIC_API_COOLDOWN_PATH'), min_interval=3.1,
     )
-    # Recent hourly polls need >3,200 checks. Keep two workers and the strict
-    # quality gate, with headroom inside the existing 40-minute phase budget.
     public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '6000')))]
-    public_deadline = time.monotonic() + max(0, MAX_RUNTIME_SECONDS - 5 * 60)
+    status_minutes = int(os.environ.get('PUBLIC_STATUS_RUNTIME_MINUTES', '35'))
+    if not 0 <= status_minutes <= 35:
+        raise ValueError('PUBLIC_STATUS_RUNTIME_MINUTES must be between 0 and 35')
+    public_deadline = time.monotonic() + status_minutes * 60
+    state_attempts = {}
     print(f"Scrape mode: {SCRAPE_MODE}")
     if SCRAPE_MODE == 'details':
         targets = detail_refresh_order(targets)
         print(f'[PUBLIC CONTENT BUDGET] {DETAIL_RUNTIME_MINUTES} minutes', flush=True)
         print('[PUBLIC CONTENT ORDER] ' + ', '.join(target['name'] for target in targets), flush=True)
+    else:
+        state_attempts = public_state_attempts()
+        targets.sort(key=lambda target: max(state_attempts.get(target['name'], {}).values(), default=''))
+        print(f'[PUBLIC STATE BUDGET] {status_minutes} minutes', flush=True)
     for target in targets:
         performer = target['name']
         source_performer = target['source']
@@ -1106,6 +1129,8 @@ def main():
                                         reason='performer_discovery_failed', detail=str(error)))
             continue
         events = _events_to_poll(discovered_events, master, datetime.now())
+        last_attempt = state_attempts.get(performer, {})
+        events.sort(key=lambda slug: last_attempt.get(slug, ''))
         expected_events += len(events)
         if not events:
             save_master(performer, master)

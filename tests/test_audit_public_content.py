@@ -75,6 +75,25 @@ class ContentAuditTest(unittest.TestCase):
             self.write(folder,content_checked_at='2026-09-27 00:00:00')
             self.assertFalse(module.audit(folder)['ok'])
 
+    def test_inventory_run_reports_budget_backlog_and_retains_hard_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.write(folder, description_is_full='False', description_source='event_api_preview')
+            log = folder/'observation_20260927.jsonl'
+            event = {'performer':'group', 'event_id':'event'}
+            log.write_text(json.dumps({**event, 'public_status_checks':{'pending':42,'failed':0}}))
+            report = module.audit(folder, inventory_first=True)
+            self.assertTrue(report['ok'])
+            self.assertFalse(report['public_coverage_complete'])
+            self.assertEqual([item['reason'] for item in report['backlog']],
+                             ['unverified_full_description','incomplete_public_state_refresh'])
+            self.assertEqual(report['backlog'][1]['pending'], 42)
+            self.assertFalse(module.audit(folder, rolling=True)['ok'])
+            log.write_text(json.dumps({**event, 'public_status_checks':{'pending':42,'failed':1}}))
+            report = module.audit(folder, inventory_first=True)
+            self.assertFalse(report['ok'])
+            self.assertEqual(report['errors'][0]['failed'], 1)
+
     def test_failed_stopped_listing_query_is_not_hidden(self):
         with tempfile.TemporaryDirectory() as tmp:
             folder=Path(tmp);self.write(folder)

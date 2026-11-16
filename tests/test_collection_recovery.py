@@ -201,6 +201,22 @@ class CoverageRecoveryTest(unittest.TestCase):
                 with self.assertRaises(scraper.ScrapeIntegrityError):
                     scraper.fetch_all_tickets('event', active_only=True)
 
+    def test_state_priority_counts_real_attempts_and_ignores_pending_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'observation_20261116.jsonl'
+            items = [
+                {'performer': 'group', 'event_id': 'attempted', 'public_status_checks': {'checked': 1},
+                 'observed_at_utc': '2026-11-16T01:20:00+00:00'},
+                {'performer': 'group', 'event_id': 'attempted', 'public_status_checks': {'pending': 5},
+                 'observed_at_utc': '2026-11-16T01:21:00+00:00'},
+                {'performer': 'another', 'event_id': 'only_pending', 'public_status_checks': {'pending': 8},
+                 'observed_at_utc': '2026-11-16T01:22:00+00:00'},
+            ]
+            path.write_text(''.join(json.dumps(item) + '\n' for item in reversed(items)), encoding='utf-8')
+            with patch.object(scraper, 'DATA_DIR', directory):
+                self.assertEqual(scraper.public_state_attempts(),
+                                 {'group': {'attempted': '2026-11-16T01:20:00+00:00'}})
+
     def test_unvisited_group_precedes_recently_attempted_group(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'content_observation_20261116.jsonl'
