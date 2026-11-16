@@ -3,6 +3,7 @@ import json
 import importlib.util
 import tempfile
 import unittest
+from datetime import datetime, timedelta
 from unittest.mock import patch
 from pathlib import Path
 
@@ -24,6 +25,21 @@ class ContentAuditTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             folder=Path(tmp);self.write(folder,raw_description='')
             self.assertTrue(module.audit(folder)['ok'])
+
+    def test_rolling_audit_uses_actual_coverage_and_verified_time(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            check = datetime.now() - timedelta(hours=1)
+            self.write(folder, raw_description='full text', api_description='full...',
+                       description_checked_at=check.isoformat(sep=' ', timespec='seconds'),
+                       last_observed_at=(check + timedelta(minutes=30)).isoformat(sep=' ', timespec='seconds'))
+            (folder/'content_observation_20260927.jsonl').write_text(json.dumps({
+                'performer':'group', 'scope':'observed_active', 'pending':1}))
+            passing = module.audit(folder, rolling=True)
+            self.assertTrue(passing['ok'])
+            self.assertEqual(passing['warnings'][0]['reason'], 'incomplete_public_refresh')
+            self.write(folder, description_source='event_api_preview')
+            self.assertFalse(module.audit(folder, rolling=True)['ok'])
 
     def test_preview_and_stale_content_fail(self):
         with tempfile.TemporaryDirectory() as tmp:

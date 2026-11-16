@@ -1,13 +1,38 @@
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
-from collection_content import apply_api_preview, public_updates
+from collection_content import apply_api_preview, apply_event_content, content_refresh_reason, public_updates
 import collection_evidence as evidence
 import scraper
 
 
 class ContentTest(unittest.TestCase):
+    def test_event_metadata_does_not_certify_or_overwrite_full_text(self):
+        row = public_updates({'description': 'full text', 'seatType': 'orchestra'}, '2026-11-16 09:00:00')
+        apply_event_content(row, {
+            'description': 'full...', 'eventStartTime': '19:30', 'seatType': None,
+            'tags': [{'label': 'QR'}, '同行'],
+        })
+        self.assertEqual(row['raw_description'], 'full text')
+        self.assertEqual(row['description_checked_at'], '2026-11-16 09:00:00')
+        self.assertEqual(row['ticket_tags'], 'QR / 同行')
+        self.assertEqual(row['seat_type'], '"orchestra"')
+        self.assertEqual(row['perf_time'], '19:30')
+
+    def test_only_verified_recent_matching_text_is_reusable(self):
+        row = public_updates({'description': 'starts here\nrest of full text'}, '2026-11-16 09:00:00')
+        row.update(api_description='starts here...', last_observed_at='2026-11-16 10:00:00')
+        now = datetime(2026, 11, 16, 11)
+        self.assertIsNone(content_refresh_reason(row, now))
+        self.assertEqual(content_refresh_reason(row, datetime(2026, 11, 17, 9)),
+                         'expired_full_description')
+        row['api_description'] = 'changed...'
+        self.assertEqual(content_refresh_reason(row, now), 'public_description_preview_changed')
+        row['description_is_full'] = 'False'
+        self.assertEqual(content_refresh_reason(row, now), 'unverified_full_description')
+
     def test_preview_does_not_overwrite_full_text_over_two_polls(self):
         row = {'raw_description':'complete conditions and seat information',
                'description_source':'public_detail','description_is_full':'True'}

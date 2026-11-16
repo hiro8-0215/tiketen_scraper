@@ -18,7 +18,7 @@ from collection_evidence import (
     fetch_public_ticket, apply_public_evidence, PublicRequestPolicy,
     public_error_label, flatten_canonical_links,
 )
-from collection_content import apply_api_preview
+from collection_content import apply_event_content, content_refresh_reason, has_public_full_text
 from concurrent.futures import ThreadPoolExecutor
 from ticket_change_log import append_changes
 from public_ticket_cache import load_run_cache, save_run_cache, remember_verified
@@ -26,13 +26,20 @@ from public_ticket_cache import load_run_cache, save_run_cache, remember_verifie
 # === タイムリミット設定 ===
 # 40分で取得を止めて途中保存。Actionsの品質判定が未取得分を検知する。
 SCRAPE_START_TIME = time.time()
-MAX_RUNTIME_SECONDS = 40 * 60  # 40分
-PUBLIC_DETAIL_DEADLINE = time.monotonic() + MAX_RUNTIME_SECONDS
 SCRAPE_MODE = os.environ.get('SCRAPE_MODE', 'full').strip().lower()
 if SCRAPE_MODE not in {'full', 'api', 'details'}:
     raise RuntimeError(
         "SCRAPE_MODE must be one of: full, api, details"
     )
+
+# Ordinary runs checkpoint within 40 minutes. Details-only recovery can
+# continue for longer under the same request pacing.
+DETAIL_RUNTIME_MINUTES = int(os.environ.get('PUBLIC_DETAIL_RUNTIME_MINUTES', '40')) if SCRAPE_MODE == 'details' else 40
+if not 1 <= DETAIL_RUNTIME_MINUTES <= 350:
+    raise ValueError('PUBLIC_DETAIL_RUNTIME_MINUTES must be between 1 and 350')
+MAX_RUNTIME_SECONDS = DETAIL_RUNTIME_MINUTES * 60
+PUBLIC_DETAIL_DEADLINE = time.monotonic() + MAX_RUNTIME_SECONDS
+
 
 def is_time_remaining():
     """残り時間があるかチェック"""
@@ -86,18 +93,22 @@ def fetch_html(url, redirects=0):
         raise ScrapeIntegrityError(f"HTML fetch failed for {url}: {error}") from error
 
 def get_events(performer):
-    html = fetch_html(f'https://ticketen.jp/performers/{performer}')
-    soup = BeautifulSoup(html, 'html.parser')
-    events = []
-    for a in soup.find_all('a', href=True):
-        m = re.match(r'^/events/([^/]+)$', a['href'])
-        if m and m.group(1) not in events:
-            events.append(m.group(1))
+    page = f'https://ticketen.jp/performers/{performer}'
+    soup = BeautifulSoup(fetch_html(page), 'html.parser')
+    events = {}
+    for link in soup.find_all('a', href=True):
+        try:
+            url = urllib.parse.urlsplit(urllib.parse.urljoin(page, link['href']))
+        except ValueError:
+            continue
+        match = re.fullmatch(r'/events/([A-Za-z0-9_-]{1,128})/?', url.path)
+        if url.scheme == 'https' and url.netloc == 'ticketen.jp' and match:
+            events[match[1]] = None
     if not events:
         raise NoEventsFound(
             f"No events were found for {performer}; preserving existing listings"
         )
-    return events
+    return list(events)
 
 def get_event_id_from_slug(slug):
     return extract_event_id(fetch_html(f'https://ticketen.jp/events/{slug}'), slug)
@@ -818,14 +829,14 @@ def save_snapshots(performer, master):
             group.to_csv(os.path.join(MARKET_DIR, f'{performer}_{ym}.csv'), index=False, encoding='utf-8-sig')
 
 def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None):
-    """Refresh full public content each run, including already fetched rows.
-
-    Two workers, 0.5s delay, 40-minute limit and atomic checkpoints.
+    """Refresh due public content with the shared request budget and atomic checkpoints.
     Failed/null/rotated replies never erase earlier full descriptions.
     """
     cache = {} if cache is None else cache
     before = {code: row.copy() for code, row in master.items()}
-    pending = sorted(set(ticket_ids), key=lambda c: master[c].get('content_checked_at', ''))
+    pending = sorted(set(ticket_ids), key=lambda code: (
+        has_public_full_text(master[code]), master[code].get('description_checked_at', ''), code,
+    ))
     events = {}
     counts = {'checked':0, 'full':0, 'failed':0, 'null':0, 'pending':0}
     request_errors = Counter()
@@ -1016,6 +1027,7 @@ def main():
 
     now_aware = datetime.now().astimezone()
     now_str = now_aware.strftime('%Y-%m-%d %H:%M:%S')
+    content_now = now_aware.replace(tzinfo=None)
     now_utc = now_aware.astimezone(timezone.utc).isoformat()
     now_timezone = str(now_aware.tzinfo)
 
@@ -1023,7 +1035,9 @@ def main():
     coverage_issues = []
     expected_events = fetched_events = 0
     public_cache = load_run_cache()
-    public_policy = PublicRequestPolicy(os.environ.get('PUBLIC_API_COOLDOWN_PATH'))
+    public_policy = PublicRequestPolicy(
+        os.environ.get('PUBLIC_API_COOLDOWN_PATH'), min_interval=3.1,
+    )
     # Recent hourly polls need >3,200 checks. Keep two workers and the strict
     # quality gate, with headroom inside the existing 40-minute phase budget.
     public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '6000')))]
@@ -1031,6 +1045,7 @@ def main():
     print(f"Scrape mode: {SCRAPE_MODE}")
     if SCRAPE_MODE == 'details':
         targets = detail_refresh_order(targets)
+        print(f'[PUBLIC CONTENT BUDGET] {DETAIL_RUNTIME_MINUTES} minutes', flush=True)
         print('[PUBLIC CONTENT ORDER] ' + ', '.join(target['name'] for target in targets), flush=True)
     for target in targets:
         performer = target['name']
@@ -1046,6 +1061,7 @@ def main():
                 ticket_id for ticket_id, row in master.items()
                 if row.get('status') == 'listing'
                 and row.get('observation_state') == 'active'
+                and content_refresh_reason(row, content_now)
             ]
             time_limit_reached = enrich_ticket_details(
                 performer, master, pending, public_cache, public_policy
@@ -1214,9 +1230,9 @@ def main():
                         row['name_type'] = t.get(
                             'nameGender', row.get('name_type', '')
                         )
-                        apply_api_preview(row, t)
+                        apply_event_content(row, t)
                         row['public_event_id'] = ev_firestore_id
-                        if str(row.get('details_fetched', 'False')) != 'True':
+                        if content_refresh_reason(row, content_now):
                             new_active_tickets.append(share_code)
                         if match_key is not None:
                             by_created_at[match_key] = row
@@ -1256,7 +1272,7 @@ def main():
                             by_identity[identity_key] = row
                         master[share_code] = row
                         new_active_tickets.append(share_code)
-                        apply_api_preview(row, t)
+                        apply_event_content(row, t)
                         row['public_event_id'] = ev_firestore_id
                     if 'isPriceOnRequest' in t:
                         row['is_price_on_request'] = str(t['isPriceOnRequest'] is True)

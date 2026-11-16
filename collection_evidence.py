@@ -46,9 +46,11 @@ def retry_after_seconds(value):
 class PublicRequestPolicy:
     """Share server backoff and repeated access denials across both workers."""
 
-    def __init__(self, cooldown_path=None):
+    def __init__(self, cooldown_path=None, *, min_interval=0):
         self._lock = threading.Lock()
         self._resume_at = 0.0
+        self._next_request_at = 0.0
+        self._min_interval = min_interval
         self._denied = 0
         self._blocked = False
         self._cooldown_path = Path(cooldown_path) if cooldown_path else None
@@ -68,12 +70,14 @@ class PublicRequestPolicy:
             with self._lock:
                 if self._blocked:
                     raise PublicLookupDeferred('repeated HTTP 401/403')
-                wait = self._resume_at - time.monotonic()
-            remaining = deadline - time.monotonic()
-            if remaining <= max(0.0, wait):
-                raise PublicLookupDeferred('public API deadline or cooldown')
-            if wait <= 0:
-                return min(15, remaining)
+                now = time.monotonic()
+                wait = max(self._resume_at, self._next_request_at) - now
+                remaining = deadline - now
+                if remaining <= max(0.0, wait):
+                    raise PublicLookupDeferred('public API deadline or cooldown')
+                if wait <= 0:
+                    self._next_request_at = now + self._min_interval
+                    return min(15, remaining)
             time.sleep(wait)
 
     def record_response(self, status, retry_after=None):

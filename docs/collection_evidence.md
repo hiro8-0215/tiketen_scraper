@@ -1,28 +1,36 @@
 # Listing evidence and retained history
 
-## Full public content (2026-09-27 correction)
+## Full public content
 
-Event API descriptions are previews, stored as `api_description`. They never
-overwrite a saved full `raw_description`. The details stage now refreshes all
-confirmed active tickets through the same public lookup used by ticket pages,
-with two workers, 0.5s per-request delay and a 40-minute checkpoint budget
-(extended from 25 minutes on 2026-10-06). The API and details stages each run in
-their own process with this budget; the Actions job allows 90 minutes including
-setup and persistence. Repeated performer copies share the same response cache. Each full
-description has `description_source=public_detail`, `description_is_full=True`
-and `description_checked_at`; `content_checked_at` timestamps field refreshes.
-Public responses also refresh quantity, date/time, venue, ticket/name/delivery
-type, seat metadata, seller rating/name and tags, including inactive/paused
-responses checked by the API stage. Old ID observation timestamps do not change.
-Null, failed or stale replies do not erase earlier text. Never overwrite an
-earlier historical snapshot with today's description.
+The event list refreshes active inventory, price, quantity, date, venue and
+available seat and tag fields. Listing descriptions are previews, saved in
+`api_description`. Only an identity-verified public detail response sets
+`description_source=public_detail`, `description_is_full=True` and
+`description_checked_at`. Full public text can legitimately be empty.
 
-`content_observation_*.jsonl` reports full/failed/null/pending counts. The workflow
-saves resumable data before running `tools/audit_public_content.py --data-dir data`;
-incomplete current full content fails the quality step instead of silently
-claiming success. Retained old unknown rows are not fabricated or counted as
-currently verified full content. Full public text may legitimately be empty or
-contain ellipses typed by the seller; provenance, not text length, proves coverage.
+The details phase fetches missing full text first, refreshes a changed preview
+when it no longer matches the saved full text, and rechecks saved full text
+after 24 hours. An edit beyond an unchanged preview is picked up by the
+24-hour recheck. A failed request leaves the last verified full text and its
+original verification timestamp intact. Prices and other fields available in
+the list still follow the latest list observation. The CSV columns and history
+formats are unchanged.
+
+The public API requests are spaced across both workers, and HTTP 429 waits are
+shared and carried to the next phase within the same run. Checkpoints allow
+later runs to continue with unverified rows. The ordinary detail phase has a
+40-minute budget. For initial collection or a large backlog, manually select
+`recover_details` in Ticket Scraper for a longer detail pass, or use
+`SCRAPE_MODE=details` with `PUBLIC_DETAIL_RUNTIME_MINUTES` locally. The recovery
+run uses the same request pacing and honors the site's retry instructions.
+
+`content_observation_*.jsonl` records each batch's full/failed/null/pending
+counts. GitHub persists available data even if the quality audit fails.
+`tools/audit_public_content.py --data-dir data --rolling` verifies each active
+row's full-text provenance, age and visible preview consistency. Current
+unresolved state checks also fail the audit. A completed backlog in an older
+batch is reported as a warning when the current rows meet the coverage rule.
+Only a successful scrape automatically starts the Drive archive.
 
 The collector never resets masters. Daily public share codes can resolve to a
 different canonical share code through the same public lookup as the ticket

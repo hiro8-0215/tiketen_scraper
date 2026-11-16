@@ -1,9 +1,56 @@
 """Separate event previews from timestamped, identity-verified public content."""
 import json
 import math
+from datetime import datetime, timedelta
 
 CONTENT_COLUMNS = ['api_description', 'description_source', 'description_checked_at',
                    'description_is_full', 'content_checked_at', 'public_event_id', 'seat_type']
+
+
+DETAIL_MAX_AGE = timedelta(hours=24)
+
+
+def has_public_full_text(row):
+    return row.get('description_source') == 'public_detail' and row.get('description_is_full') == 'True'
+
+
+def content_refresh_reason(row, now):
+    if not has_public_full_text(row):
+        return 'unverified_full_description'
+    try:
+        checked_at = datetime.fromisoformat(row.get('description_checked_at') or '')
+    except ValueError:
+        return 'missing_description_check_time'
+    if checked_at.tzinfo is not None or checked_at > now + timedelta(minutes=1):
+        return 'invalid_description_check_time'
+    if now - checked_at >= DETAIL_MAX_AGE:
+        return 'expired_full_description'
+    preview = ''.join((row.get('api_description') or '').split())
+    if preview and row.get('last_observed_at', '') > row['description_checked_at']:
+        full = ''.join((row.get('raw_description') or '').split())
+        if not full.startswith(preview.removesuffix('...')):
+            return 'public_description_preview_changed'
+    return None
+
+
+def listing_metadata(ticket):
+    fields = {}
+    if 'seatType' in ticket and ticket['seatType'] is not None:
+        fields['seat_type'] = json.dumps(ticket['seatType'], ensure_ascii=True, sort_keys=True)
+    tags = ticket.get('tags')
+    if isinstance(tags, list):
+        labels = [tag.get('label', '') if isinstance(tag, dict) else tag for tag in tags]
+        if all(isinstance(label, str) for label in labels):
+            fields['ticket_tags'] = ' / '.join(label for label in labels if label)
+    return fields
+
+
+def apply_event_content(row, ticket):
+    apply_api_preview(row, ticket)
+    for field, key in [('perf_date', 'eventDate'), ('perf_time', 'eventStartTime'), ('venue', 'venue')]:
+        if isinstance(ticket.get(key), str):
+            row[field] = ticket[key]
+    row.update(listing_metadata(ticket))
 
 
 def apply_api_preview(row, ticket):
@@ -14,9 +61,7 @@ def apply_api_preview(row, ticket):
         raise ValueError('Invalid API description')
     row['api_description'] = preview
     # Neither a legacy browser full text nor a verified public text is replaced.
-    verified_full = (row.get('description_source') == 'public_detail'
-                     and row.get('description_is_full') == 'True')
-    if not verified_full and (not row.get('raw_description')
+    if not has_public_full_text(row) and (not row.get('raw_description')
                               or row.get('description_source') == 'event_api_preview'):
         row['raw_description'] = preview
         row['description_source'] = 'event_api_preview'
@@ -46,8 +91,9 @@ def public_updates(ticket, now):
             raise ValueError('Invalid public description')
         updates.update(raw_description=ticket['description'], description_source='public_detail',
                        description_checked_at=now, description_is_full='True', details_fetched='True')
-    if 'seatType' in ticket:
-        updates['seat_type'] = json.dumps(ticket['seatType'], ensure_ascii=True, sort_keys=True)
+    updates.update(listing_metadata(ticket))
+    if 'seatType' in ticket and ticket['seatType'] is None:
+        updates['seat_type'] = 'null'
     seller = ticket.get('sellerInfo')
     if isinstance(seller, dict):
         if isinstance(seller.get('displayName'), str):
@@ -56,12 +102,6 @@ def public_updates(ticket, now):
             updates['seller_rating'] = seller['rating']
     elif isinstance(ticket.get('sellerName'), str):
         updates['seller_name'] = ticket['sellerName']
-    tags = ticket.get('tags')
-    if isinstance(tags, list):
-        labels = [tag.get('label', '') if isinstance(tag, dict) else tag
-                  for tag in tags]
-        if all(isinstance(label, str) for label in labels):
-            updates['ticket_tags'] = ' / '.join(label for label in labels if label)
     if updates:
         updates['content_checked_at'] = now
     if ticket.get('eventId'):

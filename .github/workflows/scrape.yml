@@ -1,7 +1,12 @@
 name: Ticket Scraper
 
 on:
-  workflow_dispatch: # GitHubの画面から手動でボタンを押して実行できるよう、または外部API（cron-job.orgなど）からキックできるようにする設定
+  workflow_dispatch: # 通常は外部スケジューラから実行
+    inputs:
+      recover_details:
+        description: "初回・復旧用に未確認の全文取得を継続する"
+        type: boolean
+        default: false
 
 permissions:
   contents: write # 実行後にデータをGitHubに保存（プッシュ）するために必要
@@ -15,7 +20,7 @@ concurrency:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 90  # API取得・詳細取得が各最大40分 + セットアップ・保存の余裕
+    timeout-minutes: ${{ inputs.recover_details && 360 || 90 }}
 
     env:
       PYTHONUNBUFFERED: "1"
@@ -76,16 +81,17 @@ jobs:
           COLLECTION_COVERAGE_PATH: ${{ runner.temp }}/ticket-collection-coverage.json
         run: python scraper.py
 
-      - name: 公開チケット全文を更新（取得済み含む）
+      - name: 公開チケット全文を順次取得・再確認
         env:
           SCRAPE_MODE: details
+          PUBLIC_DETAIL_RUNTIME_MINUTES: ${{ inputs.recover_details && '300' || '40' }}
         run: python scraper.py
         
       # Audit before packing; keep checkpoints even if quality is incomplete.
       - name: 全文・公開チケット情報の品質確認
         id: audit
         continue-on-error: true
-        run: python tools/audit_public_content.py --data-dir data
+        run: python tools/audit_public_content.py --data-dir data --rolling
 
       - name: 大きなCSVを内容一致検証付きgzipへ変換
         run: python repository_data_storage.py pack --data-dir data

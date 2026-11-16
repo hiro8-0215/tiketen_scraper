@@ -5,16 +5,19 @@ import json
 import sys
 import time
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from collection_content import content_refresh_reason
 from collection_evidence import fetch_public_ticket
 from scraper import sanitize_unicode
 
 
-def audit(folder, live_limit=0):
+def audit(folder, live_limit=0, *, rolling=False):
     errors, active, samples, latest, warnings = [], {}, [], {}, []
+    now = datetime.now()
     for path in folder.glob('*_master.csv'):
         with path.open(encoding='utf-8-sig', newline='') as stream:
             records = list(csv.DictReader(stream))
@@ -22,10 +25,15 @@ def audit(folder, live_limit=0):
             if row.get('observation_state') != 'active':
                 continue
             code = row['ticket_id']
-            if row.get('description_source') != 'public_detail' or row.get('description_is_full') != 'True':
-                errors.append({'id':code,'reason':'unverified_full_description'})
-            if not row.get('content_checked_at') or row['content_checked_at'] < row.get('last_observed_at',''):
-                errors.append({'id':code,'reason':'content_older_than_api_observation'})
+            if rolling:
+                reason = content_refresh_reason(row, now)
+                if reason:
+                    errors.append({'id': code, 'reason': reason})
+            else:
+                if row.get('description_source') != 'public_detail' or row.get('description_is_full') != 'True':
+                    errors.append({'id':code,'reason':'unverified_full_description'})
+                if not row.get('content_checked_at') or row['content_checked_at'] < row.get('last_observed_at',''):
+                    errors.append({'id':code,'reason':'content_older_than_api_observation'})
             if not row.get('public_event_id'):
                 errors.append({'id':code,'reason':'missing_public_event_id'})
             active[(row['event_id'],code)] = row
@@ -38,7 +46,8 @@ def audit(folder, live_limit=0):
     for performer, item in latest.items():
         if (item.get('failed') or item.get('pending')
                 or (item.get('null') and item.get('scope') == 'observed_active')):
-            errors.append({'performer':performer,'reason':'incomplete_public_refresh',
+            findings = warnings if rolling else errors
+            findings.append({'performer':performer,'reason':'incomplete_public_refresh',
                            'failed':item.get('failed'),'pending':item.get('pending'),'null':item.get('null')})
         elif item.get('null'):
             warnings.append({'performer':performer,'reason':'legacy_refresh_included_unobserved_rows',
@@ -99,8 +108,10 @@ def main():
     parser.add_argument('--data-dir',type=Path,required=True)
     parser.add_argument('--live-limit',type=int,default=0)
     parser.add_argument('--report',type=Path)
+    parser.add_argument('--rolling', action='store_true',
+                        help='Require verified active descriptions within the rolling refresh policy.')
     args=parser.parse_args()
-    report=audit(args.data_dir,max(0,args.live_limit))
+    report=audit(args.data_dir,max(0,args.live_limit),rolling=args.rolling)
     if args.report:
         args.report.write_text(json.dumps(report,ensure_ascii=True,indent=2),encoding='utf-8')
     print(json.dumps({'ok':report['ok'],'unique_active_rows':report['unique_active_rows'],

@@ -54,6 +54,22 @@ class PublicRequestRecoveryTest(unittest.TestCase):
             wait.assert_called_once_with(45)
             self.assertEqual(request.call_args.kwargs['timeout'], 5)
 
+    def test_workers_share_spacing_and_deadline(self):
+        clock = [100.0]
+
+        def sleep(seconds):
+            clock[0] += seconds
+
+        policy = evidence.PublicRequestPolicy(min_interval=2.5)
+        with (patch.object(evidence.time, 'monotonic', side_effect=lambda: clock[0]),
+              patch.object(evidence.time, 'sleep', side_effect=sleep) as wait):
+            policy.before_request(110)
+            with self.assertRaises(evidence.PublicLookupDeferred):
+                policy.before_request(102)
+            policy.before_request(110)
+            wait.assert_called_once_with(2.5)
+            self.assertEqual(clock[0], 102.5)
+
     def test_single_throttle_can_recover_and_cooldown_survives_phase_boundary(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'cooldown'
@@ -116,6 +132,20 @@ class PublicRequestRecoveryTest(unittest.TestCase):
 
 
 class CoverageRecoveryTest(unittest.TestCase):
+    def test_event_discovery_accepts_same_site_absolute_and_relative_links(self):
+        page = '''
+            <a href="/events/relative">Relative</a>
+            <a href="https://ticketen.jp/events/absolute">Absolute</a>
+            <a href="/events/absolute/?round=1#list">Duplicate</a>
+            <a href="//ticketen.jp/events/other">Same site</a>
+            <a href="https://other.example/events/foreign">Foreign</a>
+            <a href="https://ticketen.jp.example/events/fake">Fake host</a>
+            <a href="https://[bad">Malformed</a>
+            <a href="/events/relative/day/1">Schedule</a>
+        '''
+        with patch.object(scraper, 'fetch_html', return_value=page):
+            self.assertEqual(scraper.get_events('group'), ['relative', 'absolute', 'other'])
+
     def run_empty_event(self, active_response):
         with tempfile.TemporaryDirectory() as directory:
             folder = Path(directory)
