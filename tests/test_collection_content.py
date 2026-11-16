@@ -32,8 +32,43 @@ class ContentTest(unittest.TestCase):
         self.assertEqual(content_refresh_reason(row, now), 'public_description_preview_changed')
         row['api_description'] = 'changed...'
         self.assertEqual(content_refresh_reason(row, now), 'public_description_preview_changed')
+        self.assertEqual(content_refresh_reason(row, datetime(2026, 11, 17, 9)),
+                         'public_description_preview_changed')
         row['description_is_full'] = 'False'
         self.assertEqual(content_refresh_reason(row, now), 'unverified_full_description')
+
+    def test_global_priority_saves_new_and_changed_before_old_group_rechecks(self):
+        now = datetime(2026, 11, 16, 21)
+        active = {'event_id':'event', 'public_event_id':'fire', 'status':'listing',
+                  'observation_state':'active', 'last_observed_at':'2026-11-16 20:55:00'}
+        old = {**active, 'ticket_id':'old',
+               **public_updates({'description':'earlier verified'}, '2026-11-15 12:00:00')}
+        changed = {**active, 'ticket_id':'changed', 'api_description':'updated conditions...',
+                   **public_updates({'description':'previous conditions'}, '2026-11-15 12:00:00')}
+        new = {**active, 'ticket_id':'new', 'raw_description':'preview...',
+               'description_source':'event_api_preview'}
+        checked = '2026-11-16 21:00:00'
+        responses = {code: ({'shareCode':code, 'eventId':'fire', 'status':'active',
+                             'description':text}, None, checked)
+                     for code, text in [('changed','updated conditions in full'),
+                                        ('new','full new description')]}
+        with tempfile.TemporaryDirectory() as temp:
+            with (patch.object(scraper, 'DATA_DIR', temp),
+                  patch.object(scraper, 'query_public_listings', return_value=responses) as lookup,
+                  patch.object(scraper, 'is_time_remaining', return_value=False),
+                  patch.object(scraper, 'save_snapshots')):
+                scraper.save_master('early', {'old':old})
+                scraper.save_master('late', {'changed':changed})
+                scraper.save_master('new-group', {'new':new})
+                scraper.refresh_priority_content([{'name':'early'}, {'name':'late'}, {'name':'new-group'}],
+                                                 now, {}, None)
+                self.assertEqual(lookup.call_args.args[0], ['changed','new','old'])
+                saved_old = scraper.load_master('early')['old']
+                self.assertEqual(saved_old['description_checked_at'], '2026-11-15 12:00:00')
+                self.assertEqual(saved_old['raw_description'], 'earlier verified')
+                self.assertEqual(scraper.load_master('late')['changed']['raw_description'],
+                                 'updated conditions in full')
+                self.assertEqual(scraper.load_master('new-group')['new']['description_checked_at'], checked)
 
     def test_preview_does_not_overwrite_full_text_over_two_polls(self):
         row = {'raw_description':'complete conditions and seat information',

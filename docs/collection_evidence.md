@@ -8,10 +8,13 @@ available seat and tag fields. Listing descriptions are previews, saved in
 `description_source=public_detail`, `description_is_full=True` and
 `description_checked_at`. Full public text can legitimately be empty.
 
-The details phase fetches missing full text first, refreshes a changed preview
-when it no longer matches the saved full text, and rechecks saved full text
-after 24 hours. An edit beyond an unchanged preview is picked up by the
-24-hour recheck. A failed request leaves the last verified full text and its
+The ordinary details phase checks every group for missing full text and
+visible preview changes before using request slots for periodic rechecks.
+It shares priority slots across groups and saves replies already received
+even if the request window closes. Full text becomes due for a periodic
+recheck at 24 hours. An edit beyond an unchanged preview can only be seen
+through a subsequent detail lookup; higher-priority work or rate limits can
+delay that lookup beyond the 24-hour threshold. A failed request leaves the last verified full text and its
 original verification timestamp intact. Prices and other fields available in
 the list still follow the latest list observation. The CSV columns and history
 formats are unchanged.

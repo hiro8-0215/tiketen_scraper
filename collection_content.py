@@ -23,14 +23,14 @@ def content_refresh_reason(row, now):
         return 'missing_description_check_time'
     if checked_at.tzinfo is not None or checked_at > now + timedelta(minutes=1):
         return 'invalid_description_check_time'
-    if now - checked_at >= DETAIL_MAX_AGE:
-        return 'expired_full_description'
     preview = ''.join((row.get('api_description') or '').split())
     if preview and row.get('last_observed_at', '') > row['description_checked_at']:
         full = ''.join((row.get('raw_description') or '').split())
         matches = full.startswith(preview[:-3]) if preview.endswith('...') else full == preview
         if not matches:
             return 'public_description_preview_changed'
+    if now - checked_at >= DETAIL_MAX_AGE:
+        return 'expired_full_description'
     return None
 
 

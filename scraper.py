@@ -833,7 +833,28 @@ def save_snapshots(performer, master):
         for ym, group in mdf.groupby('year_month'):
             group.to_csv(os.path.join(MARKET_DIR, f'{performer}_{ym}.csv'), index=False, encoding='utf-8-sig')
 
-def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None):
+def reusable_public_content(row, code, reply):
+    if reply is None:
+        return False
+    ticket, error, checked_at = reply
+    return (not error and ticket is not None and isinstance(ticket.get('description'), str)
+            and ticket.get('shareCode') == code and ticket.get('eventId') == row.get('public_event_id')
+            and checked_at >= max(row.get('state_checked_at', ''), row.get('last_observed_at', '')))
+
+
+def write_content_observation(performer, selected, counts, errors=None):
+    now = datetime.now().astimezone()
+    log = os.path.join(DATA_DIR, 'content_observation_' + now.strftime('%Y%m%d') + '.jsonl')
+    with open(log, 'a', encoding='utf-8') as stream:
+        stream.write(json.dumps({'performer': performer, 'observed_at_utc': now.isoformat(),
+                                 'scope': 'observed_active', 'selected': selected, **counts,
+                                 'request_errors': dict(errors or {})}) + '\n')
+    print(f'[PUBLIC CONTENT] {performer}: {counts}')
+    if errors:
+        print(f'[PUBLIC CONTENT HTTP SUMMARY] {performer}: {dict(errors)}', flush=True)
+
+
+def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None, *, responses=None):
     """Refresh due public content with the shared request budget and atomic checkpoints.
     Failed/null/rotated replies never erase earlier full descriptions.
     """
@@ -845,24 +866,24 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None
     events = {}
     counts = {'checked':0, 'full':0, 'failed':0, 'null':0, 'pending':0}
     request_errors = Counter()
-    reusable = {code for code in pending if code in cache and cache[code][1] is None
-                and cache[code][0] is not None
-                and isinstance(cache[code][0].get('description'), str)
-                and cache[code][0].get('shareCode') == code
-                and cache[code][0].get('eventId') == master[code].get('public_event_id')
-                and cache[code][2] >= max(master[code].get('state_checked_at', ''),
-                                        master[code].get('last_observed_at', ''))}
-    print(f'[PUBLIC CONTENT CACHE] {performer}: {len(reusable)}/{len(pending)} replies reusable', flush=True)
+    reusable = {code for code in pending if reusable_public_content(master[code], code, cache.get(code))}
+    if responses is None:
+        print(f'[PUBLIC CONTENT CACHE] {performer}: {len(reusable)}/{len(pending)} replies reusable', flush=True)
     for code in pending:
+        if responses is not None and code not in responses:
+            continue
         row = master[code]
         event = row.get('event_id')
         if event not in events:
             try:
                 events[event] = row.get('public_event_id') or (
-                    get_event_id_from_slug(event) if is_time_remaining() else None)
+                    get_event_id_from_slug(event) if responses is not None or is_time_remaining() else None)
             except ScrapeIntegrityError:
                 events[event] = None
+
     def query(code):
+        if responses is not None:
+            return code, *responses.get(code, (None, 'budget', ''))
         if not is_time_remaining():
             return code, None, 'time_limit', ''
         if code not in reusable:
@@ -918,16 +939,51 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None
     save_ticket_changes(performer, before, master, now.strftime('%Y-%m-%d %H:%M:%S'),
                         now.astimezone(timezone.utc).isoformat())
     save_master(performer, master)
-    log = os.path.join(DATA_DIR, 'content_observation_' + now.strftime('%Y%m%d') + '.jsonl')
-    with open(log, 'a', encoding='utf-8') as stream:
-        stream.write(json.dumps({'performer':performer, 'observed_at_utc':now.isoformat(),
-                                  'scope':'observed_active',
-                                  'selected':len(pending), **counts,
-                                  'request_errors':dict(request_errors)}) + '\n')
-    print(f'[PUBLIC CONTENT] {performer}: {counts}')
-    if request_errors:
-        print(f'[PUBLIC CONTENT HTTP SUMMARY] {performer}: {dict(request_errors)}', flush=True)
+    write_content_observation(performer, len(pending), counts, request_errors)
     return counts['pending'] > 0
+
+
+def refresh_priority_content(targets, now, cache, policy):
+    plans = {}
+    ranked = []
+    for target in targets:
+        performer = target['name']
+        master = load_master(performer)
+        due = []
+        for code, row in master.items():
+            if row.get('status') != 'listing' or row.get('observation_state') != 'active':
+                continue
+            reason = content_refresh_reason(row, now)
+            if not reason:
+                continue
+            if code in cache and not reusable_public_content(row, code, cache[code]):
+                cache.pop(code)
+            due.append((reason == 'expired_full_description', row.get('description_checked_at', ''), code))
+        due.sort()
+        plans[performer] = [code for _, _, code in due]
+        ranks = Counter()
+        for routine, _, code in due:
+            ranked.append((routine, ranks[routine], code))
+            ranks[routine] += 1
+
+    ranked.sort(key=lambda item: item[:2])
+    codes = list(dict.fromkeys(code for _, _, code in ranked))
+    priority = {code for routine, _, code in ranked if not routine}
+    print(f'[PUBLIC CONTENT PRIORITY] {len(priority)} new or changed; '
+          f'{len(codes) - len(priority)} due for periodic verification', flush=True)
+    responses = query_public_listings(codes, cache, [len(codes)], PUBLIC_DETAIL_DEADLINE, policy)
+    priority_pending = sum(code not in responses for code in priority)
+    print(f'[PUBLIC CONTENT PRIORITY] {len(priority)} priority lookups, {priority_pending} pending', flush=True)
+
+    for performer, pending in plans.items():
+        if any(code in responses for code in pending):
+            master = load_master(performer)
+            enrich_ticket_details(performer, master, pending, cache, policy, responses=responses)
+            save_snapshots(performer, master)
+        else:
+            write_content_observation(performer, len(pending), {
+                'checked': 0, 'full': 0, 'failed': 0, 'null': 0, 'pending': len(pending),
+            })
 
 
 def enrich_ticket_details_browser(performer, master, ticket_ids):
@@ -1134,6 +1190,11 @@ def main():
         targets = detail_refresh_order(targets)
         print(f'[PUBLIC CONTENT BUDGET] {DETAIL_RUNTIME_MINUTES} minutes', flush=True)
         print('[PUBLIC CONTENT ORDER] ' + ', '.join(target['name'] for target in targets), flush=True)
+        if DETAIL_RUNTIME_MINUTES <= 40:
+            refresh_priority_content(targets, content_now, public_cache, public_policy)
+            save_run_cache(public_cache)
+            public_policy.save_cooldown()
+            return
     else:
         state_attempts = public_state_attempts()
         targets.sort(key=lambda target: max(state_attempts.get(target['name'], {}).values(), default=''))
