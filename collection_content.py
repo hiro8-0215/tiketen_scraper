@@ -28,7 +28,8 @@ def content_refresh_reason(row, now):
     preview = ''.join((row.get('api_description') or '').split())
     if preview and row.get('last_observed_at', '') > row['description_checked_at']:
         full = ''.join((row.get('raw_description') or '').split())
-        if not full.startswith(preview.removesuffix('...')):
+        matches = full.startswith(preview[:-3]) if preview.endswith('...') else full == preview
+        if not matches:
             return 'public_description_preview_changed'
     return None
 

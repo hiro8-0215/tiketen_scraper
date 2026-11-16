@@ -28,6 +28,8 @@ class ContentTest(unittest.TestCase):
         self.assertIsNone(content_refresh_reason(row, now))
         self.assertEqual(content_refresh_reason(row, datetime(2026, 11, 17, 9)),
                          'expired_full_description')
+        row['api_description'] = 'starts here'
+        self.assertEqual(content_refresh_reason(row, now), 'public_description_preview_changed')
         row['api_description'] = 'changed...'
         self.assertEqual(content_refresh_reason(row, now), 'public_description_preview_changed')
         row['description_is_full'] = 'False'
