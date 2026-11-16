@@ -287,6 +287,17 @@ class CoverageRecoveryTest(unittest.TestCase):
             self.assertEqual(counts['late']['newly_missing'], 2)
             self.assertEqual(counts['late']['newly_missing_pending'], 0)
 
+    def test_prior_unavailable_evidence_survives_a_deferred_recheck(self):
+        checked_at = '2026-11-16 10:10:00'
+        row = {'status':'listing','observation_state':'inactive','last_observed_at':checked_at,
+               'state_checked_at':checked_at,'absence_first_observed_at':checked_at}
+        counts, candidates = evidence.prepare_public_listings({'code':row}, {'code':row.copy()},
+                                                               set(), '2026-11-16 11:00:00')
+        self.assertEqual(candidates, [('code', False)])
+        self.assertEqual(counts['pending'], 1)
+        self.assertEqual(row['observation_state'], 'inactive')
+        self.assertEqual(row['state_checked_at'], checked_at)
+
     def test_state_priority_counts_real_attempts_and_ignores_pending_only(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'observation_20261116.jsonl'

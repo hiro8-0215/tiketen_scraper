@@ -263,10 +263,12 @@ def prepare_public_listings(master, prior, active_codes, now):
                          and previous.get('observation_state') in {None, '', 'active'})
         if not row.get('absence_first_observed_at'):
             row['absence_first_observed_at'] = now
-        row['observation_state'] = 'absent_unverified'
+        previously_unavailable = previous.get('observation_state') in {'inactive', 'paused', 'public_unclassified'}
+        if not previously_unavailable:
+            row['observation_state'] = 'absent_unverified'
         try:
             last_seen = previous.get('last_observed_at', '')
-            if previous.get('observation_state') in {'inactive', 'paused', 'public_unclassified'}:
+            if previously_unavailable:
                 # A recently verified stopped listing remains worth refreshing;
                 # do not silently abandon it 36h after its last active sighting.
                 last_seen = max(last_seen, previous.get('state_checked_at', ''))
