@@ -543,47 +543,2369 @@ yiu68gdjlg,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-02-07,12:00,[東�
 4名義当選、3番目に座席選択",True,yiu68gdjlg,2026-10-24 14:12:34,absent_unverified,2026-11-16 00:09:18,2026-11-16 01:36:53,event_api,False,event_api,active,"本人確認対応不可
 4名義当選、3番目に座席選択",public_detail,2026-11-15 13:35:19,True,2026-11-15 13:35:19,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": true, ""value"": ""\u5230\u7740\u307e\u3067\u672a\u5b9a""}",2026-11
 j1l8vriwom,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-30,17:00,[東京都] THEATER MILANO-Za,paper,female,公演日7日前までに郵送,める,5.0,,,2026-11-15 10:05:29,scrape_observed,2026-11-16 00:09:18,,,listing,1,16000,HP先行S席,True,j1l8vriwom,2026-11-15 10:05:29,absent_unverified,2026-11-16 00:09:18,2026-11-16 01:36:53,event_api,False,event_api,active,HP先行S席,public_detail,2026-11-15 13:35:17,True,2026-11-15 13:35:17,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": false, ""value"": """"}",2026-11
-r0syu922mx,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-18,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,める,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 02:55:48,,,listing,1,12500,"4名義中4番手/共演者FC先行 S席
+r0syu922mx,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-18,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,める,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 04:14:05,,,listing,1,12500,"4名義中4番手/共演者FC先行 S席
 プラベル移行も可能です。ご購入前にメッセージお願い致します。
 
 ・公演中止が発表された場合のみ返金対応致します。その他理由（本人確認、公共交通機関等全てのトラブル含む）の返金対応は一切できかねますのでご了承ください。
-",True,r0syu922mx,2026-11-16 01:36:53,active,2026-11-16 03:11:40,,public_detail,False,public_detail,active,"4名義中4番手/共演者FC先行 S席
+",True,r0syu922mx,2026-11-16 01:36:53,active,2026-11-16 04:14:05,,event_api,False,event_api,active,"4名義中4番手/共演者FC先行 S席
 プラベル移行も可能です。ご購入前にメッセージお願い致します。
 
 ・公演中止が発表された場合のみ返金対応致します。その他理由...",public_detail,2026-11-16 03:11:40,True,2026-11-16 03:11:40,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": false, ""value"": """"}",2026-11
-4locmuy4jw,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-18,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,める,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 02:55:48,,,listing,1,25000,"4名義中3番手/共演者FC先行 S席
+4locmuy4jw,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-18,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,める,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 04:14:05,,,listing,1,25000,"4名義中3番手/共演者FC先行 S席
 
 プラベル移行も可能です。ご購入前にメッセージお願い致します。
 
-・公演中止が発表された場合のみ返金対応致します。その他理由（本人確認、公共交通機関等全てのトラブル含む）の返金対応は一切できかねますのでご了承ください。",True,4locmuy4jw,2026-11-16 01:36:53,active,2026-11-16 03:11:42,,public_detail,False,public_detail,active,"4名義中3番手/共演者FC先行 S席
+・公演中止が発表された場合のみ返金対応致します。その他理由（本人確認、公共交通機関等全てのトラブル含む）の返金対応は一切できかねますのでご了承ください。",True,4locmuy4jw,2026-11-16 01:36:53,active,2026-11-16 04:14:05,,event_api,False,event_api,active,"4名義中3番手/共演者FC先行 S席
 
 プラベル移行も可能です。ご購入前にメッセージお願い致します。
 
 ・公演中止が発表された場合のみ返金対応致します。その他理...",public_detail,2026-11-16 03:11:42,True,2026-11-16 03:11:42,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": true, ""value"": ""\u5230\u7740\u307e\u3067\u672a\u5b9a""}",2026-11
-00ybgy3n31,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-18,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,める,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 02:55:48,,,listing,1,50000,"4名義中2番手/共演者FC先行 S席
+00ybgy3n31,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-18,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,める,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 04:14:05,,,listing,1,50000,"4名義中2番手/共演者FC先行 S席
 
 プラベル移行も可能です。ご購入前にメッセージお願い致します。
 
-・公演中止が発表された場合のみ返金対応致します。その他理由（本人確認、公共交通機関等全てのトラブル含む）の返金対応は一切できかねますのでご了承ください。",True,00ybgy3n31,2026-11-16 01:36:53,active,2026-11-16 03:11:39,,public_detail,False,public_detail,active,"4名義中2番手/共演者FC先行 S席
+・公演中止が発表された場合のみ返金対応致します。その他理由（本人確認、公共交通機関等全てのトラブル含む）の返金対応は一切できかねますのでご了承ください。",True,00ybgy3n31,2026-11-16 01:36:53,active,2026-11-16 04:14:05,,event_api,False,event_api,active,"4名義中2番手/共演者FC先行 S席
 
 プラベル移行も可能です。ご購入前にメッセージお願い致します。
 
 ・公演中止が発表された場合のみ返金対応致します。その他理...",public_detail,2026-11-16 03:11:39,True,2026-11-16 03:11:39,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": true, ""value"": ""\u5230\u7740\u307e\u3067\u672a\u5b9a""}",2026-11
-9kwncnn8ao,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-18,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,え,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 02:55:48,,,listing,1,40000,3名義中3番目に座席選択,True,9kwncnn8ao,2026-11-16 01:36:53,active,2026-11-16 03:11:38,,public_detail,False,public_detail,active,3名義中3番目に座席選択,public_detail,2026-11-16 03:11:38,True,2026-11-16 03:11:38,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": true, ""value"": ""\u5230\u7740\u307e\u3067\u672a\u5b9a""}",2026-11
-4xmee1j9bg,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-20,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,さ,5.0,,,2026-11-16 01:36:53,scrape_observed,2026-11-16 02:55:48,,,listing,1,40000,,True,4xmee1j9bg,2026-11-16 01:36:53,active,2026-11-16 03:11:40,,public_detail,False,public_detail,active,,public_detail,2026-11-16 03:11:40,True,2026-11-16 03:11:40,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": false, ""value"": """"}",2026-11
-894e12hfj2,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-29,18:30,[東京都] THEATER MILANO-Za,paper,female,公演日7日前までに郵送,M,5.0,,,2026-11-16 01:36:53,scrape_observed,2026-11-16 02:55:48,,,listing,1,30000,"重複すり替え無し 下3桁提示可
+9kwncnn8ao,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-18,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,え,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 04:14:05,,,listing,1,40000,3名義中3番目に座席選択,True,9kwncnn8ao,2026-11-16 01:36:53,active,2026-11-16 04:14:05,,event_api,False,event_api,active,3名義中3番目に座席選択,public_detail,2026-11-16 03:11:38,True,2026-11-16 03:11:38,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": true, ""value"": ""\u5230\u7740\u307e\u3067\u672a\u5b9a""}",2026-11
+4xmee1j9bg,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-20,18:30,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,さ,5.0,,,2026-11-16 01:36:53,scrape_observed,2026-11-16 04:14:05,,,listing,1,40000,,True,4xmee1j9bg,2026-11-16 01:36:53,active,2026-11-16 04:14:05,,event_api,False,event_api,active,,public_detail,2026-11-16 03:11:40,True,2026-11-16 03:11:40,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": false, ""value"": """"}",2026-11
+894e12hfj2,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-29,18:30,[東京都] THEATER MILANO-Za,paper,female,公演日7日前までに郵送,M,5.0,,,2026-11-16 01:36:53,scrape_observed,2026-11-16 04:14:05,,,listing,1,30000,"重複すり替え無し 下3桁提示可
 チケットが届き次第郵送いたします。
 プラベル可能な方は専用出品いたしますのでお声掛けください。
-",True,894e12hfj2,2026-11-16 01:36:53,active,2026-11-16 03:11:38,,public_detail,False,public_detail,active,"重複すり替え無し 下3桁提示可
+",True,894e12hfj2,2026-11-16 01:36:53,active,2026-11-16 04:14:05,,event_api,False,event_api,active,"重複すり替え無し 下3桁提示可
 チケットが届き次第郵送いたします。
 プラベル可能な方は専用出品いたしますのでお声掛けください。
 ",public_detail,2026-11-16 03:11:38,True,2026-11-16 03:11:38,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
-kf9l55b0ii,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-30,17:00,[東京都] THEATER MILANO-Za,paper,female,公演日7日前までに郵送,める,5.0,,,2026-11-16 01:36:53,scrape_observed,2026-11-16 02:55:48,,,listing,1,16000,HP先行S席,True,kf9l55b0ii,2026-11-16 01:36:53,active,2026-11-16 03:11:41,,public_detail,False,public_detail,active,HP先行S席,public_detail,2026-11-16 03:11:41,True,2026-11-16 03:11:41,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": false, ""value"": """"}",2026-11
-zefmfffvt0,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-02-07,12:00,[東京都] THEATER MILANO-Za,paper,none,当日手渡し,れ,5.0,,ランダム,2026-11-16 01:36:53,scrape_observed,2026-11-16 02:55:48,,,listing,2,25853,"プラベル可能
+kf9l55b0ii,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-01-30,17:00,[東京都] THEATER MILANO-Za,paper,female,公演日7日前までに郵送,める,5.0,,,2026-11-16 01:36:53,scrape_observed,2026-11-16 04:14:05,,,listing,1,16000,HP先行S席,True,kf9l55b0ii,2026-11-16 01:36:53,active,2026-11-16 04:14:05,,event_api,False,event_api,active,HP先行S席,public_detail,2026-11-16 03:11:41,True,2026-11-16 03:11:41,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": false, ""value"": """"}",2026-11
+zefmfffvt0,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-02-07,12:00,[東京都] THEATER MILANO-Za,paper,none,当日手渡し,れ,5.0,,ランダム,2026-11-16 01:36:53,scrape_observed,2026-11-16 04:14:05,,,listing,2,25853,"プラベル可能
 複数名義所持しているため、その中からランダムにチケットをお渡しします。
-公演中止の場合のみ手数料を引いた金額を返金します。",True,zefmfffvt0,2026-11-16 01:36:53,active,2026-11-16 03:11:41,,public_detail,False,public_detail,active,"プラベル可能
+公演中止の場合のみ手数料を引いた金額を返金します。",True,zefmfffvt0,2026-11-16 01:36:53,active,2026-11-16 04:14:05,,event_api,False,event_api,active,"プラベル可能
 複数名義所持しているため、その中からランダムにチケットをお渡しします。
 公演中止の場合のみ手数料を引いた金額を返金します。",public_detail,2026-11-16 03:11:41,True,2026-11-16 03:11:41,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
-icc8aqiju5,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-02-07,12:00,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,え,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 02:55:48,,,listing,1,70000,"本人確認対応不可
-4名義当選、3番目に座席選択",True,icc8aqiju5,2026-11-16 01:36:53,active,2026-11-16 03:11:39,,public_detail,False,public_detail,active,"本人確認対応不可
+icc8aqiju5,,musical-jump-yoru-ga-ochite-kuru-sono-mae-ni,2027-02-07,12:00,[東京都] THEATER MILANO-Za,paper,female,当日手渡し,え,5.0,,番手,2026-11-16 01:36:53,scrape_observed,2026-11-16 04:14:05,,,listing,1,70000,"本人確認対応不可
+4名義当選、3番目に座席選択",True,icc8aqiju5,2026-11-16 01:36:53,active,2026-11-16 04:14:05,,event_api,False,event_api,active,"本人確認対応不可
 4名義当選、3番目に座席選択",public_detail,2026-11-16 03:11:39,True,2026-11-16 03:11:39,RgljEPWKAlVU7EFIpgeR,"{""isSpecified"": true, ""value"": ""\u5230\u7740\u307e\u3067\u672a\u5b9a""}",2026-11
+uxjwmi1ofx,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,入金後24時間以内にQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,32000,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",False,uxjwmi1ofx,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+1u1ly7az6o,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",False,1u1ly7az6o,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+3x3kny8hr0,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,番手,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"2名義中2番手/すり替えなし/該当×1非該当×1/
+
+当方の選ばなかった方のお渡しとなります。
+開演30分前に会場近くにて集合の予定です。
+
+・録音録画等をしな...",False,3x3kny8hr0,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手/すり替えなし/該当×1非該当×1/
+
+当方の選ばなかった方のお渡しとなります。
+開演30分前に会場近くにて集合の予定です。
+
+・録音録画等をしな...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+jlhaaqqax1,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,入金後24時間以内にQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,32000,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",False,jlhaaqqax1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+4av1fsi9zs,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,17000,"非該当含む3名義中2番手/すり替えなし/期限内/下3桁提示可能
+
+該当×1 非該当×2の3名義中2番手をお譲りいたします。
+
+発券時にご自身の端末にてQRの表示...",False,4av1fsi9zs,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"非該当含む3名義中2番手/すり替えなし/期限内/下3桁提示可能
+
+該当×1 非該当×2の3名義中2番手をお譲りいたします。
+
+発券時にご自身の端末にてQRの表示...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5168\u3066S\u5e2d""}",2026-11
+wk33byx4gh,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,公演当日にログイン情報の共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,35000,"FC先行/初期当選/座席未定/S席/QR毎/該当名義/有効期限内/重複、すり替えなし/下3桁提示可能
+
+・日本語の理解できる成人日本人女性の方のみご購入下さい。...",False,wk33byx4gh,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/初期当選/座席未定/S席/QR毎/該当名義/有効期限内/重複、すり替えなし/下3桁提示可能
+
+・日本語の理解できる成人日本人女性の方のみご購入下さい。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+7qr2bsgpv5,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,当日渡し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"希望額あればメッセージください。
+
+
+3名義中2番手/該当名義/すり替えなし/期限内/下3桁提示可能/サイチェン可
+
+同時入場後、当方が先に座席を選択致します。...",False,7qr2bsgpv5,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"希望額あればメッセージください。
+
+
+3名義中2番手/該当名義/すり替えなし/期限内/下3桁提示可能/サイチェン可
+
+同時入場後、当方が先に座席を選択致します。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+ogmjtnrnz5,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,公演日当日にQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,22000,"FC先行/初期当選/座席未定/S席/QR毎/該当名義/有効期限内/変更ボタンあり/重複すり替えなし
+
+・トラブル防止のため日本語のわかる日本人女性の方のみご購入...",False,ogmjtnrnz5,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/初期当選/座席未定/S席/QR毎/該当名義/有効期限内/変更ボタンあり/重複すり替えなし
+
+・トラブル防止のため日本語のわかる日本人女性の方のみご購入...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+gtzgyot47b,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,当日渡し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,5500,"希望額あればメッセージください。
+
+
+3名義中3番手/該当名義/すり替えなし/期限内/下3桁提示可能
+
+同時入場後、当方が先に座席を選択致します。
+購入者様は座...",False,gtzgyot47b,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"希望額あればメッセージください。
+
+
+3名義中3番手/該当名義/すり替えなし/期限内/下3桁提示可能
+
+同時入場後、当方が先に座席を選択致します。
+購入者様は座...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+jdvx6xoo5r,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,pickup_number,female,発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,9000,"イープラス先行 A席
+
+入金確認後、発券番号をお知らせしますのでご自身で期日までにセブンイレブンにて発券してください。
+発券時に発券手数料330円のお支払いが必...",False,jdvx6xoo5r,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"イープラス先行 A席
+
+入金確認後、発券番号をお知らせしますのでご自身で期日までにセブンイレブンにて発券してください。
+発券時に発券手数料330円のお支払いが必...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""A\u5e2d""}",2026-11
+c8ctt72ha0,,bokunodoragon-gohan-tabenai,2026-11-17,18:00,東京グローブ座,electronic,female,同行・すり替えなし・サイチェン可,,,,同行 / 番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"2名義（2連×1,1連×1）単番のみ該当名義を所持しています。
+下3桁提示可能です。本人確認対応不可。
+当日は同時入場していただき、当方の次に（残った2枚のうち...",False,c8ctt72ha0,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義（2連×1,1連×1）単番のみ該当名義を所持しています。
+下3桁提示可能です。本人確認対応不可。
+当日は同時入場していただき、当方の次に（残った2枚のうち...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+g2pqvcnzsp,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,electronic,female,同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"当方と同行/局名義/有効期限内/非該当/下3桁提示可
+
+会場付近に当方が指定した時間に集合し一緒に入場させていただきます。
+こちらが座席を選択した後にチケットを...",False,g2pqvcnzsp,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"当方と同行/局名義/有効期限内/非該当/下3桁提示可
+
+会場付近に当方が指定した時間に集合し一緒に入場させていただきます。
+こちらが座席を選択した後にチケットを...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+xkvp5tftxr,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,pickup_number,female,発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,9000,"イープラス先行 A席
+
+入金確認後、発券番号をお知らせしますのでご自身で期日までにセブンイレブンにて発券してください。
+発券時に発券手数料330円のお支払いが必...",False,xkvp5tftxr,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"イープラス先行 A席
+
+入金確認後、発券番号をお知らせしますのでご自身で期日までにセブンイレブンにて発券してください。
+発券時に発券手数料330円のお支払いが必...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""A\u5e2d""}",2026-11
+hvtiigl87m,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,electronic,female,前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"情報局名義　S席　該当名義
+
+下三桁提示可
+公演前日にログイン情報をお伝えします。
+
+公演中止以外の理由でのキャンセル不可",False,hvtiigl87m,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局名義　S席　該当名義
+
+下三桁提示可
+公演前日にログイン情報をお伝えします。
+
+公演中止以外の理由でのキャンセル不可",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+9oqul0xnop,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,electronic,female,手渡し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8700,"2名義中2番手2連中1枚（該当1、非該当1）
+有効期限内/該当名義/下3桁提示可能/すり替えなし
+会場付近に当方が指定した時間に集合し同時に入場させていただきま...",False,9oqul0xnop,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手2連中1枚（該当1、非該当1）
+有効期限内/該当名義/下3桁提示可能/すり替えなし
+会場付近に当方が指定した時間に集合し同時に入場させていただきま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+a6ak1dpplv,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,6205,ご購入される方は、以下全てにご同意頂いたものとみなします。【集合時刻：16時45分】重複すり替えありランダム配布です。購入者様に座席選択の権利はございません。発...,False,a6ak1dpplv,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,ご購入される方は、以下全てにご同意頂いたものとみなします。【集合時刻：16時45分】重複すり替えありランダム配布です。購入者様に座席選択の権利はございません。発...,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+9q9ymk9euv,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,pickup_number,female,入金後に発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"イープラス先行 / ファミリーマート発券 
+
+入金後、払込票番号をお伝えします。ご自身で発券していただき、その際、店頭発券手数料165円のお支払いが必要です。...",False,9q9ymk9euv,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"イープラス先行 / ファミリーマート発券 
+
+入金後、払込票番号をお伝えします。ご自身で発券していただき、その際、店頭発券手数料165円のお支払いが必要です。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""A\u5e2d""}",2026-11
+54or0uyd2l,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,paper,female,当日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,60000,,False,54or0uyd2l,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,,,,,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d1\u968eA-B\u52172-10\u756a""}",2026-11
+lqzvie9ft5,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,electronic,female,手渡し,,,,番手 / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10500,"2名義中1番手同行（該当1、非該当1）
+有効期限内/該当名義/下3桁提示可能/すり替えなし
+会場付近に当方が指定した時間に集合し同時に入場させていただきます。...",False,lqzvie9ft5,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中1番手同行（該当1、非該当1）
+有効期限内/該当名義/下3桁提示可能/すり替えなし
+会場付近に当方が指定した時間に集合し同時に入場させていただきます。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+cn1in64cj9,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,electronic,female,公演日当日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10900,"初期当選/非該当名義
+
+いくことができなくなってしまったため出品致します。
+
+公演日当日までにログイン情報を共有致します。
+入場後即ログアウトお願いします",False,cn1in64cj9,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/非該当名義
+
+いくことができなくなってしまったため出品致します。
+
+公演日当日までにログイン情報を共有致します。
+入場後即ログアウトお願いします",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+5izo4ihyl3,,bokunodoragon-gohan-tabenai,2026-11-18,18:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10500,"3枚中2枚目（非該当連番、単番所持）
+有効期限内/初期当選/下3桁提示可能/すり替えなし
+
+会場付近に当方が指定した時間に集合し同時に入場させていただきます。...",False,5izo4ihyl3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3枚中2枚目（非該当連番、単番所持）
+有効期限内/初期当選/下3桁提示可能/すり替えなし
+
+会場付近に当方が指定した時間に集合し同時に入場させていただきます。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u60c5\u5831\u5c40S\u5e2d""}",2026-11
+qatvn0ji55,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,electronic,female,公演日にQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,37000,"FC先行/初期当選/座席未定/S席/QR毎/該当名義/有効期限内/重複、すり替えなし/下3桁提示可能
+
+・日本語の理解できる成人日本人女性の方のみご購入下さい。...",False,qatvn0ji55,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/初期当選/座席未定/S席/QR毎/該当名義/有効期限内/重複、すり替えなし/下3桁提示可能
+
+・日本語の理解できる成人日本人女性の方のみご購入下さい。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+lv3d8vual1,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,paper,female,手渡し,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"開演15分前に会場付近にて待ち合わせしチケットをお渡しします。
+
+遅刻、本人確認、体調不良、座席へのクレーム、会場内でのトラブル等、公演中止以外の理由での返金対...",False,lv3d8vual1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開演15分前に会場付近にて待ち合わせしチケットをお渡しします。
+
+遅刻、本人確認、体調不良、座席へのクレーム、会場内でのトラブル等、公演中止以外の理由での返金対...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968eA-B\u521716-29\u756a""}",2026-11
+6k534o9x1m,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,electronic,female,公演前日にQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10000,"情報局枠。QR毎のお譲りで座席未定・今野名義になります。
+重複すり替えなし・変更ボタンあり・有効期限内になります。
+値下げ交渉も可能。
+購入後、下3桁開示致しま...",False,6k534o9x1m,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局枠。QR毎のお譲りで座席未定・今野名義になります。
+重複すり替えなし・変更ボタンあり・有効期限内になります。
+値下げ交渉も可能。
+購入後、下3桁開示致しま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+nlvu7bii7g,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,electronic,female,入金後24時間以内にQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,32000,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",False,nlvu7bii7g,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+14fucbyu21,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,electronic,female,公演前日にログイン情報を共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,14000,"情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",False,14fucbyu21,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+0f5e714okw,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,3名義中3番手/全て該当名義(今野)・有効期限内・変ボ有/下3桁提示可,False,0f5e714okw,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,3名義中3番手/全て該当名義(今野)・有効期限内・変ボ有/下3桁提示可,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+pce7vu4eh9,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,electronic,female,QR毎,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10000,"該当/変ボ有/有効期限内
+
+入場後に写真付きで座席報告をお願いします。公演日前日夜にQRの表示に必要な情報をお伝えします。
+
+本人確認やランダムエラーで入場が出...",False,pce7vu4eh9,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"該当/変ボ有/有効期限内
+
+入場後に写真付きで座席報告をお願いします。公演日前日夜にQRの表示に必要な情報をお伝えします。
+
+本人確認やランダムエラーで入場が出...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+6sj0tclq0r,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,paper,female,郵送もしくは手渡し。手渡しの場合日時場所柔軟に対応いたします。,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,8000,"公式HP先行S席です。発券済み。注釈なし。
+1枚のみでの購入も可能です。",False,6sj0tclq0r,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行S席です。発券済み。注釈なし。
+1枚のみでの購入も可能です。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eA\u301cC\u521735\u301c45""}",2026-11
+s7vo2l56bk,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,electronic,female,公演日前日までにログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"
+情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後...",False,s7vo2l56bk,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"
+情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+8vp6mfx9v2,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,electronic,female,公演日前日までにログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",False,8vp6mfx9v2,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+rh6zojwkft,,bokunodoragon-gohan-tabenai,2026-11-19,13:00,東京グローブ座,pickup_number,female,入金確認後即時に発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7300,"ぴあ一般A席 座席未定 注釈付き席ではありません。
+未発券のため、ご自身でセブンイレブンにて発券をお願いします。当日手渡しも対応可能です。",False,rh6zojwkft,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"ぴあ一般A席 座席未定 注釈付き席ではありません。
+未発券のため、ご自身でセブンイレブンにて発券をお願いします。当日手渡しも対応可能です。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""A\u5e2d""}",2026-11
+6ze8n4xpj3,,bokunodoragon-gohan-tabenai,2026-11-19,18:00,東京グローブ座,electronic,female,公演日1日前までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,30000,"QR毎/初期当選/非該当/有効期限内
+公演中止以外の返金キャンセル不可
+
+公演日前日にログイン情報をお伝えします。入場後はログアウト、入場報告をお願いいたします...",False,6ze8n4xpj3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/初期当選/非該当/有効期限内
+公演中止以外の返金キャンセル不可
+
+公演日前日にログイン情報をお伝えします。入場後はログアウト、入場報告をお願いいたします...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+m37r19vlcd,,bokunodoragon-gohan-tabenai,2026-11-19,18:00,東京グローブ座,paper,female,当日会場付近手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"当日、開場時間10~15分前目安に集合しチケットお渡し致します。
+送料分上乗せで郵送に変更可能。郵送ご希望の場合、購入前にコメントお願いします。
+
+公演中止の場...",False,m37r19vlcd,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"当日、開場時間10~15分前目安に集合しチケットお渡し致します。
+送料分上乗せで郵送に変更可能。郵送ご希望の場合、購入前にコメントお願いします。
+
+公演中止の場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""3\u968eA\u5217\u30bb\u30f3\u30d6\u30ed""}",2026-11
+xcxqbsawnu,,bokunodoragon-gohan-tabenai,2026-11-19,18:00,東京グローブ座,paper,female,手渡し,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"開演15分前に会場付近にて待ち合わせしチケットをお渡しします。
+
+遅刻、本人確認、体調不良、座席へのクレーム、会場内でのトラブル等、公演中止以外の理由での返金対...",False,xcxqbsawnu,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開演15分前に会場付近にて待ち合わせしチケットをお渡しします。
+
+遅刻、本人確認、体調不良、座席へのクレーム、会場内でのトラブル等、公演中止以外の理由での返金対...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968eC\u52177-25\u756a""}",2026-11
+5ezas7mnfc,,bokunodoragon-gohan-tabenai,2026-11-19,18:00,東京グローブ座,paper,female,手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,14000,"発券済み紙チケットになります。
+
+公演当日に手渡しまたは日程相談の上、都内手渡しも可能です。
+郵送の場合は送料を上乗せさせていただきます。
+ご購入前にお気軽にコ...",False,5ezas7mnfc,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"発券済み紙チケットになります。
+
+公演当日に手渡しまたは日程相談の上、都内手渡しも可能です。
+郵送の場合は送料を上乗せさせていただきます。
+ご購入前にお気軽にコ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""A\u5e2d22\u301c38\u756a""}",2026-11
+lw2kxn91dx,,bokunodoragon-gohan-tabenai,2026-11-19,18:00,東京グローブ座,paper,female,当日公演1時間前程に会場付近にてお渡しいたします,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"公式HP先行S席 2名義中2番手
+
+お譲りだけでなく交換も探しております。
+ 12/6大千穐楽1枚同条件(相談も可能)
+
+紙チケのため、当日入場前に会場付近に集...",False,lw2kxn91dx,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行S席 2名義中2番手
+
+お譲りだけでなく交換も探しております。
+ 12/6大千穐楽1枚同条件(相談も可能)
+
+紙チケのため、当日入場前に会場付近に集...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+9chyry25wf,,bokunodoragon-gohan-tabenai,2026-11-19,18:00,東京グローブ座,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10341,ご購入される方は、以下全てにご同意頂いたものとみなします。【集合時刻：16時45分】重複すり替えありランダム配布です。購入者様に座席選択の権利はございません。発...,False,9chyry25wf,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,ご購入される方は、以下全てにご同意頂いたものとみなします。【集合時刻：16時45分】重複すり替えありランダム配布です。購入者様に座席選択の権利はございません。発...,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+p74xxb8i4t,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,paper,female,郵送or会場付近手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,6000,"公式HP先行／S席／会場付近手渡し、郵送どちらでも対応可能です。
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場...",False,p74xxb8i4t,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行／S席／会場付近手渡し、郵送どちらでも対応可能です。
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d\uff12\u968eA\u301cB\u521735\u301c50\u756a""}",2026-11
+hjxng3apgw,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,electronic,female,公演前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"QR毎/情報局先行/該当名義/有効期限内/変更ボタン有/下3桁提示可 
+
+
+前日23時までにログイン情報共有いたします。
+チケット発券後は速やかに情報局ログアウ...",False,hjxng3apgw,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/情報局先行/該当名義/有効期限内/変更ボタン有/下3桁提示可 
+
+
+前日23時までにログイン情報共有いたします。
+チケット発券後は速やかに情報局ログアウ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+x01j5cnv9y,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,electronic,female,ログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"QRコード毎のお譲りです
+
+初期当選/期限内/すり替えなし
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通状況などいかなる場合でも公...",False,x01j5cnv9y,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QRコード毎のお譲りです
+
+初期当選/期限内/すり替えなし
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通状況などいかなる場合でも公...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+512397fol5,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,electronic,female,公演前日にQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,15000,"該当名義/初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通状況などいかなる場合でも公演...",False,512397fol5,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"該当名義/初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通状況などいかなる場合でも公演...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+7ri0ahb9ua,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,electronic,female,当日にログイン情報,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,14900,"FC先行/初期当選/座席未定/S席/QR毎/該当名義/有効期限内/変更ボタンあり/重複/すり替えなし
+
+・トラブル防止のため日本語のわかる日本人女性の方のみご購...",False,7ri0ahb9ua,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/初期当選/座席未定/S席/QR毎/該当名義/有効期限内/変更ボタンあり/重複/すり替えなし
+
+・トラブル防止のため日本語のわかる日本人女性の方のみご購...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+y545jjhata,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,electronic,female,公演前日までにQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,15000,"情報局先行 座席未定 QRごと 初期当選 代表該当名義変更ボタン有 有効期限内の名義です 重複すり替えなし 条件なし 会員番号の下3桁提示可能
+
+公演前日にログ...",False,y545jjhata,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行 座席未定 QRごと 初期当選 代表該当名義変更ボタン有 有効期限内の名義です 重複すり替えなし 条件なし 会員番号の下3桁提示可能
+
+公演前日にログ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+smy4zunpqc,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"3名義中2番手 2連中1枚 情報局先行 1名義同行者に非該当1含む すり替えなし 下3桁提示可
+
+価格交渉可能ですので、ご希望の金額あればお声がけください。大幅...",False,smy4zunpqc,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中2番手 2連中1枚 情報局先行 1名義同行者に非該当1含む すり替えなし 下3桁提示可
+
+価格交渉可能ですので、ご希望の金額あればお声がけください。大幅...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+j5xxw72pnf,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,5000,"公式HP先行／S席／郵送にてチケット送付いたします
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場合でも返金不可...",False,j5xxw72pnf,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行／S席／郵送にてチケット送付いたします
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場合でも返金不可...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eA-B\u52177\u301c16\u756a""}",2026-11
+2n3szc1kbj,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,6000,"2名義中2番手/情報局先行/該当1非該当1/すり替えなし/下3桁提示可
+
+同時入場後、当方が先に座席を選択致します。
+購入者様に座席選択権はございません。座席に...",False,2n3szc1kbj,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手/情報局先行/該当1非該当1/すり替えなし/下3桁提示可
+
+同時入場後、当方が先に座席を選択致します。
+購入者様に座席選択権はございません。座席に...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+amuv0zlo9n,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,paper,female,当日手渡し,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"重複なし同行、2連中の1枚をお渡しします。本確対応可能。
+購入者様に座席の選択権はございません。
+ご希望の方は事前都内手渡し・郵送も可能ですのでご相談ください。...",False,amuv0zlo9n,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"重複なし同行、2連中の1枚をお渡しします。本確対応可能。
+購入者様に座席の選択権はございません。
+ご希望の方は事前都内手渡し・郵送も可能ですのでご相談ください。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\uff11\u968eN\u521722-39""}",2026-11
+mczj3n9vzs,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,paper,female,入金後24時間以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,60000,会場手渡し可能です。コメントください,False,mczj3n9vzs,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,会場手渡し可能です。コメントください,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d1\u968eA-B\u521724-33\u756a""}",2026-11
+tlpn0rowcf,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,electronic,female,公演日前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,25000,"情報局先行/該当名義/FC有効期限内/変更ボタン有/下3桁提示可 
+QR毎のお譲りです。
+前日21時までにログイン情報共有いたします。",False,tlpn0rowcf,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/FC有効期限内/変更ボタン有/下3桁提示可 
+QR毎のお譲りです。
+前日21時までにログイン情報共有いたします。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+59zuf78j1g,,bokunodoragon-gohan-tabenai,2026-11-20,18:00,東京グローブ座,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,2900,"公式HP先行／S席（2連）／郵送にてチケット送付いたします
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場合でも...",False,59zuf78j1g,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行／S席（2連）／郵送にてチケット送付いたします
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場合でも...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eA-B\u52177\u301c16\u756a""}",2026-11
+0jlv28hmms,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,electronic,female,公演前日にログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,20000,"QR毎/初期当選/該当/有効期限内
+公演中止以外の返金キャンセル不可
+
+公演日前日の20日にログイン情報をお伝えします。入場後は速やかにログアウト、入場と座席の...",False,0jlv28hmms,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/初期当選/該当/有効期限内
+公演中止以外の返金キャンセル不可
+
+公演日前日の20日にログイン情報をお伝えします。入場後は速やかにログアウト、入場と座席の...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+7441w33b4u,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,electronic,female,同行,,,,番手 / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"【2名義中2番手】
+
+局QR単番（＊）と紙チケ（1階〜B列）のどちらか
+（＊）初期当選／FC該当名義／有効期限内／会員番号下3桁開示可能／すり替え無し／Pay-...",False,7441w33b4u,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"【2名義中2番手】
+
+局QR単番（＊）と紙チケ（1階〜B列）のどちらか
+（＊）初期当選／FC該当名義／有効期限内／会員番号下3桁開示可能／すり替え無し／Pay-...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+attno23p4o,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,paper,female,当日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,6000,"開演15分前に会場付近にて待ち合わせしチケットをお渡しします。
+
+遅刻、本人確認、体調不良、座席へのクレーム、会場内でのトラブル等、公演中止以外の理由での返金対...",False,attno23p4o,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開演15分前に会場付近にて待ち合わせしチケットをお渡しします。
+
+遅刻、本人確認、体調不良、座席へのクレーム、会場内でのトラブル等、公演中止以外の理由での返金対...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eN-O\u5217 22-43\u756a""}",2026-11
+n3obxx06mj,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,electronic,female,同行,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,当方と同行/重複すり替えなし/今野名義/初期当選/有効期限内/変更ボタンあり/公演中止の場合のみ返金対応,False,n3obxx06mj,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,当方と同行/重複すり替えなし/今野名義/初期当選/有効期限内/変更ボタンあり/公演中止の場合のみ返金対応,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+8kuxhmxhrz,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"2名義中2番手
+
+期限内該当名義のみ/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお預かり...",False,8kuxhmxhrz,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手
+
+期限内該当名義のみ/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお預かり...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+shf3cebhy0,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,electronic,female,当方と同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"該当名義/有効期限内/変更ボタンあり
+
+・体調不良や交通機関の乱れなど買い手様の個人的な都合によるキャンセルはお受けいたしかねます。
+・いかなる理由でも遅刻の場...",False,shf3cebhy0,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"該当名義/有効期限内/変更ボタンあり
+
+・体調不良や交通機関の乱れなど買い手様の個人的な都合によるキャンセルはお受けいたしかねます。
+・いかなる理由でも遅刻の場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+otm5wt7xk0,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,paper,female,公演当日会場付近にて手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"公式HP先行にて当選しております。
+既に発券済のため、当日会場付近にて手渡し予定です。
+本人確認対応不可。お取引成立後の買い手様都合のキャンセル不可。
+
+公演中...",False,otm5wt7xk0,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行にて当選しております。
+既に発券済のため、当日会場付近にて手渡し予定です。
+本人確認対応不可。お取引成立後の買い手様都合のキャンセル不可。
+
+公演中...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d 2\u968e A\u5217 42-50\u756a""}",2026-11
+73s7x1qn01,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,paper,female,入金後24時間以内に発送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,ステージ真横ブロック,False,73s7x1qn01,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,ステージ真横ブロック,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d 1\u968e N~O\u5217 54~66\u756a""}",2026-11
+xwnvtifvyo,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,electronic,female,公演日前日にログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,22000,"有効期限内、該当名義です。
+QRごとのお譲りになるため、本人確認やエラーの際の対応・返金は致しかねます。
+入場後は速やかに受取評価をお願いいたします。",False,xwnvtifvyo,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"有効期限内、該当名義です。
+QRごとのお譲りになるため、本人確認やエラーの際の対応・返金は致しかねます。
+入場後は速やかに受取評価をお願いいたします。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+vhg3lktxka,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,paper,female,当日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"公式HP先行にて当選しております。
+こちらで発券後、当日会場付近にて手渡し予定です。
+本人確認対応不可。お取引成立後の買い手様都合のキャンセル不可。
+
+公演中止...",False,vhg3lktxka,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行にて当選しております。
+こちらで発券後、当日会場付近にて手渡し予定です。
+本人確認対応不可。お取引成立後の買い手様都合のキャンセル不可。
+
+公演中止...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u516c\u5f0fHP\u5148\u884cS\u5e2d""}",2026-11
+y68sprle01,,bokunodoragon-gohan-tabenai,2026-11-21,12:00,東京グローブ座,paper,female,手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,13000,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し",False,y68sprle01,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eM\uff5eO\u5217\u30b5\u30a4\u30c9""}",2026-11
+7bl0wpkaof,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,paper,female,入金後24時間以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,4500,"一般にて入手しました。入金後迅速に発送。
+都合が合わないため、ご検討よろしくお願いします。",False,7bl0wpkaof,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"一般にて入手しました。入金後迅速に発送。
+都合が合わないため、ご検討よろしくお願いします。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968eC\u5217 7\u756a\u301c20\u756a""}",2026-11
+tazsq8yafj,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,paper,female,郵送、手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,80000,一部サイト、残り当日手渡しも可能です。質問等ありましたらお気軽にコメントしてください。,False,tazsq8yafj,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,一部サイト、残り当日手渡しも可能です。質問等ありましたらお気軽にコメントしてください。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d1\u968e\u301cB\u5217\u30bb\u30f3\u30d6\u30ed20\u756a\u4ee3""}",2026-11
+h4zj88dz7g,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,electronic,female,公演前日にログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"局枠単番 QRごとのお譲りになります。
+非該当名義/初期当選/有効期限内
+
+公演日前日に、入場に必要なログイン情報をお伝えいたします。当日はご自身の端末でQRコ...",False,h4zj88dz7g,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"局枠単番 QRごとのお譲りになります。
+非該当名義/初期当選/有効期限内
+
+公演日前日に、入場に必要なログイン情報をお伝えいたします。当日はご自身の端末でQRコ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+d0z0mbnn3t,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"2名義中2番手
+
+期限内該当名義のみ/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお預かり...",False,d0z0mbnn3t,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手
+
+期限内該当名義のみ/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお預かり...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+yqhgwiwqzt,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,paper,female,入金後24時間以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,15000,,False,yqhgwiwqzt,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,,,,,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d I\u5217 10-15""}",2026-11
+qjihkhikwa,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,electronic,female,同行,,,,同行 / 番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"【2名義中2番手】単番×2名義
+
+初期当選／FC該当名義／有効期限内／会員番号下3桁開示可能／すり替え無し／Pay-easyにて決済済み
+
+【集合・入場】
+公演...",False,qjihkhikwa,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"【2名義中2番手】単番×2名義
+
+初期当選／FC該当名義／有効期限内／会員番号下3桁開示可能／すり替え無し／Pay-easyにて決済済み
+
+【集合・入場】
+公演...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+7fdaf7bxzo,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,paper,female,入金後24時間以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,,False,7fdaf7bxzo,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,,,,,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968eA\u5217 20\uff5e40\u756a""}",2026-11
+t72lddazb4,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,electronic,female,同行,,,,同行 / 番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,2名義中2番手、単番x2、すり替え無し、下三桁提示可能、 情報局初期当選、有効期限内該当名義、変更ボタンあり、開演前の公演中止のみ手数料差し引いた額の返金、座席...,False,t72lddazb4,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,2名義中2番手、単番x2、すり替え無し、下三桁提示可能、 情報局初期当選、有効期限内該当名義、変更ボタンあり、開演前の公演中止のみ手数料差し引いた額の返金、座席...,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+zt7r20s8ks,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,3500,"少人数ランダム配布
+当日会場付近に待ち合わせ後、同時入場して頂きます。
+同時入場後に座席の確認を行いますのでチケットお渡しまでお時間頂きますがご了承くださいませ...",False,zt7r20s8ks,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+当日会場付近に待ち合わせ後、同時入場して頂きます。
+同時入場後に座席の確認を行いますのでチケットお渡しまでお時間頂きますがご了承くださいませ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+oz9n4mxc2y,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,paper,female,手渡しまたは郵送。柔軟に対応いたします。,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"公式HP先行発券済み。
+公演中止以外の返金はいたしません。
+公演中止時は手数料を差し引いた金額を返金いたします。
+",False,oz9n4mxc2y,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行発券済み。
+公演中止以外の返金はいたしません。
+公演中止時は手数料を差し引いた金額を返金いたします。
+",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eA\u521742-50""}",2026-11
+6g41c3c33u,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,electronic,female,同時入場後お渡し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"2名義中2番手
+
+局該当×1、局非該当×1/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお...",False,6g41c3c33u,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手
+
+局該当×1、局非該当×1/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+9d3ita4rj3,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,electronic,female,前日夜までにログイン情報提示,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"QR毎//初期当選S席/非該当名義/有効期限内/下3桁提示可
+
+・前日の夜までにログイン情報を共有しますのでご自身でQRコード表示の上ご入場ください。
+・当日入...",False,9d3ita4rj3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎//初期当選S席/非該当名義/有効期限内/下3桁提示可
+
+・前日の夜までにログイン情報を共有しますのでご自身でQRコード表示の上ご入場ください。
+・当日入...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+ky6vuoh7ah,,bokunodoragon-gohan-tabenai,2026-11-21,17:00,東京グローブ座,paper,female,入金後24時間以内に発送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"HP先行
+
+
+",False,ky6vuoh7ah,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"HP先行
+
+
+",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d 1\u968eG~I\u5217 10~25\u756a""}",2026-11
+0bqrzvytjx,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,electronic,female,公演1日前にログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"QR毎/該当名義/初期当選/有効期限内/変更ボタンあり/すり替えなし/会員番号下3桁提示可能
+公演中止以外での返金は致しかねます。入場後は速やかにログアウトし、...",False,0bqrzvytjx,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/該当名義/初期当選/有効期限内/変更ボタンあり/すり替えなし/会員番号下3桁提示可能
+公演中止以外での返金は致しかねます。入場後は速やかにログアウトし、...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+7ywwdvk9h5,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,paper,female,事前手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し",False,7ywwdvk9h5,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eG\uff5eI\u5217\u30bb\u30f3\u30d6\u30ed""}",2026-11
+4q7iclrwuc,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,electronic,female,公演日1日前までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"情報局先行/該当名義/座席未定/変更ボタンあり/ QR毎/初期当選/下3桁提示可/有効期限内/重複すり替えなし
+
+・公演前日にログインに必要な情報をお伝えいたし...",False,4q7iclrwuc,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/座席未定/変更ボタンあり/ QR毎/初期当選/下3桁提示可/有効期限内/重複すり替えなし
+
+・公演前日にログインに必要な情報をお伝えいたし...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+lpii9hwyq2,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,electronic,female,同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"4名義中3番手 全て有効期限内該当名義(変更ボタン有)、すり替えなし、下3桁提示可
+
+公演当日、開場時間の15分前を目安に会場付近に集合し、同時入場していただき...",False,lpii9hwyq2,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"4名義中3番手 全て有効期限内該当名義(変更ボタン有)、すり替えなし、下3桁提示可
+
+公演当日、開場時間の15分前を目安に会場付近に集合し、同時入場していただき...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+qegzxi7gf3,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,electronic,female,公演1日前にログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,12000,"QR毎/該当名義/初期当選/有効期限内/変更ボタンあり/すり替えなし/会員番号下3桁提示可能
+公演中止以外での返金は致しかねます。入場後は速やかにログアウトし、...",False,qegzxi7gf3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/該当名義/初期当選/有効期限内/変更ボタンあり/すり替えなし/会員番号下3桁提示可能
+公演中止以外での返金は致しかねます。入場後は速やかにログアウトし、...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+t0pqw9c6jm,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,paper,female,入金後24時間以内に郵送　日程が合う場合事前に会場付近にて手渡しも可。ご相談ください,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10500,HP先行紙チケットです,False,t0pqw9c6jm,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,HP先行紙チケットです,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\uff33\u5e2d2\u968e\uff21\u521730\uff5e50\u756a""}",2026-11
+cftjchfgzi,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,electronic,female,公演日前日までにログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,17000,"
+情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後...",False,cftjchfgzi,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"
+情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+9ox00tf85e,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,electronic,female,同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"すり替えなし同行
+情報局名義、会員番号下3桁提示可能、初期当選、該当名義、変更ボあり
+入場後当方が選ばなかった座席をお渡しいたします。
+連番内の座席はお選び頂け...",False,9ox00tf85e,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"すり替えなし同行
+情報局名義、会員番号下3桁提示可能、初期当選、該当名義、変更ボあり
+入場後当方が選ばなかった座席をお渡しいたします。
+連番内の座席はお選び頂け...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+jlkcila8d9,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,paper,female,郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"HP先行、S席
+発券済になります。",False,jlkcila8d9,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"HP先行、S席
+発券済になります。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968e\u6700\u524d7~20\u756a""}",2026-11
+m40ln4pj7e,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,paper,female,入金後24時間以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,30000,手渡し可能です。コメントください,False,m40ln4pj7e,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,手渡し可能です。コメントください,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d1\u968eF\u5217\u30bb\u30f3\u30d6\u30ed""}",2026-11
+gtivk0pr6v,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,electronic,female,公演日1日前までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"情報局先行/該当名義/座席未定/変更ボタンあり/ QR毎/初期当選/下3桁提示可/有効期限内
+
+・公演前日にログインに必要な情報をお伝えいたします
+
+・入場後開...",False,gtivk0pr6v,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/座席未定/変更ボタンあり/ QR毎/初期当選/下3桁提示可/有効期限内
+
+・公演前日にログインに必要な情報をお伝えいたします
+
+・入場後開...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+f8bilvuj2q,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,electronic,female,同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,6000,"4名義中4番手 全て有効期限内該当名義(変更ボタン有)、すり替えなし、下3桁提示可
+
+公演当日、開場時間の15分前を目安に会場付近に集合し、同時入場していただき...",False,f8bilvuj2q,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"4名義中4番手 全て有効期限内該当名義(変更ボタン有)、すり替えなし、下3桁提示可
+
+公演当日、開場時間の15分前を目安に会場付近に集合し、同時入場していただき...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+kd6itb95p6,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"2名義中2番手
+
+期限内該当名義のみ/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお預かり...",False,kd6itb95p6,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手
+
+期限内該当名義のみ/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお預かり...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+8fdfa4i4mx,,bokunodoragon-gohan-tabenai,2026-11-22,12:00,東京グローブ座,paper,female,当日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"開場時間5〜10分前に会場付近にて集合し、チケットお渡し致します。
+
+送料上乗せで郵送に変更可。購入前コメントお願いいたします。
+
+公演中止の場合に限り送料手数...",False,8fdfa4i4mx,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開場時間5〜10分前に会場付近にて集合し、チケットお渡し致します。
+
+送料上乗せで郵送に変更可。購入前コメントお願いいたします。
+
+公演中止の場合に限り送料手数...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eH\u5217\u30bb\u30f3\u30d6\u30ed""}",2026-11
+mcnj3cfe6l,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,5000,"入場後チケットを一度回収し5名義中5番手でお渡しします。
+局名義のみ/該当名義/下三桁提示可能
+【集合・入場について】
+・当日は開場時間の15〜20分前頃に会場...",False,mcnj3cfe6l,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"入場後チケットを一度回収し5名義中5番手でお渡しします。
+局名義のみ/該当名義/下三桁提示可能
+【集合・入場について】
+・当日は開場時間の15〜20分前頃に会場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+43byg0xvef,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,electronic,female,初期当選／該当名義（ボタン有）／期限内／同行／すり替えなし／エラー履歴なし／発送物戻りなし／下3桁提示可能,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",False,43byg0xvef,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+xc3d3hy0y2,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"単番×1 連番×1。3枚中3枚目でのお渡し。(2名義2番手)
+全て情報局名義
+会員番号下3桁提示可能、初期当選、該当名義、変更ボあり
+入場後当方が選ばなかった座...",False,xc3d3hy0y2,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"単番×1 連番×1。3枚中3枚目でのお渡し。(2名義2番手)
+全て情報局名義
+会員番号下3桁提示可能、初期当選、該当名義、変更ボあり
+入場後当方が選ばなかった座...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+5w3erqlwgq,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,paper,female,手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し
+",False,5w3erqlwgq,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し
+",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eF\uff5eI\u5217\u30bb\u30f3\u30d6\u30ed""}",2026-11
+ftg759dp8j,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,paper,female,当日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"開場時間5~10分前に会場付近にて集合し、チケットお渡し致します。
+
+送料上乗せで郵送に変更可。購入前にコメントお願いいたします。
+
+公演中止の場合に限り送料手...",False,ftg759dp8j,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開場時間5~10分前に会場付近にて集合し、チケットお渡し致します。
+
+送料上乗せで郵送に変更可。購入前にコメントお願いいたします。
+
+公演中止の場合に限り送料手...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eO\u521754~66\u756a""}",2026-11
+e90l2vrojg,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"2名義中2番手
+
+期限内該当名義のみ/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお預かり...",False,e90l2vrojg,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手
+
+期限内該当名義のみ/変更ボタンあり/初期当選/すり替え無し/下3桁提示可
+
+・単番×2名義重複のチケットになります。入場一度チケットをお預かり...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+gkl5g67yws,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,paper,female,当日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11500,"公式HP先行にて当選しております。S席のお譲りです。
+こちらで発券後、当日会場付近にて手渡しを予定しております。
+本人確認対応不可。座席に関するクレームは一切受...",False,gkl5g67yws,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行にて当選しております。S席のお譲りです。
+こちらで発券後、当日会場付近にて手渡しを予定しております。
+本人確認対応不可。座席に関するクレームは一切受...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u516c\u5f0fHP\u5148\u884cS\u5e2d""}",2026-11
+2pav7sab2p,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,electronic,female,同行,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"重複すり替えなし/2連中の1枚/情報局先行/該当名義ボタンあり/有効期限内/下3桁提示可
+同行でのお譲りとなります。
+よろしくお願いいたします。",False,2pav7sab2p,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"重複すり替えなし/2連中の1枚/情報局先行/該当名義ボタンあり/有効期限内/下3桁提示可
+同行でのお譲りとなります。
+よろしくお願いいたします。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+lrqn1e9gwf,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,paper,female,当日手渡しまたは都内手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,30000,"公式サイト先行
+
+こちら発券済みになります。
+郵送または都内手渡し、または当日手渡しにてお渡し致します。
+
+
+詳しい座席についてはお気軽にお聞きください。
+公演...",False,lrqn1e9gwf,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式サイト先行
+
+こちら発券済みになります。
+郵送または都内手渡し、または当日手渡しにてお渡し致します。
+
+
+詳しい座席についてはお気軽にお聞きください。
+公演...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\uff11\u968eM\u301c55""}",2026-11
+b8wbmoo88s,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,electronic,female,同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"単番×1 連番×1。3枚中2枚目でのお渡し。(2名義1番手または2番手)
+全て情報局名義
+会員番号下3桁提示可能、初期当選、該当名義、変更ボあり
+入場後当方が選...",False,b8wbmoo88s,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"単番×1 連番×1。3枚中2枚目でのお渡し。(2名義1番手または2番手)
+全て情報局名義
+会員番号下3桁提示可能、初期当選、該当名義、変更ボあり
+入場後当方が選...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+pwhe3hkfqj,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,electronic,female,同行,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,17000,変更ボタンあり/該当(稲葉)名義/有効期限内/公演中止の場合のみ手数料を差し引いた全額返金いたします。,False,pwhe3hkfqj,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,変更ボタンあり/該当(稲葉)名義/有効期限内/公演中止の場合のみ手数料を差し引いた全額返金いたします。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+z2msu79gae,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,paper,female,当日手渡し,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"S席/かもめんたる先行
+（発券済み　紙チケット）
+
+  ＊当日会場付近にて待ち合わせをし、同時入場して頂きます。時間厳守でお願いします。
+詳細は前日までに連絡ボ...",False,z2msu79gae,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"S席/かもめんたる先行
+（発券済み　紙チケット）
+
+  ＊当日会場付近にて待ち合わせをし、同時入場して頂きます。時間厳守でお願いします。
+詳細は前日までに連絡ボ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2dK-M\u5217\u3000\u4e0b\u624b\u5074""}",2026-11
+s4mxvj5136,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,electronic,female,当日手渡し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"2名義中2番手
+FC初期当選／該当名義／変更ボタンあり
+公式サイト先行S席（発券済み）
+
+同時入場していただき、当方が選ばなかった席のチケットをお渡しいたします...",False,s4mxvj5136,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手
+FC初期当選／該当名義／変更ボタンあり
+公式サイト先行S席（発券済み）
+
+同時入場していただき、当方が選ばなかった席のチケットをお渡しいたします...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+9k0j0uzr4b,,bokunodoragon-gohan-tabenai,2026-11-22,17:00,東京グローブ座,electronic,female,公演日前日までにログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",False,9k0j0uzr4b,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/座席未定/変更ボタンあり/ QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+3g2nnmxajp,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,female,当日手渡し(または事前手渡しも可),,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,16000,"一般チケット
+座席に関するクレームや返金は一切受け付けません。
+公演中止の場合のみ手数料を引いた金額を返金します。
+その他、体調不良･交通機関の乱れ･メンバー不...",False,3g2nnmxajp,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"一般チケット
+座席に関するクレームや返金は一切受け付けません。
+公演中止の場合のみ手数料を引いた金額を返金します。
+その他、体調不良･交通機関の乱れ･メンバー不...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d 2\u968eA\u521740\u301c56\u756a""}",2026-11
+zevdg90iec,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,none,当日手渡しもしくは事前手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し
+",False,zevdg90iec,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し
+",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eM\uff5eO\u521749-62\u756a""}",2026-11
+tdqtns5wlw,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10500,"※すり替えなし※ランダム配布
+入場後解散せずすぐにお渡し致します。
+
+情報局先行 初期当選 該当名義 変更ボタンあり 有効期限内 
+
+・開場30分前を目安に会場...",False,tdqtns5wlw,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"※すり替えなし※ランダム配布
+入場後解散せずすぐにお渡し致します。
+
+情報局先行 初期当選 該当名義 変更ボタンあり 有効期限内 
+
+・開場30分前を目安に会場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+eclr5edpof,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"⭐️すり替えなしランダム配布⭐️
+全て情報局先行、該当名義、変更ボタンあり、有効期限内、S席
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・...",False,eclr5edpof,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"⭐️すり替えなしランダム配布⭐️
+全て情報局先行、該当名義、変更ボタンあり、有効期限内、S席
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+uq7rsd12as,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,female,当日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,開演一時間前に会場にて手渡しします。,False,uq7rsd12as,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,開演一時間前に会場にて手渡しします。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2dE-F\u52174-14\u756a""}",2026-11
+kuumysa89r,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,none,手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し",False,kuumysa89r,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eL\uff5eO\u521713-30\u756a""}",2026-11
+xph5zaay3p,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,female,当日又は前日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,13000,HP先行になります。公演中止以外の返金不可。,False,xph5zaay3p,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,HP先行になります。公演中止以外の返金不可。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eB\u521716\uff5e25\u756a""}",2026-11
+z0lna86d4j,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,公演日前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"QR毎/該当名義/変更ボタンあり/有効期間内/すり替えなし下三桁提示可
+
+公演日前日にマイページの連絡ボードにて、ログイン情報をお伝え致します。
+入場後は速やか...",False,z0lna86d4j,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/該当名義/変更ボタンあり/有効期間内/すり替えなし下三桁提示可
+
+公演日前日にマイページの連絡ボードにて、ログイン情報をお伝え致します。
+入場後は速やか...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+yjbxr9p8cc,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,female,当日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,劇団先行になります。開演45分前頃の集合を予定しております。公演中止の場合のみ返金致します。,False,yjbxr9p8cc,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,劇団先行になります。開演45分前頃の集合を予定しております。公演中止の場合のみ返金致します。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d\uff11\u968eE\uff5eF\u5217 10\uff5e24\u756a""}",2026-11
+vyfcfr3u8f,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"・紙チケット発券済みS席です。
+・都内事前手渡しまたは当日手渡しにてお取引も可能です。
+・プラベル出品も可能ですので、ご希望の方はコメントお願いします。
+・メン...",False,vyfcfr3u8f,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"・紙チケット発券済みS席です。
+・都内事前手渡しまたは当日手渡しにてお取引も可能です。
+・プラベル出品も可能ですので、ご希望の方はコメントお願いします。
+・メン...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2dG\u301cI\u5217\u3000\u30bb\u30f3\u30d6\u30ed\u300010\u301c25\u756a""}",2026-11
+drafkvf5z4,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,同行,,,,同行 / QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"ジュニア情報局にて当選　S席
+重複無し、すり替え無し同行でのお譲りです。
+
+当日、開場時間頃に待ち合わせ予定です。
+
+該当名義/下三桁提示可/有効期限内
+
+体調...",False,drafkvf5z4,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"ジュニア情報局にて当選　S席
+重複無し、すり替え無し同行でのお譲りです。
+
+当日、開場時間頃に待ち合わせ予定です。
+
+該当名義/下三桁提示可/有効期限内
+
+体調...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+z2n356rrg3,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,female,当日手渡し,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"劇団先行。
+
+開演45〜60分前に集合予定です。
+詳細な集合時間・場所は前日にご連絡いたします。
+
+入場後、チケット記載の氏名を黒マジックで塗りつぶします。
+そ...",False,z2n356rrg3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"劇団先行。
+
+開演45〜60分前に集合予定です。
+詳細な集合時間・場所は前日にご連絡いたします。
+
+入場後、チケット記載の氏名を黒マジックで塗りつぶします。
+そ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d1\u968eM-O\u521713-48\u756a""}",2026-11
+05x2qv9c19,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,ランダム,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"ランダム配布
+
+複数名義所持している為、同時入場後、一度全てのチケットを回収いたします。
+遅くとも開演5分前までにランダムでチケットをお渡しします。購入者様は座...",False,05x2qv9c19,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"ランダム配布
+
+複数名義所持している為、同時入場後、一度全てのチケットを回収いたします。
+遅くとも開演5分前までにランダムでチケットをお渡しします。購入者様は座...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+30pb5e44nl,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,同時入場、すり替えなしランダム,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"該当/有効期限内/下3桁提示可能
+すり替えなしランダム
+
+複数名義所持している為、同時入場後、一度全てのチケットを回収いたします。
+当方が座席選択後にランダムで...",False,30pb5e44nl,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"該当/有効期限内/下3桁提示可能
+すり替えなしランダム
+
+複数名義所持している為、同時入場後、一度全てのチケットを回収いたします。
+当方が座席選択後にランダムで...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+vdkl62edku,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,male,入金後24時間以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,公演中止の際は、チケット返送後に送料・手数料差し引いた金額を返金します。,False,vdkl62edku,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,公演中止の際は、チケット返送後に送料・手数料差し引いた金額を返金します。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eC\u521730-43\u756a""}",2026-11
+bvrhi8qcxe,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,none,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10000,"すり替えあり、ランダム配布
+複数名義当選のため、10時45分までに会場付近に集合していただき、同時入場後、一旦チケットを回収してこちらで先に座席選択させていただ...",False,bvrhi8qcxe,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"すり替えあり、ランダム配布
+複数名義当選のため、10時45分までに会場付近に集合していただき、同時入場後、一旦チケットを回収してこちらで先に座席選択させていただ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+3cn5ncssa1,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,公演前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,30000,"QR毎/該当名義/変更ボタンあり/有効期間内/すり替えなし/下三桁提示可
+
+公演日前日にマイページの連絡ボードにて、ログイン情報をお伝え致します。
+入場後は速や...",False,3cn5ncssa1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/該当名義/変更ボタンあり/有効期間内/すり替えなし/下三桁提示可
+
+公演日前日にマイページの連絡ボードにて、ログイン情報をお伝え致します。
+入場後は速や...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+15emtle8uf,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,female,入金後24時間以内に郵送　日程が合う場合会場付近で手渡しも可。相談ください,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,HP先行紙チケットです,False,15emtle8uf,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,HP先行紙チケットです,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\uff33\u5e2d2\u968eC\u521720\uff5e40\u756a""}",2026-11
+0z8acco1ho,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,none,入金後24時間以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"レターパックプラスにて発送します
+公演中止以外での返金不可",False,0z8acco1ho,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"レターパックプラスにて発送します
+公演中止以外での返金不可",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968e M-O\u5217 \u901a\u8def\u6a2a""}",2026-11
+wf78xzf648,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場1時間前を予定しています。※必ず時間厳守でお願い致します。詳しい待...",False,wf78xzf648,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場1時間前を予定しています。※必ず時間厳守でお願い致します。詳しい待...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+0qfnlj2q7h,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,公演前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,23500,"QR毎/該当名義/変更ボタンあり/有効期間内/すり替えなし/下三桁提示可
+
+公演日前日にマイページの連絡ボードにて、ログイン情報をお伝え致します。
+入場後は速や...",False,0qfnlj2q7h,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/該当名義/変更ボタンあり/有効期間内/すり替えなし/下三桁提示可
+
+公演日前日にマイページの連絡ボードにて、ログイン情報をお伝え致します。
+入場後は速や...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+16em2pdqy4,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,none,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10500,"すり替えなしのランダム配布。購入者様に座席選択権はございません。購入されましたら、当方からの連絡を待たずにお名前（偽名可）と電話番号をお送りください。
+
+【入場...",False,16em2pdqy4,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"すり替えなしのランダム配布。購入者様に座席選択権はございません。購入されましたら、当方からの連絡を待たずにお名前（偽名可）と電話番号をお送りください。
+
+【入場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+c3irmjf6ha,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,none,手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し",False,c3irmjf6ha,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"共演者枠の紙チケット
+日程ご相談し都内手渡しもしくは会場事前手渡し",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eJ\uff5eL\u521710\uff5e25\u756a""}",2026-11
+xjlss7k5bu,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,ランダム配布／すり替えあり／少人数入場,,,,ランダム / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"開場15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し解散、開演5-10分前を目処に再集合しチケットをお渡しします。
+
+遅刻、ランダムエ...",False,xjlss7k5bu,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開場15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し解散、開演5-10分前を目処に再集合しチケットをお渡しします。
+
+遅刻、ランダムエ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+xotgqh98ka,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,female,入金後24時間以内に郵送　日程が合う場合会場付近にて手渡しも可。相談ください,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,HP先行紙チケットです,False,xotgqh98ka,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,HP先行紙チケットです,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eA\u521720\uff5e40\u756a""}",2026-11
+v2lfejhjzt,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,30000,"該当名義のみ2名義中2番手/初期当選/期限内/すり替えなし/下3桁提示可能/名義に不備なし
+
+ご購入様に座席の決定権はございません。
+
+取引決定後のキャンセル、...",False,v2lfejhjzt,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"該当名義のみ2名義中2番手/初期当選/期限内/すり替えなし/下3桁提示可能/名義に不備なし
+
+ご購入様に座席の決定権はございません。
+
+取引決定後のキャンセル、...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+s63qc5dle3,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"プライベート出品へ変更するため購入をご希望の方はメッセージよりご連絡ください。
+
+公演中止の場合のみ、送料手数料を差し引いた金額を返金いたします。",False,s63qc5dle3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"プライベート出品へ変更するため購入をご希望の方はメッセージよりご連絡ください。
+
+公演中止の場合のみ、送料手数料を差し引いた金額を返金いたします。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d 2\u968e A-B\u5217 25-35\u756a""}",2026-11
+ix3ifzubac,,bokunodoragon-gohan-tabenai,2026-11-23,12:00,東京グローブ座,electronic,female,公演日前日までにQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,46000,"座席未定/重複、すり替えなし/QR毎のお譲り/有効期間内名義/公演日1〜2日前発送予定
+
+※下三桁提示可能
+
+公演日前日までにマイページの連絡ボードにて、会員番...",False,ix3ifzubac,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"座席未定/重複、すり替えなし/QR毎のお譲り/有効期間内名義/公演日1〜2日前発送予定
+
+※下三桁提示可能
+
+公演日前日までにマイページの連絡ボードにて、会員番...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+06sd0e412t,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"公演当日、開場5分前に会場付近で待ち合わせし、同時入場していただきます。
+
+1名義のみで入場はしますが、ランダム配布ですのでご了承ください。
+
+※お座席はお選び...",False,06sd0e412t,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公演当日、開場5分前に会場付近で待ち合わせし、同時入場していただきます。
+
+1名義のみで入場はしますが、ランダム配布ですのでご了承ください。
+
+※お座席はお選び...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+c1rcao69lz,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,pickup_number,female,払込票番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,500,"11/17 23:30までにファミリーマートで定価+手数料分ご自身で支払いお願いします。
+
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合...",False,c1rcao69lz,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"11/17 23:30までにファミリーマートで定価+手数料分ご自身で支払いお願いします。
+
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u4e00\u822c 1\u968eS\u52179\u301c23\u756a""}",2026-11
+hqy2lysm79,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,当日手渡し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"全て該当
+名義4名義中の2番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通...",False,hqy2lysm79,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て該当
+名義4名義中の2番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u672a\u5b9a""}",2026-11
+y87nmy6vzk,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,公演日前日にログイン情報,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,14000,"ジュニア情報局先行/QR每/該当名義/有効期限内/下3桁提示可
+・前日の夜までにログイン情報を共有しますのでご自身でQRコード表示の上ご入場ください。
+・当日入...",False,y87nmy6vzk,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"ジュニア情報局先行/QR每/該当名義/有効期限内/下3桁提示可
+・前日の夜までにログイン情報を共有しますのでご自身でQRコード表示の上ご入場ください。
+・当日入...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+3qcywa707s,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,公演日1日前までにQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,18000,"ファンクラブ最速先行チケット　
+公演中止以外の返金対応不可
+会員番号とパスワードをお知らせします。",False,3qcywa707s,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"ファンクラブ最速先行チケット　
+公演中止以外の返金対応不可
+会員番号とパスワードをお知らせします。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+s1uuwbzj5l,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",False,s1uuwbzj5l,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+yiaqybuiww,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,none,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"2名義中2番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルにて出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20...",False,yiaqybuiww,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルにて出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+2xw4ek3ftl,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,公園前日QＲコードお伝えします,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"ジュニア情報局先行/QR每/該当名義/有効期限内/下3桁提示可
+・前日の夜までにログイン情報を共有しますのでご自身でQRコード表示の上ご入場ください。
+・当日入...",False,2xw4ek3ftl,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"ジュニア情報局先行/QR每/該当名義/有効期限内/下3桁提示可
+・前日の夜までにログイン情報を共有しますのでご自身でQRコード表示の上ご入場ください。
+・当日入...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+5zn5uiewq7,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,公演前日までにログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"QR毎/期限内名義/下3桁提示可/FC当選
+
+公演日前日までにログイン情報をお伝えします。
+
+遅刻や体調不良、ランダムエラー、本人確認、公演中止のいかなる理由で...",False,5zn5uiewq7,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/期限内名義/下3桁提示可/FC当選
+
+公演日前日までにログイン情報をお伝えします。
+
+遅刻や体調不良、ランダムエラー、本人確認、公演中止のいかなる理由で...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d\u6307\u5b9a""}",2026-11
+bustd8a8zt,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,18000,"FC先行/4名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,bustd8a8zt,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/4名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+lvkap8d4tb,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",False,lvkap8d4tb,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+4joc8hny2h,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,公演日1日前までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8800,"QR毎/初期当選/橋本名義/有効期限内/下3桁提示可
+
+公演日前日にログイン情報お伝えします。
+
+入場後は開演前までに速やかにログアウトと受取報告をお願いします...",False,4joc8hny2h,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/初期当選/橋本名義/有効期限内/下3桁提示可
+
+公演日前日にログイン情報お伝えします。
+
+入場後は開演前までに速やかにログアウトと受取報告をお願いします...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+u4xajly07l,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同時入場し当方が選ばなかったお席をお渡し致します。,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"情報局該当×3、非該当×1、4名義中4番手
+複数当選無し/期限内/下3桁提示可能",False,u4xajly07l,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局該当×3、非該当×1、4名義中4番手
+複数当選無し/期限内/下3桁提示可能",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+9zcgbx0vnp,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,none,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,19000,"2名義中2番手/該当名義/有効期限内/すり替えなし/下3桁提示可
+
+・当日は開場15分前に会場付近でのお待ち合わせ後、同時入場していただきます。
+
+詳しい待ち合...",False,9zcgbx0vnp,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手/該当名義/有効期限内/すり替えなし/下3桁提示可
+
+・当日は開場15分前に会場付近でのお待ち合わせ後、同時入場していただきます。
+
+詳しい待ち合...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+yro2jsfu6w,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"FC先行/4名義中4番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,yro2jsfu6w,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/4名義中4番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+899eo7ygod,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,5000,"全て該当
+名義4名義中の4番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通...",False,899eo7ygod,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て該当
+名義4名義中の4番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+lxkha92u0d,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手 / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"下記を全てお読みになった上でご購入をお願いします。
+
+3名義中2番手(連番×1,単番×2)/局先行
+該当名義/下3桁提示可能/すり替えなし
+
+
+・公演当日は開場...",False,lxkha92u0d,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"下記を全てお読みになった上でご購入をお願いします。
+
+3名義中2番手(連番×1,単番×2)/局先行
+該当名義/下3桁提示可能/すり替えなし
+
+
+・公演当日は開場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+m2jsq638yl,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"3名義中2番手(すり替えなし)
+全て単番/情報局該当/初期当選/
+有効期限内/変更ボタンあり/下３桁提示可能
+
+・公演当日、開場時間までに会場付近にて待ち合わせ...",False,m2jsq638yl,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中2番手(すり替えなし)
+全て単番/情報局該当/初期当選/
+有効期限内/変更ボタンあり/下３桁提示可能
+
+・公演当日、開場時間までに会場付近にて待ち合わせ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+aa2ic65ru0,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,初期当選／該当名義（ボタン有）／期限内／同行／すり替えなし／エラー履歴なし／発送物戻りなし／下3桁提示可能,,,,同行 / QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",False,aa2ic65ru0,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+l7slwjri1k,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"
+初期当選 /2名義中2番手/全て該当名義/すり替えなし/下三桁提示可
+
+同時入場し、当方が選択しなかった座席のチケットをお渡しします。
+チケットをお渡し時に受...",False,l7slwjri1k,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"
+初期当選 /2名義中2番手/全て該当名義/すり替えなし/下三桁提示可
+
+同時入場し、当方が選択しなかった座席のチケットをお渡しします。
+チケットをお渡し時に受...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+cfi540a3q9,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手 / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"下記を全てお読みになった上でご購入をお願いします。
+
+3名義中3番手(連番×1,単番×2)/局先行
+該当名義/下3桁提示可能/すり替えなし
+
+
+・公演当日は開場...",False,cfi540a3q9,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"下記を全てお読みになった上でご購入をお願いします。
+
+3名義中3番手(連番×1,単番×2)/局先行
+該当名義/下3桁提示可能/すり替えなし
+
+
+・公演当日は開場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+48admlrksr,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,公演前日までにQR共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8900,"QR毎/期限内名義/下3桁提示可/FC当選
+
+公演日前日までにログイン情報をお伝えします。
+
+遅刻や体調不良、ランダムエラー、本人確認、公演中止のいかなる理由で...",False,48admlrksr,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/期限内名義/下3桁提示可/FC当選
+
+公演日前日までにログイン情報をお伝えします。
+
+遅刻や体調不良、ランダムエラー、本人確認、公演中止のいかなる理由で...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d\u6307\u5b9a""}",2026-11
+27j86285oi,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9500,"2名義中2番手/初期当選/非該当含む/有効期限内/発送物戻りなし/重複すり替えなし/下3桁提示可
+
+開演時間の10~15分前に会場付近にて待ち合わせをし、同時入...",False,27j86285oi,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手/初期当選/非該当含む/有効期限内/発送物戻りなし/重複すり替えなし/下3桁提示可
+
+開演時間の10~15分前に会場付近にて待ち合わせをし、同時入...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+0ytuwijfb1,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,5000,"全て該当
+名義4名義中の3番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通...",False,0ytuwijfb1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て該当
+名義4名義中の3番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+1w26mq53fh,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"FC先行/4名義中3番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,1w26mq53fh,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/4名義中3番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+tej5zyjhkh,,bokunodoragon-gohan-tabenai,2026-11-27,18:00,サンケイホールブリーゼ,electronic,female,公演前日までにQＲコードお伝えします,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"ジュニア情報局先行/QR每/該当名義/有効期限内/下3桁提示可
+・前日の夜までにログイン情報を共有しますのでご自身でQRコード表示の上ご入場ください。
+・当日入...",False,tej5zyjhkh,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"ジュニア情報局先行/QR每/該当名義/有効期限内/下3桁提示可
+・前日の夜までにログイン情報を共有しますのでご自身でQRコード表示の上ご入場ください。
+・当日入...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+neou4a5ctu,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,pickup_number,female,入金後2日以内に発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7500,"発券番号でのお譲りになります。
+購入確認後発券番号をお伝え致しますのでご自身で発券の方お願い致します。",False,neou4a5ctu,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"発券番号でのお譲りになります。
+購入確認後発券番号をお伝え致しますのでご自身で発券の方お願い致します。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+6t92wij8i6,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",False,6t92wij8i6,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+gpntfqfnti,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,30000,"FC先行/3名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,gpntfqfnti,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/3名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+v99i3mcaq3,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",False,v99i3mcaq3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+o2gwyxoexc,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,pickup_number,female,払込票番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,500,"11/17 23:30までにファミリーマートで定価+手数料分ご自身で支払いお願いします。
+
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合...",False,o2gwyxoexc,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"11/17 23:30までにファミリーマートで定価+手数料分ご自身で支払いお願いします。
+
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u4e00\u822c 1\u968eS\u52171\u301c23\u756a""}",2026-11
+br393daa44,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,electronic,female,初期当選／該当名義（ボタン有）／期限内／同行／すり替えなし／エラー履歴なし／発送物戻りなし／下3桁提示可能,,,,QR / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",False,br393daa44,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+2re9zbavft,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"FC先行/3名義中3番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,2re9zbavft,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/3名義中3番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+b78j0rlveh,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,paper,female,当日手渡し,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,4000,"公式HP先行・S席のみ  紙チケット
+当日手渡しにてチケットをお渡しします。
+ランダム配布のため、座席の決定権はございません。
+
+当日は開演10分前に会場周辺に...",False,b78j0rlveh,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行・S席のみ  紙チケット
+当日手渡しにてチケットをお渡しします。
+ランダム配布のため、座席の決定権はございません。
+
+当日は開演10分前に会場周辺に...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+slwmwynw6q,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,同行/重複すり替えなし/変ボあり/該当名義/下3桁掲示可,False,slwmwynw6q,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,同行/重複すり替えなし/変ボあり/該当名義/下3桁掲示可,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+1142r230hr,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"初期当選 /2名義中2番手/全て該当名義/すり替えなし/下三桁提示可
+
+同時入場し、当方が選択しなかった座席のチケットをお渡しします。
+チケットをお渡し時に受け...",False,1142r230hr,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選 /2名義中2番手/全て該当名義/すり替えなし/下三桁提示可
+
+同時入場し、当方が選択しなかった座席のチケットをお渡しします。
+チケットをお渡し時に受け...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+9qnvgw0p97,,bokunodoragon-gohan-tabenai,2026-11-28,12:00,サンケイホールブリーゼ,paper,female,入金後2日以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9800,"公式サイト先行
+こちら発券済みの為郵送致します。
+
+公演中止以外は如何なる場合でも返金は不可となりますので、ご了承ください。",False,9qnvgw0p97,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式サイト先行
+こちら発券済みの為郵送致します。
+
+公演中止以外は如何なる場合でも返金は不可となりますので、ご了承ください。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968e2G\u52175\u301c8\u756a""}",2026-11
+6wx566axxo,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10500,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下３桁提示可
+
+開演30分前を目安に会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばなか...",False,6wx566axxo,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下３桁提示可
+
+開演30分前を目安に会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばなか...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+wc4lem7k46,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"2-4番手中4番手（3名義中該当1非該当2）/初期当選/変更ボタンあり/すり替えなし/下3桁掲示可
+公演中止の場合のみ返金対応",False,wc4lem7k46,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2-4番手中4番手（3名義中該当1非該当2）/初期当選/変更ボタンあり/すり替えなし/下3桁掲示可
+公演中止の場合のみ返金対応",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+n8e9c0tele,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,4000,"公式HP先行／全てS席／郵送にてチケット送付いたします
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場合でも返金...",False,n8e9c0tele,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行／全てS席／郵送にてチケット送付いたします
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場合でも返金...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eG\u301cI\u521712\u301c22\u756a""}",2026-11
+0pglonlaa8,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,2名義中2番手1枚 すり替えなし 下3桁提示可 公演中止以外いかなる場合でも返金受け付けません。,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10300,,False,0pglonlaa8,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,,,,,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+rt9jwugdit,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",False,rt9jwugdit,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+vdyyyd7toy,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"FC先行/2名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,vdyyyd7toy,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/2名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+75z9lrrjzv,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9500,"2-4番手中3番手（3名義中該当1非該当2）/初期当選/変更ボタンあり/すり替えなし/下3桁掲示可
+公演中止の場合のみ返金対応",False,75z9lrrjzv,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2-4番手中3番手（3名義中該当1非該当2）/初期当選/変更ボタンあり/すり替えなし/下3桁掲示可
+公演中止の場合のみ返金対応",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+axbet6bnlc,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,paper,female,当日手渡し,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,3500,"公式HP先行・S席のみ  紙チケット
+当日手渡しにてチケットをお渡しします。
+ランダム配布のため、座席の決定権はございません。
+
+当日は開演10分前に会場周辺に...",False,axbet6bnlc,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行・S席のみ  紙チケット
+当日手渡しにてチケットをお渡しします。
+ランダム配布のため、座席の決定権はございません。
+
+当日は開演10分前に会場周辺に...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+cveoeohpd1,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,paper,female,郵送、手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,60000,一部サイト、残り当日手渡しも可能です。質問等ありましたらお気軽にコメントしてください。,False,cveoeohpd1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,一部サイト、残り当日手渡しも可能です。質問等ありましたらお気軽にコメントしてください。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968e\u301cD\u5217\u30bb\u30f3\u30d6\u30ed20\u756a\u4ee3""}",2026-11
+je4py46f37,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,pickup_number,female,払込票番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,500,"11/17 23:30までにファミリーマートで定価+手数料分ご自身で支払いお願いします。
+
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合...",False,je4py46f37,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"11/17 23:30までにファミリーマートで定価+手数料分ご自身で支払いお願いします。
+
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u4e00\u822c 1\u968eS\u52179\u301c23\u756a""}",2026-11
+oua8ppvehw,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,初期当選／該当名義（ボタン有）／期限内／同行／すり替えなし／エラー履歴なし／発送物戻りなし／下3桁提示可能,,,,QR / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",False,oua8ppvehw,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+y5xv71924a,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",False,y5xv71924a,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+7ar9ww4qtw,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"FC先行2名義中2番手になります（単番✖︎2）
+いかなる場合でも返金は不可。公演中止の場合のみ手数料等差し引いた額返金致します。
+",False,7ar9ww4qtw,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行2名義中2番手になります（単番✖︎2）
+いかなる場合でも返金は不可。公演中止の場合のみ手数料等差し引いた額返金致します。
+",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+wrvi7f3zq4,,bokunodoragon-gohan-tabenai,2026-11-28,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",False,wrvi7f3zq4,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場10分前を予定しています。※必ず時間厳守でお願い致します。詳...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+i3eem6glzl,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,16000,"全て情報局先行 該当名義3名義中の2番手全て初期当選すり替えなし下3桁提示可能変更ボタンあり
+
+取引き後は公演中止以外の本人確認/交通機関の遅延／体調不良/ラン...",False,i3eem6glzl,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て情報局先行 該当名義3名義中の2番手全て初期当選すり替えなし下3桁提示可能変更ボタンあり
+
+取引き後は公演中止以外の本人確認/交通機関の遅延／体調不良/ラン...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+npspi4rznn,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,pickup_number,female,発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,9000,"HP先行
+発券番号共有させていただきます。
+発券番号共有後は速やかに受取連絡お願いいたします。
+取引後のキャンセル・座席へのクレームなど如何なる場合でも返金不可...",False,npspi4rznn,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"HP先行
+発券番号共有させていただきます。
+発券番号共有後は速やかに受取連絡お願いいたします。
+取引後のキャンセル・座席へのクレームなど如何なる場合でも返金不可...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+m7tk4qpzuj,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,paper,female,当日手渡し,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,4000,"公式HP先行・S席のみ  紙チケット
+当日手渡しにてチケットをお渡しします。
+ランダム配布のため、座席の決定権はございません。
+
+当日は開演10分前に会場周辺に...",False,m7tk4qpzuj,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行・S席のみ  紙チケット
+当日手渡しにてチケットをお渡しします。
+ランダム配布のため、座席の決定権はございません。
+
+当日は開演10分前に会場周辺に...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+pps5lbxoao,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,electronic,female,公演日前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,36000,"FC初期当選/該当名義
+公演日前日にログイン情報を共有します。
+・入場後は速やかにログアウトと受取評価をお願いいたします。マイページの閲覧はご遠慮ください。
+・...",False,pps5lbxoao,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC初期当選/該当名義
+公演日前日にログイン情報を共有します。
+・入場後は速やかにログアウトと受取評価をお願いいたします。マイページの閲覧はご遠慮ください。
+・...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+0c40x1y4dz,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"2名義中2番手　1枚（単番）
+情報局先行/すり替えなし/下三桁提示可
+ 当日会場付近にて待ち合わせをし、同時入場していただきます。時間厳守でお願いします。
+詳細...",False,0c40x1y4dz,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手　1枚（単番）
+情報局先行/すり替えなし/下三桁提示可
+ 当日会場付近にて待ち合わせをし、同時入場していただきます。時間厳守でお願いします。
+詳細...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+z0cjdn9puc,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,70000,"FC先行/初期当選/該当名義/下3桁提示可
+当方との同行になります。
+こちらが選んだ後の1枚をお渡しいたします。
+ご購入は日本語の通じる方のみお願いいたします。...",False,z0cjdn9puc,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/初期当選/該当名義/下3桁提示可
+当方との同行になります。
+こちらが選んだ後の1枚をお渡しいたします。
+ご購入は日本語の通じる方のみお願いいたします。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+7ydlqwqhz1,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,paper,female,当日手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,3000,"・お早めのご購入の場合、郵送も可能です。
+・手渡しの場合、当日は開場15分前に会場付近でのお待ち合わせを予定しております。
+
+詳しい待ち合わせ時間や場所は入金後...",False,7ydlqwqhz1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"・お早めのご購入の場合、郵送も可能です。
+・手渡しの場合、当日は開場15分前に会場付近でのお待ち合わせを予定しております。
+
+詳しい待ち合わせ時間や場所は入金後...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2D17~24\u756a""}",2026-11
+ar718hlbjw,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,pickup_number,female,払込票番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,500,"11/17 23:30までにファミリーマートで定価+手数料分ご自身で支払いお願いします。
+
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合...",False,ar718hlbjw,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"11/17 23:30までにファミリーマートで定価+手数料分ご自身で支払いお願いします。
+
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u4e00\u822c 1\u968eS\u52179\u301c23\u756a""}",2026-11
+d79undp13i,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,electronic,female,公演前日QRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,3000,,False,d79undp13i,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,,,,,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+vg1gkhrnpg,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,4500,"公式HP先行／S席／郵送にてチケット送付いたします
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場合でも返金不可...",False,vg1gkhrnpg,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行／S席／郵送にてチケット送付いたします
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる場合でも返金不可...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eF\u301cH\u52175\u301c15\u756a""}",2026-11
+0gvs0spsxa,,bokunodoragon-gohan-tabenai,2026-11-29,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10500,"全て情報局先行 該当名義3名義中の3番手全て初期当選すり替えなし下3桁提示可能変更ボタンあり
+
+取引き後は公演中止以外の本人確認/交通機関の遅延／体調不良/ラン...",False,0gvs0spsxa,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て情報局先行 該当名義3名義中の3番手全て初期当選すり替えなし下3桁提示可能変更ボタンあり
+
+取引き後は公演中止以外の本人確認/交通機関の遅延／体調不良/ラン...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+5gz2sq889b,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",False,5gz2sq889b,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+l7b4cgj837,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,2名義中2番手／すり替えなし／全て初期当選、期限内、非該当／全ての下3桁提示可／エラー履歴無し／,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"開場15分前に会場付近にて待ち合わせし同時入場します。
+
+入場後チケットを回収し、1番手のチケット選択後、残った2番手のチケットをお渡しします。
+
+遅刻、ランダ...",False,l7b4cgj837,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開場15分前に会場付近にて待ち合わせし同時入場します。
+
+入場後チケットを回収し、1番手のチケット選択後、残った2番手のチケットをお渡しします。
+
+遅刻、ランダ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+qdvolipj0p,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,公演日1日前にログイン情報お送りします。,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,65000,"初期当選/該当名義/下3桁提示可/有効期限内/本確対応不可
+発券まで座席未定の為、座席に関するクレームや返金対応は致し兼ねます。
+ランダムエラーや本人確認、通信...",False,qdvolipj0p,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/該当名義/下3桁提示可/有効期限内/本確対応不可
+発券まで座席未定の為、座席に関するクレームや返金対応は致し兼ねます。
+ランダムエラーや本人確認、通信...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u672a\u5b9a""}",2026-11
+ee1f3x8wgr,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"2名義中2番手/初期当選/該当名義/下3桁提示可/有効期限内/本確対応不可
+
+番手でのお譲りのため当方が座席選択後選ばなかった方のチケットを渡させていただきます...",False,ee1f3x8wgr,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手/初期当選/該当名義/下3桁提示可/有効期限内/本確対応不可
+
+番手でのお譲りのため当方が座席選択後選ばなかった方のチケットを渡させていただきます...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+8wyxy1xf8z,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"3名義中2番手/初期当選/変更ボタンあり/すり替えなし/下3桁掲示可
+公演中止の場合のみ返金対応",False,8wyxy1xf8z,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中2番手/初期当選/変更ボタンあり/すり替えなし/下3桁掲示可
+公演中止の場合のみ返金対応",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+3o3kwbg7wx,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,公演日前日までにログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,60000,"FC初期当選/非該当/下3桁提示可/QR毎
+
+プライベート出品に切り替えますので、購入希望の方はコメントをよろしくお願いいたします。
+当日入場後受け取り評価及び...",False,3o3kwbg7wx,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC初期当選/非該当/下3桁提示可/QR毎
+
+プライベート出品に切り替えますので、購入希望の方はコメントをよろしくお願いいたします。
+当日入場後受け取り評価及び...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u672a\u5b9a""}",2026-11
+pou06cnvax,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"3名義中3番手/初期当選/変更ボタンあり/すり替えなし/下3桁掲示可
+公演中止の場合のみ返金対応",False,pou06cnvax,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手/初期当選/変更ボタンあり/すり替えなし/下3桁掲示可
+公演中止の場合のみ返金対応",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+o5l0tzi04v,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,公演前日QRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,35000,"情報局先行/ QR毎/非該当名義
+
+・公演日前日にログイン情報を共有します。
+・入場後は速やかにログアウトと受取評価をお願いいたします。マイページの閲覧はご遠慮...",False,o5l0tzi04v,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/ QR毎/非該当名義
+
+・公演日前日にログイン情報を共有します。
+・入場後は速やかにログアウトと受取評価をお願いいたします。マイページの閲覧はご遠慮...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+u70m4g7o61,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,公演前日にログイン情報お教えします。入場後は速やかにログアウトし、受け取り評価お願いします。,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,59000,"QR毎/初期当選/該当名義/重複すり替え無し
+公演日前日にログイン情報をお送りします。
+入場後は速やかにログアウトし、受け取り評価をお願いします。ランダムエラー...",False,u70m4g7o61,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/初期当選/該当名義/重複すり替え無し
+公演日前日にログイン情報をお送りします。
+入場後は速やかにログアウトし、受け取り評価をお願いします。ランダムエラー...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+rrfvtonjtf,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,公演日前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"情報局先行/QR毎/期限内名義/下3桁提示可
+
+公演日前日までにログイン情報をお伝えします。
+
+遅刻や体調不良、ランダムエラー、本人確認、公演中止のいかなる理由...",False,rrfvtonjtf,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/QR毎/期限内名義/下3桁提示可
+
+公演日前日までにログイン情報をお伝えします。
+
+遅刻や体調不良、ランダムエラー、本人確認、公演中止のいかなる理由...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d""}",2026-11
+fe378hj4x4,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"2名義中2番手　1枚（単番）
+情報局先行/該当名義/すり替えなし/下三桁提示可
+ 当日会場付近にて待ち合わせをし、同時入場していただきます。時間厳守でお願いしま...",False,fe378hj4x4,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手　1枚（単番）
+情報局先行/該当名義/すり替えなし/下三桁提示可
+ 当日会場付近にて待ち合わせをし、同時入場していただきます。時間厳守でお願いしま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+p6wklif4op,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,electronic,female,前日にログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,38000,"QR毎/非該当/初期当選
+入場後は速やかにログアウト受け取り評価お願いします
+ランダムエラー、交通状況の乱れによる遅れ等の返金不可（公演中止の場合のみ返金対応）",False,p6wklif4op,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/非該当/初期当選
+入場後は速やかにログアウト受け取り評価お願いします
+ランダムエラー、交通状況の乱れによる遅れ等の返金不可（公演中止の場合のみ返金対応）",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+0ukifp304r,,bokunodoragon-gohan-tabenai,2026-11-29,17:00,サンケイホールブリーゼ,pickup_number,female,発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,9000,"HP先行
+発券番号共有させていただきます。
+発券番号共有後は速やかに受取連絡お願いいたします。
+1枚ご希望の方も対応させていただきますのでコメントお願いします。...",False,0ukifp304r,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"HP先行
+発券番号共有させていただきます。
+発券番号共有後は速やかに受取連絡お願いいたします。
+1枚ご希望の方も対応させていただきますのでコメントお願いします。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+u0z75ci0hx,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,paper,female,入金後2日以内ににレターパックプラスで発送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"◼️チケット受取後は速やかに受取報告をお願いいたします。
+◼️公演中止以外の返金・取引後のキャンセル・座席へのクレーム等は不可となりますので予めご了承くださいま...",False,u0z75ci0hx,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"◼️チケット受取後は速やかに受取報告をお願いいたします。
+◼️公演中止以外の返金・取引後のキャンセル・座席へのクレーム等は不可となりますので予めご了承くださいま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968e J\u5217 19\u301c23\u756a""}",2026-11
+kigz27eyvt,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,pickup_number,female,発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,11500,"発券開始日以降に発券番号共有させていただきます。
+発券番号共有後は速やかに受取連絡お願いいたします。
+取引後のキャンセル・座席へのクレームなど如何なる場合でも返...",False,kigz27eyvt,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"発券開始日以降に発券番号共有させていただきます。
+発券番号共有後は速やかに受取連絡お願いいたします。
+取引後のキャンセル・座席へのクレームなど如何なる場合でも返...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+efa2viq88l,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"1名義中1番手（同行）
+
+FC先行/有効期限内/該当名義/変更ボタン有/すり替えなし/下3桁表示可
+
+・開場時間前に会場周辺にてお待ち合わせ、同時入場を予定して...",False,efa2viq88l,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"1名義中1番手（同行）
+
+FC先行/有効期限内/該当名義/変更ボタン有/すり替えなし/下3桁表示可
+
+・開場時間前に会場周辺にてお待ち合わせ、同時入場を予定して...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+5ysltu1xkt,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",False,5ysltu1xkt,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+uwicgoeiyi,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,7000,"✨ランダム配布✨
+
+・入場前に購入者様の端末にログイン情報を打ち込みます。
+顔写真付き公的身分証をご持参ください。
+こちらは購入者様の目の前でのりつきの封筒に入...",False,uwicgoeiyi,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"✨ランダム配布✨
+
+・入場前に購入者様の端末にログイン情報を打ち込みます。
+顔写真付き公的身分証をご持参ください。
+こちらは購入者様の目の前でのりつきの封筒に入...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+n3icztlonm,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,none,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"3名義中3番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルにて出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20...",False,n3icztlonm,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルにて出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+697r2p7j9w,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,none,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"3名義中2番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルに出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20分...",False,697r2p7j9w,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中2番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルに出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20分...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+vhs1frjtxn,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"⭐️FC先行⭐️2名義中2番手/初期当選/該当名義/下3桁提示可
+
+ランダムエラー、体調不良、など
+公演中止以外のいかなる場合でも、ご返金は致しかねます。
+
+日...",False,vhs1frjtxn,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"⭐️FC先行⭐️2名義中2番手/初期当選/該当名義/下3桁提示可
+
+ランダムエラー、体調不良、など
+公演中止以外のいかなる場合でも、ご返金は致しかねます。
+
+日...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+xzenn5xrwz,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,公演前日までにQR共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,14500,"初期選/非該当/有効期限内/発送物戻りなし/重複すり替えなし/下3桁提示可
+
+公演前日にログイン情報をお伝えいたします。
+入場後はすぐにログアウト、受取評価をお...",False,xzenn5xrwz,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期選/非該当/有効期限内/発送物戻りなし/重複すり替えなし/下3桁提示可
+
+公演前日にログイン情報をお伝えいたします。
+入場後はすぐにログアウト、受取評価をお...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+4k5722z26q,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,7000,"✨ランダム配布✨
+
+・入場前に購入者様の端末にログイン情報を打ち込みます。
+チケット持ち逃げ防止のため、顔写真付き公的身分証をご持参ください。
+こちらは購入者様...",False,4k5722z26q,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"✨ランダム配布✨
+
+・入場前に購入者様の端末にログイン情報を打ち込みます。
+チケット持ち逃げ防止のため、顔写真付き公的身分証をご持参ください。
+こちらは購入者様...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+c4joxvymcx,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,前日にログイン情報お伝えします,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,14000,"初期当選/期限内/非該当名義/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません。
+ランダムエラー、体調不良、交通状況などいかなる場合でも...",False,c4joxvymcx,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/期限内/非該当名義/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません。
+ランダムエラー、体調不良、交通状況などいかなる場合でも...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+xln1irwjc6,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10500,"初期当選/2名義中2番手/該当1非該当1/すり替えなし/下３桁提示可
+
+開演30分前を目安に会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばな...",False,xln1irwjc6,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/2名義中2番手/該当1非該当1/すり替えなし/下３桁提示可
+
+開演30分前を目安に会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばな...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+vjntn02gfb,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,公演日前日にログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"初期選/非該当/有効期限内/発送物戻りなし/重複すり替えなし/下3桁提示可
+
+公演日前日にログイン情報をお伝えいたします。
+入場後はすぐにログアウト、受取評価を...",False,vjntn02gfb,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期選/非該当/有効期限内/発送物戻りなし/重複すり替えなし/下3桁提示可
+
+公演日前日にログイン情報をお伝えいたします。
+入場後はすぐにログアウト、受取評価を...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+eeueozgrrf,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,12500,"FC先行/初期当選/該当名義/変更ボタンあり/下3桁提示可
+
+ランダムエラー、体調不良、など公演中止以外のいかなる場合でも、ご返金は致しかねます。
+
+前日23時...",False,eeueozgrrf,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/初期当選/該当名義/変更ボタンあり/下3桁提示可
+
+ランダムエラー、体調不良、など公演中止以外のいかなる場合でも、ご返金は致しかねます。
+
+前日23時...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+8gqyxlgpq9,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"単番3名義中3番手のお譲りです。
+
+初期当選/該当/有効期限内/発送物戻り無/すり替え無/下3桁提示可
+
+公演当日、開場15分前目安に集合し、同時入場していただ...",False,8gqyxlgpq9,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"単番3名義中3番手のお譲りです。
+
+初期当選/該当/有効期限内/発送物戻り無/すり替え無/下3桁提示可
+
+公演当日、開場15分前目安に集合し、同時入場していただ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+oxb9len5qh,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,前日にログイン情報をお伝え致します,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"該当名義QRコード毎のお譲りです
+
+初期当選/期限内/該当名義/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不...",False,oxb9len5qh,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"該当名義QRコード毎のお譲りです
+
+初期当選/期限内/該当名義/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+m6mfgi2qfo,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,公演日前日に情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"QR毎のお譲りになります。
+
+FC先行/初期当選/期限内/該当名義/すり替えなし/下3桁提示可能
+
+公演が中止となった場合に限り、規約に基づいて返金対応いたしま...",False,m6mfgi2qfo,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎のお譲りになります。
+
+FC先行/初期当選/期限内/該当名義/すり替えなし/下3桁提示可能
+
+公演が中止となった場合に限り、規約に基づいて返金対応いたしま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u96fb\u5b50\u30c1\u30b1\u30c3\u30c8""}",2026-11
+xynz62wm8a,,bokunodoragon-gohan-tabenai,2026-11-30,18:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"単番3名義中2番手のお譲りです。
+
+初期当選/該当/有効期限内/発送物戻り無/すり替え無/下3桁提示可
+
+公演当日、開場15分前目安に集合し、同時入場していただ...",False,xynz62wm8a,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"単番3名義中2番手のお譲りです。
+
+初期当選/該当/有効期限内/発送物戻り無/すり替え無/下3桁提示可
+
+公演当日、開場15分前目安に集合し、同時入場していただ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+jfuh04s2vo,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下三桁提示可能/女性名義
+
+開場10分前頃に付近で待ち合わせ、詳細は当日お伝えします。
+全て単番、同時入場...",False,jfuh04s2vo,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下三桁提示可能/女性名義
+
+開場10分前頃に付近で待ち合わせ、詳細は当日お伝えします。
+全て単番、同時入場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+8ayyv6nusy,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,pickup_number,female,入金後2日以内に発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9300,,False,8ayyv6nusy,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,,,,,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u516c\u5f0f\u30db\u30fc\u30e0\u30da\u30fc\u30b8\u5148\u884c""}",2026-11
+n0tjheottg,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9800,"2連2名義中2番手のお譲りです。
+
+初期当選/該当1非該当1/有効期限内/すり替え無/下3桁提示可
+
+公演当日、指定の場所に集合していただき、同時入場していただ...",False,n0tjheottg,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2連2名義中2番手のお譲りです。
+
+初期当選/該当1非該当1/有効期限内/すり替え無/下3桁提示可
+
+公演当日、指定の場所に集合していただき、同時入場していただ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+fmmhk3kc5q,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"初期当選 /2名義中2番手/全て該当名義/すり替えなし/下三桁提示可/男性名義含む
+
+開場10分前頃に付近で待ち合わせ、詳細は前日までにご連絡いたします。
+
+全...",False,fmmhk3kc5q,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選 /2名義中2番手/全て該当名義/すり替えなし/下三桁提示可/男性名義含む
+
+開場10分前頃に付近で待ち合わせ、詳細は前日までにご連絡いたします。
+
+全...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+tbig2lk2dg,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,electronic,female,入金後24時間以内にQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,32000,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",False,tbig2lk2dg,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+jknvlosvca,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,electronic,female,QR毎,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,30000,"情報局先行/該当名義/有効期限内
+
+公演日当日または前日にログインに必要な情報をお伝えいたします。
+当日入場後開演までに速やかに受け取り連絡とログアウトお願いし...",False,jknvlosvca,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/有効期限内
+
+公演日当日または前日にログインに必要な情報をお伝えいたします。
+当日入場後開演までに速やかに受け取り連絡とログアウトお願いし...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+701cu24qp6,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,electronic,female,公演1日前にログイン情報をお送りします。,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,60000,"初期当選/該当名義/下3桁提示可/有効期限内/本確対応不可
+発券まで座席未定の為、座席に関するクレームや返金対応は致し兼ねます。
+ランダムエラーや本人確認、通信...",False,701cu24qp6,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/該当名義/下3桁提示可/有効期限内/本確対応不可
+発券まで座席未定の為、座席に関するクレームや返金対応は致し兼ねます。
+ランダムエラーや本人確認、通信...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u672a\u5b9a""}",2026-11
+22dcvp5mfg,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"単番2名義中2番手のお譲りです。
+
+初期当選/該当/有効期限内/発送物戻り無/すり替え無/下3桁提示可
+
+公演当日、開場15分前目安に集合し、同時入場していただ...",False,22dcvp5mfg,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"単番2名義中2番手のお譲りです。
+
+初期当選/該当/有効期限内/発送物戻り無/すり替え無/下3桁提示可
+
+公演当日、開場15分前目安に集合し、同時入場していただ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+oayarjcc5q,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,paper,female,入金後3日以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,9500,"取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合でも返金不可となりますので予めご了承ください
+",False,oayarjcc5q,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合でも返金不可となりますので予めご了承ください
+",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u516c\u5f0f\u30d7\u30ec\u30a4\u30ac\u30a4\u30c9\u5148\u884c 2\u968e2K\u52179\u301c24\u756a""}",2026-11
+g3wd4ueodm,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9990,"公演日1週間前までにレターパックでの郵送になります。
+
+交通機関の影響による遅刻、本人確認や体調不良等でご入場ができなかった場合でも受け取り評価をしていただきま...",False,g3wd4ueodm,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公演日1週間前までにレターパックでの郵送になります。
+
+交通機関の影響による遅刻、本人確認や体調不良等でご入場ができなかった場合でも受け取り評価をしていただきま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968eH\u301cJ\u521710\u301c23\u756a""}",2026-11
+0m6r205ob2,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,electronic,female,QR毎,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,30000,"情報局先行/該当名義/有効期限内
+
+公演日当日または前日にログインに必要な情報をお伝えいたします。
+当日入場後開演までに速やかに受け取り連絡とログアウトお願いし...",False,0m6r205ob2,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/有効期限内
+
+公演日当日または前日にログインに必要な情報をお伝えいたします。
+当日入場後開演までに速やかに受け取り連絡とログアウトお願いし...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+iu9ph6m799,,bokunodoragon-gohan-tabenai,2026-12-02,13:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"全て該当名義3名義中の2番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通状...",False,iu9ph6m799,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て該当名義3名義中の2番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通状...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u672a\u5b9a""}",2026-11
+hk7bnli9sm,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10500,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下３桁提示可
+
+会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばなかった方をお渡しします...",False,hk7bnli9sm,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下３桁提示可
+
+会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばなかった方をお渡しします...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+eb3luhqe94,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9800,"2連3名義中2番手のお譲りです。
+
+初期当選/該当1非該当2/有効期限内/すり替え無/下3桁提示可
+
+公演当日、指定の場所に集合していただき同時入場していただき...",False,eb3luhqe94,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2連3名義中2番手のお譲りです。
+
+初期当選/該当1非該当2/有効期限内/すり替え無/下3桁提示可
+
+公演当日、指定の場所に集合していただき同時入場していただき...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+mm4kooov5k,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,公演当日にログイン情報お伝え,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,40000,"該当/２連QR/有効期限内/下3桁提示可
+公演当日開場までにログイン情報お伝えいたします。当日入場できましたら、すみやかにログアウト、受け取り通知をお願いします...",False,mm4kooov5k,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"該当/２連QR/有効期限内/下3桁提示可
+公演当日開場までにログイン情報お伝えいたします。当日入場できましたら、すみやかにログアウト、受け取り通知をお願いします...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S""}",2026-11
+y9u7uwuddb,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",False,y9u7uwuddb,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"⭐️少人数ランダム配布⭐️
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場30分前を予定しています。※必ず時間厳守でお願い致し...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+kpgrbni3zf,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"公演日1週間前までにレターパックでの郵送になります。
+
+交通機関の影響による遅刻、本人確認や体調不良等でご入場ができなかった場合でも受け取り評価をしていただきま...",False,kpgrbni3zf,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公演日1週間前までにレターパックでの郵送になります。
+
+交通機関の影響による遅刻、本人確認や体調不良等でご入場ができなかった場合でも受け取り評価をしていただきま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968eC\u301cE\u521710\u301c23\u756a""}",2026-11
+ov6gpub42w,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,18000,"FC先行初期当選全て該当2名義所持3枚中2枚目にお選びいただきます（単番、2連）
+購入前にコメントお願いします。
+いかなる場合でも返金は不可。公演中止の場合のみ...",False,ov6gpub42w,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行初期当選全て該当2名義所持3枚中2枚目にお選びいただきます（単番、2連）
+購入前にコメントお願いします。
+いかなる場合でも返金は不可。公演中止の場合のみ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+340jioydr6,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,none,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"3名義中3番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルにて出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20...",False,340jioydr6,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルにて出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+ophg1z6h3y,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,入金後24時間以内にQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,32000,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",False,ophg1z6h3y,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/該当名義/変更ボタンあり/ 座席未定/QRごと/初期当選/下3桁提示可/有効期限内
+
+・公演前にログインに必要な情報をお伝えいたします
+
+・入場後開...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+8fqz79zyaa,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,前日までにログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,14000,"初期当選/期限内/非該当名義/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません。
+ランダムエラー、体調不良、交通状況などいかなる場合でも...",False,8fqz79zyaa,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/期限内/非該当名義/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません。
+ランダムエラー、体調不良、交通状況などいかなる場合でも...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+2x18xd4kf1,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"2名義中2番手
+非該当名義含む/有効期限内/下3桁提示可能
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合でも返金不可となりますので予めご...",False,2x18xd4kf1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手
+非該当名義含む/有効期限内/下3桁提示可能
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合でも返金不可となりますので予めご...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+zy388hviom,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下三桁提示可能/女性名義
+
+開場10分前頃に付近で待ち合わせ、詳細は当日お伝えします。
+全て単番、同時入場...",False,zy388hviom,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下三桁提示可能/女性名義
+
+開場10分前頃に付近で待ち合わせ、詳細は当日お伝えします。
+全て単番、同時入場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+dji7e7xxcb,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7500,"少人数ランダム配布
+当日は開場時間頃に集合し同時入場の予定です。
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+すり替えありランダムです。
+※必...",False,dji7e7xxcb,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+当日は開場時間頃に集合し同時入場の予定です。
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+すり替えありランダムです。
+※必...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+wri59mahib,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,11000,"全て該当名義
+2名義中の2番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通...",False,wri59mahib,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て該当名義
+2名義中の2番手です
+
+初期当選/期限内/すり替えなし/下3桁提示可能
+
+座席に対するクレームは一切受け付けません
+ランダムエラー、体調不良、交通...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u672a\u5b9a""}",2026-11
+np5qtqlivr,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,9800,"2連3名義中3番手のお譲りです。
+
+初期当選/該当1非該当2/有効期限内/すり替え無/下3桁提示可
+
+公演当日、指定の場所に集合していただき同時入場していただき...",False,np5qtqlivr,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2連3名義中3番手のお譲りです。
+
+初期当選/該当1非該当2/有効期限内/すり替え無/下3桁提示可
+
+公演当日、指定の場所に集合していただき同時入場していただき...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+dde6e0v1ko,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,公演日前日ログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,21000,"初期選/非該当/有効期限内/発送物戻りなし/重複すり替えなし/下3桁提示可
+
+公演日前日にログイン情報をお伝えいたします。
+入場後はすぐにログアウト、受取評価を...",False,dde6e0v1ko,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期選/非該当/有効期限内/発送物戻りなし/重複すり替えなし/下3桁提示可
+
+公演日前日にログイン情報をお伝えいたします。
+入場後はすぐにログアウト、受取評価を...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5ea7\u5e2d\u672a\u5b9a""}",2026-11
+q1p6p1cq6f,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,none,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"3名義中2番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルにて出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20...",False,q1p6p1cq6f,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中2番手
+初期当選/該当ボタン有/期限内/下3桁提示可能/すり替えなし
+
+プラベルにて出品いたしますのでご希望の方はご連絡ください。
+
+開場時間15～20...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+739ln1kcgj,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"初期当選 /2名義中2番手/全て該当名義/すり替えなし/下三桁提示可/男性名義含む
+
+開場10分前頃に付近で待ち合わせ、詳細は前日までにご連絡いたします。
+
+全...",False,739ln1kcgj,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選 /2名義中2番手/全て該当名義/すり替えなし/下三桁提示可/男性名義含む
+
+開場10分前頃に付近で待ち合わせ、詳細は前日までにご連絡いたします。
+
+全...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+pyhson33aa,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,公演前日QRコート共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,23000,"情報局先行/ QR毎/非該当名義
+
+・公演日前日にログイン情報を共有します。
+・入場後は速やかにログアウトと受取評価をお願いいたします。マイページの閲覧はご遠慮...",False,pyhson33aa,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"情報局先行/ QR毎/非該当名義
+
+・公演日前日にログイン情報を共有します。
+・入場後は速やかにログアウトと受取評価をお願いいたします。マイページの閲覧はご遠慮...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+p3wu9ra1gu,,bokunodoragon-gohan-tabenai,2026-12-02,18:00,サンケイホールブリーゼ,electronic,female,公演日当日正午までにログイン情報お送り致します,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,65000,"該当(今野大輝)/単番 QR毎/初期当選/有効期限内/すり替え等なし/下3桁提示可
+
+公演日の当日正午までにログイン情報お送りさせて頂きます。当日入場できました...",False,p3wu9ra1gu,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"該当(今野大輝)/単番 QR毎/初期当選/有効期限内/すり替え等なし/下3桁提示可
+
+公演日の当日正午までにログイン情報お送りさせて頂きます。当日入場できました...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+ywgb57sbja,,bokunodoragon-gohan-tabenai,2026-12-03,18:00,サンケイホールブリーゼ,paper,female,簡易書留またはレターパックプラスにて発送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,5000,一般販売で購入したチケットになります。公演が中止となった場合のみ、手数料を差し引いた金額を返金いたします。,False,ywgb57sbja,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,一般販売で購入したチケットになります。公演が中止となった場合のみ、手数料を差し引いた金額を返金いたします。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968e2L\u52175\u301c28\u756a""}",2026-11
+hjiztmuw6m,,bokunodoragon-gohan-tabenai,2026-12-03,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"※17:40頃の集合予定となります。
+
+FC先行/2名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本...",False,hjiztmuw6m,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"※17:40頃の集合予定となります。
+
+FC先行/2名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+q0xbxj2sxa,,bokunodoragon-gohan-tabenai,2026-12-03,18:00,サンケイホールブリーゼ,paper,female,入金後2日以内にレターパックプラスで発送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"◼️チケット受取後は速やかに受取報告をお願いいたします。
+◼️公演中止以外の返金・取引後のキャンセル・座席へのクレーム等は不可となりますので予めご了承くださいま...",False,q0xbxj2sxa,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"◼️チケット受取後は速やかに受取報告をお願いいたします。
+◼️公演中止以外の返金・取引後のキャンセル・座席へのクレーム等は不可となりますので予めご了承くださいま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": "" 2\u968e 2F\u5217 10\u301c15\u756a""}",2026-11
+dmjjyld55f,,bokunodoragon-gohan-tabenai,2026-12-03,18:00,サンケイホールブリーゼ,paper,female,当日手渡し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,17000,"2名義中2番手になります。
+初期当選/該当/下3桁提示可能/すり替えなし/本確不可
+
+座席に関するクレーム受け付けません。ランダムエラー、公共交通機関の遅れ、体...",False,dmjjyld55f,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手になります。
+初期当選/該当/下3桁提示可能/すり替えなし/本確不可
+
+座席に関するクレーム受け付けません。ランダムエラー、公共交通機関の遅れ、体...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+he0nmutsjo,,bokunodoragon-gohan-tabenai,2026-12-03,18:00,サンケイホールブリーゼ,electronic,female,公演前日にQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,30000,"QR毎のお譲りになります。
+初期当選/非該当/有効期限内/下3桁提示可能
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合でも返金不可となり...",False,he0nmutsjo,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎のお譲りになります。
+初期当選/非該当/有効期限内/下3桁提示可能
+取引後のキャンセル・座席へのクレーム・ランダムエラーなど如何なる場合でも返金不可となり...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+to2shehzqb,,bokunodoragon-gohan-tabenai,2026-12-03,18:00,サンケイホールブリーゼ,electronic,female,公演前日QRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,60000,"初期当選/該当名義/期限内/下3桁提示可能
+
+公演前日までにQRコードを共有いたします。発券しましたら速やかにログアウト、受け取り通知をお願いいたします。お席に...",False,to2shehzqb,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/該当名義/期限内/下3桁提示可能
+
+公演前日までにQRコードを共有いたします。発券しましたら速やかにログアウト、受け取り通知をお願いいたします。お席に...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+gqopauijg3,,bokunodoragon-gohan-tabenai,2026-12-03,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,16000,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下３桁提示可
+
+会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばなかった方をお渡しします...",False,gqopauijg3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/2名義中2番手/全て該当名義/すり替えなし/下３桁提示可
+
+会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばなかった方をお渡しします...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+uvttdmpxzm,,bokunodoragon-gohan-tabenai,2026-12-03,18:00,サンケイホールブリーゼ,paper,female,当日手渡し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"2名義中2番手
+
+当日手渡し、公演中止以外のキャンセル返金、クレーム対応は致しません。
+",False,uvttdmpxzm,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手
+
+当日手渡し、公演中止以外のキャンセル返金、クレーム対応は致しません。
+",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+0cllwixxxm,,bokunodoragon-gohan-tabenai,2026-12-03,18:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,19500,"2名義中2番手になります。
+初期当選/該当/下3桁提示可能/すり替えなし/本確不可
+
+座席に関するクレーム受け付けません。ランダムエラー、公共交通機関の遅れ、体...",False,0cllwixxxm,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手になります。
+初期当選/該当/下3桁提示可能/すり替えなし/本確不可
+
+座席に関するクレーム受け付けません。ランダムエラー、公共交通機関の遅れ、体...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+rsh957thmz,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,male,前日までにログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,18000,"QR毎のお譲りです。
+
+購入希望の方はプラベルにて出品致しますのでご連絡ください。
+
+前日21時までにログイン情報共有いたします。
+情報局先行/該当名義/FC有...",False,rsh957thmz,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎のお譲りです。
+
+購入希望の方はプラベルにて出品致しますのでご連絡ください。
+
+前日21時までにログイン情報共有いたします。
+情報局先行/該当名義/FC有...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+2kvr73mypk,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,pickup_number,female,発券開始日に発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"公式サイト先行
+2026年10月31日10時より発券可能
+発券開始日に発券番号を共有させていただきますので、共有後は速やかに受け取り連絡をお願いいたします。
+公...",False,2kvr73mypk,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式サイト先行
+2026年10月31日10時より発券可能
+発券開始日に発券番号を共有させていただきますので、共有後は速やかに受け取り連絡をお願いいたします。
+公...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+nderrjci21,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,公演前日ログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"下記をすべてお読みになった上でご購入をお願いいたします。
+
+QR毎/初期当選/該当名義/有効期限内
+
+•公演前日にログイン情報をお伝えします。入場後、速やかにロ...",False,nderrjci21,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"下記をすべてお読みになった上でご購入をお願いいたします。
+
+QR毎/初期当選/該当名義/有効期限内
+
+•公演前日にログイン情報をお伝えします。入場後、速やかにロ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+u3327z2f6y,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10000,"3名義中3番手
+該当/下3桁提示可能/すり替えなし/変ボ有/有効期限内
+
+同時入場後、一度チケットを回収いたします。
+当方が座席選択後にチケットをお渡しします。...",False,u3327z2f6y,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手
+該当/下3桁提示可能/すり替えなし/変ボ有/有効期限内
+
+同時入場後、一度チケットを回収いたします。
+当方が座席選択後にチケットをお渡しします。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+xpd4vf8wiy,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,QR,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,20000,"QR毎／初期当選／該当名義／有効期限内
+
+公演当日0時までにログイン情報を共有いたします。
+
+QRコードごとのお取引となります。
+
+発券後の座席に関するクレーム...",False,xpd4vf8wiy,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎／初期当選／該当名義／有効期限内
+
+公演当日0時までにログイン情報を共有いたします。
+
+QRコードごとのお取引となります。
+
+発券後の座席に関するクレーム...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+sw09k2kd5p,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,paper,female,入金後2日以内にレターパックプラスで発送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"◼️チケット受取後は速やかに受取報告をお願いいたします。
+◼️公演中止以外の返金・取引後のキャンセル・座席へのクレーム等は不可となりますので予めご了承くださいま...",False,sw09k2kd5p,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"◼️チケット受取後は速やかに受取報告をお願いいたします。
+◼️公演中止以外の返金・取引後のキャンセル・座席へのクレーム等は不可となりますので予めご了承くださいま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968e J\u521719\u301c23\u756a""}",2026-11
+pot8qkayue,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,QR毎,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10000,"2名義中2番手です。
+初期当選/非該当/下3桁提示可能/すり替えなし/本確不可
+
+座席に関するクレーム受け付けません。ランダムエラー、公共交通機関の遅れ、体調不...",False,pot8qkayue,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手です。
+初期当選/非該当/下3桁提示可能/すり替えなし/本確不可
+
+座席に関するクレーム受け付けません。ランダムエラー、公共交通機関の遅れ、体調不...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+gg3v4mvlln,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"単番2名義中2番手/全て情報局名義
+会員番号下3桁提示可能、初期当選、変更ボあり
+
+当日は開場時間頃に集合になります。詳しい時間や場所は前日お知らせいたします。...",False,gg3v4mvlln,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"単番2名義中2番手/全て情報局名義
+会員番号下3桁提示可能、初期当選、変更ボあり
+
+当日は開場時間頃に集合になります。詳しい時間や場所は前日お知らせいたします。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+kb1fau18dx,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10500,"初期当選/2名義中2番手/該当1非該当1/すり替えなし/下３桁提示可
+
+会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばなかった方をお渡ししま...",False,kb1fau18dx,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/2名義中2番手/該当1非該当1/すり替えなし/下３桁提示可
+
+会場周辺にて集合し、同時入場していただきます。
+入場後、当方が選ばなかった方をお渡ししま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+u3pd8lurxn,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9800,"12/4夜公演　当方と同行のお取引です。
+
+当日の開場時間前に購入者様に集合して頂きます。詳しい時間と集合場所、お取引の詳細に関しましては、再度ご連絡させていた...",False,u3pd8lurxn,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"12/4夜公演　当方と同行のお取引です。
+
+当日の開場時間前に購入者様に集合して頂きます。詳しい時間と集合場所、お取引の詳細に関しましては、再度ご連絡させていた...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+83kciywz9g,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8000,"3名義中3番手
+全て該当/下3桁提示可能/すり替えなし/変ボ有/有効期限内
+
+同時入場後、一度チケットを回収いたします。
+当方が座席選択後にチケットをお渡ししま...",False,83kciywz9g,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手
+全て該当/下3桁提示可能/すり替えなし/変ボ有/有効期限内
+
+同時入場後、一度チケットを回収いたします。
+当方が座席選択後にチケットをお渡ししま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+p2sxm2ctzj,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,15000,"局名義(該当)/すり替えなし/下3桁提示可能
+3名義中2番手(2連)
+
+公演当日は会場周辺で待ち合わせをし、同時入場後、一度チケットを回収いたします。
+当方が座...",False,p2sxm2ctzj,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"局名義(該当)/すり替えなし/下3桁提示可能
+3名義中2番手(2連)
+
+公演当日は会場周辺で待ち合わせをし、同時入場後、一度チケットを回収いたします。
+当方が座...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+1flxfjmrzu,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,12000,"局名義(該当)/すり替えなし/下3桁提示可能
+3名義中3番手(2連)
+
+公演当日は会場周辺で待ち合わせをし、同時入場後、一度チケットを回収いたします。
+当方が座...",False,1flxfjmrzu,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"局名義(該当)/すり替えなし/下3桁提示可能
+3名義中3番手(2連)
+
+公演当日は会場周辺で待ち合わせをし、同時入場後、一度チケットを回収いたします。
+当方が座...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+dwcpaiuiym,,bokunodoragon-gohan-tabenai,2026-12-04,18:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"3名義中2番手
+該当/下3桁提示可能/すり替えなし/変ボ有/有効期限内
+
+同時入場後、一度チケットを回収いたします。
+当方が座席選択後にチケットをお渡しします。...",False,dwcpaiuiym,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中2番手
+該当/下3桁提示可能/すり替えなし/変ボ有/有効期限内
+
+同時入場後、一度チケットを回収いたします。
+当方が座席選択後にチケットをお渡しします。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+9kz64n3wm9,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10000,"3名義中3番手（すべて2連です） 
+該当名義/有効期限内/変更ボタンあり
+会員番号下3桁提示可能
+
+入場後1度チケットを回収し、1番手と2番手が選択したあとに残...",False,9kz64n3wm9,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手（すべて2連です） 
+該当名義/有効期限内/変更ボタンあり
+会員番号下3桁提示可能
+
+入場後1度チケットを回収し、1番手と2番手が選択したあとに残...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+1fp1a5zpcb,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,5500,"チケットぴあ一般先行枠
+公演中止の場合のみ返金対応致します。",False,1fp1a5zpcb,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"チケットぴあ一般先行枠
+公演中止の場合のみ返金対応致します。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eH\u5217\u30bb\u30f3\u30bf\u30fc\u30d6\u30ed\u30c3\u30af""}",2026-11
+l0p7qzeiwo,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,pickup_number,female,発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"公式HP先行
+
+発券番号共有後、速やかに受取連絡をお願いいたします。
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる...",False,l0p7qzeiwo,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行
+
+発券番号共有後、速やかに受取連絡をお願いいたします。
+取引決定後のキャンセル、座席へのクレーム、ランダムエラー、本人確認での入場不可など如何なる...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+lo8jlsl8gj,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,electronic,none,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,21000,"2名義中2番手/該当名義/有効期限内/すり替えなし/下3桁提示可
+
+・当日は開場15分前に会場付近でのお待ち合わせ後、同時入場していただきます。
+
+詳しい待ち合...",False,lo8jlsl8gj,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手/該当名義/有効期限内/すり替えなし/下3桁提示可
+
+・当日は開場15分前に会場付近でのお待ち合わせ後、同時入場していただきます。
+
+詳しい待ち合...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+y0j38ab06d,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,electronic,none,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,12000,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場15分前を予定しています。※必ず時間厳守でお願い致します。詳...",False,y0j38ab06d,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場15分前を予定しています。※必ず時間厳守でお願い致します。詳...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+6788s19nw1,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"2名義中2番手／非該当含む／有効期限内／すり替えなし／下3桁事前提示可能
+
+【お取引・入場時の流れ】
+・公演当日は、開場10分前に会場付近での集合・同時入場を予...",False,6788s19nw1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手／非該当含む／有効期限内／すり替えなし／下3桁事前提示可能
+
+【お取引・入場時の流れ】
+・公演当日は、開場10分前に会場付近での集合・同時入場を予...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+4taq6op4uh,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,pickup_number,female,発券開始日に発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"公式サイト先行
+2026年10月31日10時より発券可能
+発券開始日以降に発券番号を共有させていただきますので、共有後は速やかに受け取り連絡をお願いいたします。...",False,4taq6op4uh,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式サイト先行
+2026年10月31日10時より発券可能
+発券開始日以降に発券番号を共有させていただきますので、共有後は速やかに受け取り連絡をお願いいたします。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+pp1kdw9c0u,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"2名義中2番手　1枚（単番）
+情報局先行/すり替えなし/下三桁提示可
+
+ 当日会場付近にて待ち合わせをし、同時入場していただきます。時間厳守でお願いします。
+詳...",False,pp1kdw9c0u,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手　1枚（単番）
+情報局先行/すり替えなし/下三桁提示可
+
+ 当日会場付近にて待ち合わせをし、同時入場していただきます。時間厳守でお願いします。
+詳...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+tobqhd738t,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,electronic,female,前日にログイン情報共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,45000,"QR毎/非該当/初期当選
+入場後は速やかにログアウト受け取り評価お願いします
+ランダムエラー、交通状況の乱れによる遅れ等の返金不可（公演中止の場合のみ返金対応）",False,tobqhd738t,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/非該当/初期当選
+入場後は速やかにログアウト受け取り評価お願いします
+ランダムエラー、交通状況の乱れによる遅れ等の返金不可（公演中止の場合のみ返金対応）",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+2bp0nqzv9g,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,6000,"下記を全てお読みになった上でご購入をお願いします。
+
+•日程等によりますが、都内事前手渡しや現地での手渡し可能です。
+
+•hp先行の発券済みチケットです。
+取引...",False,2bp0nqzv9g,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"下記を全てお読みになった上でご購入をお願いします。
+
+•日程等によりますが、都内事前手渡しや現地での手渡し可能です。
+
+•hp先行の発券済みチケットです。
+取引...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968eH-K\u5217""}",2026-11
+icht0m6yqe,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"全て情報局先行 該当名義3名義中の3番手全て初期選
+すり替えなし下3桁提示可能変更ボタンあり
+取引き後は公演中止以外の本人確認/交通機関の遅延／
+体調不良/ラン...",False,icht0m6yqe,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て情報局先行 該当名義3名義中の3番手全て初期選
+すり替えなし下3桁提示可能変更ボタンあり
+取引き後は公演中止以外の本人確認/交通機関の遅延／
+体調不良/ラン...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+z6actmiwvc,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,35000,"FC先行/3名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,z6actmiwvc,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/3名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+qcsdqi4cbl,,bokunodoragon-gohan-tabenai,2026-12-05,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"FC先行/3名義中3番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,qcsdqi4cbl,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/3名義中3番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+d45c0sjgq3,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,公演日前日までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,21800,"QR毎/初期当選/該当名義/変更ボタンあり/有効期限内/重複すり替えなし
+
+公演中止の場合のみ、手数料を差し引いた額を返金致します。その他、体調不良や交通機関の...",False,d45c0sjgq3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/初期当選/該当名義/変更ボタンあり/有効期限内/重複すり替えなし
+
+公演中止の場合のみ、手数料を差し引いた額を返金致します。その他、体調不良や交通機関の...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+ahwssi2ycb,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"FC先行/全て該当名義/3名義中2番手/初期当選/会員有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本人...",False,ahwssi2ycb,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/全て該当名義/3名義中2番手/初期当選/会員有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本人...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+druk48avzv,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9000,"初期当選/2名義中2番手/全て非該当名義/すり替えなし/下三桁提示可能/女性名義
+
+開場10分前頃に付近で待ち合わせ、詳細は当日お伝えします。
+全て単番、同時入...",False,druk48avzv,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/2名義中2番手/全て非該当名義/すり替えなし/下三桁提示可能/女性名義
+
+開場10分前頃に付近で待ち合わせ、詳細は当日お伝えします。
+全て単番、同時入...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+fxkyg7zofz,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,paper,female,郵送、手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,50000,一部サイト、残り当日手渡しも可能です。質問等ありましたらお気軽にコメントしてください。,False,fxkyg7zofz,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,一部サイト、残り当日手渡しも可能です。質問等ありましたらお気軽にコメントしてください。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968e\u301cE\u5217\u30bb\u30f3\u30d6\u30ed10\u756a\u4ee3""}",2026-11
+8gyzh5fu1w,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,公演日当日昼までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,65000,"非該当/単番 QR毎/初期当選/有効期限内/すり替え等なし/下3桁提示可
+
+公演日の当日正午までにログイン情報お送りさせて頂きます。当日入場できましたら、すみや...",False,8gyzh5fu1w,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"非該当/単番 QR毎/初期当選/有効期限内/すり替え等なし/下3桁提示可
+
+公演日の当日正午までにログイン情報お送りさせて頂きます。当日入場できましたら、すみや...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+120zux55pb,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,pickup_number,female,発券開始日に発券番号共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,7000,"公式サイト先行
+2026年10月31日10時より発券可能
+発券開始日以降に発券番号を共有させていただきますので、共有後は速やかに受け取り連絡をお願いいたします。...",False,120zux55pb,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式サイト先行
+2026年10月31日10時より発券可能
+発券開始日以降に発券番号を共有させていただきますので、共有後は速やかに受け取り連絡をお願いいたします。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+tbig4116t0,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"4名義中3番手
+2連、1連、1連で当選しております。
+当方が選んだ後、2名義中から選んで頂きます。
+",False,tbig4116t0,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"4名義中3番手
+2連、1連、1連で当選しております。
+当方が選んだ後、2名義中から選んで頂きます。
+",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+bwlqqkb9k6,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,9500,"FC先行/全て該当名義/3名義中3番手/初期当選/会員有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本人...",False,bwlqqkb9k6,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/全て該当名義/3名義中3番手/初期当選/会員有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本人...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+h4j1q134br,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,none,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,22000,"2名義中2番手/該当名義/有効期限内/すり替えなし/下3桁提示可
+
+・当日は開場15分前に会場付近でのお待ち合わせ後、同時入場していただきます。
+
+詳しい待ち合...",False,h4j1q134br,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手/該当名義/有効期限内/すり替えなし/下3桁提示可
+
+・当日は開場15分前に会場付近でのお待ち合わせ後、同時入場していただきます。
+
+詳しい待ち合...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+n0ykfifo4t,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,6000,"下記を全てお読みになった上でご購入をお願いします。
+
+•日程等によりますが、都内事前手渡しや現地での手渡し可能です。
+
+•hp先行の発券済みチケットです。
+取引...",False,n0ykfifo4t,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"下記を全てお読みになった上でご購入をお願いします。
+
+•日程等によりますが、都内事前手渡しや現地での手渡し可能です。
+
+•hp先行の発券済みチケットです。
+取引...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968eG-J\u5217""}",2026-11
+gku9gkc32i,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"FC先行/3名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,gku9gkc32i,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/3名義中2番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+kt88nbi0lz,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,18000,"FC先行/3名義中3番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",False,kt88nbi0lz,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"FC先行/3名義中3番手/全て該当名義/単番/初期当選/有効期限内/変更ボタンあり/すり替えなし/下3桁提示可
+
+・日本人の成人女性の方のみで、ご入場されるご本...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+u2fon5ords,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,公演日2日前までにQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,11000,"QR毎/初期当選/該当名義/有効期限内
+
+公演中止の場合のみ、手数料を差し引いた額を返金致します。その他、体調不良や交通機関の乱れ、本人確認、ランダムエラー等如...",False,u2fon5ords,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/初期当選/該当名義/有効期限内
+
+公演中止の場合のみ、手数料を差し引いた額を返金致します。その他、体調不良や交通機関の乱れ、本人確認、ランダムエラー等如...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+y7srx5ywuw,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,14000,"全て情報局先行初期当選2名義中2番手
+すり替えなし下3桁提示可
+当日は同時入場していただきますので詳しい集合時間、場所については公演近くなりましたらご連絡させて...",False,y7srx5ywuw,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て情報局先行初期当選2名義中2番手
+すり替えなし下3桁提示可
+当日は同時入場していただきますので詳しい集合時間、場所については公演近くなりましたらご連絡させて...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+rkx7qrs25x,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手 / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"【2名義中2番手】単番×2名義
+
+初期当選／FC該当名義／有効期限内／会員番号下3桁開示可能／すり替え無し／Pay-easyにて決済済み
+
+【集合・入場】
+公演...",False,rkx7qrs25x,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"【2名義中2番手】単番×2名義
+
+初期当選／FC該当名義／有効期限内／会員番号下3桁開示可能／すり替え無し／Pay-easyにて決済済み
+
+【集合・入場】
+公演...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+ngln4ja8fn,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,11000,"局名義(非該当)/すり替えなし/下3桁提示可能
+2名義中2番手(2連のうち1枚)
+
+公演当日は会場周辺で待ち合わせをし、同時入場後、一度チケットを回収いたします...",False,ngln4ja8fn,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"局名義(非該当)/すり替えなし/下3桁提示可能
+2名義中2番手(2連のうち1枚)
+
+公演当日は会場周辺で待ち合わせをし、同時入場後、一度チケットを回収いたします...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+x7k61rbsq5,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,6000,"下記を全てお読みになった上でご購入をお願いします。
+
+•日程等によりますが、都内事前手渡しや現地での手渡し可能です。
+
+•hp先行の発券済みチケットです。
+取引...",False,x7k61rbsq5,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"下記を全てお読みになった上でご購入をお願いします。
+
+•日程等によりますが、都内事前手渡しや現地での手渡し可能です。
+
+•hp先行の発券済みチケットです。
+取引...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968eH-K\u5217""}",2026-11
+1ghq622edn,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10000,"3名義中3番手（すべて2連です） 
+該当名義/有効期限内/変更ボタンあり
+会員番号下3桁提示可能
+
+入場後1度チケットを回収し、1番手と2番手が選択したあとに残...",False,1ghq622edn,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手（すべて2連です） 
+該当名義/有効期限内/変更ボタンあり
+会員番号下3桁提示可能
+
+入場後1度チケットを回収し、1番手と2番手が選択したあとに残...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+loixb3zay6,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,none,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,12000,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場15分前を予定しています。※必ず時間厳守でお願い致します。詳...",False,loixb3zay6,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場15分前を予定しています。※必ず時間厳守でお願い致します。詳...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+izgn4zhx52,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,公演日2日前までにQRコード共有,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10500,"QR毎/初期当選/該当名義/有効期限内
+
+公演中止の場合のみ、手数料を差し引いた額を返金致します。その他、体調不良や交通機関の乱れ、本人確認、ランダムエラー等如...",False,izgn4zhx52,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"QR毎/初期当選/該当名義/有効期限内
+
+公演中止の場合のみ、手数料を差し引いた額を返金致します。その他、体調不良や交通機関の乱れ、本人確認、ランダムエラー等如...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+3eo2gub3ty,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10300,"全て情報局先行 該当名義3名義中の3番手全て初期選
+すり替えなし下3桁提示可能変更ボタンあり
+取引き後は公演中止以外の本人確認/交通機関の遅延／
+体調不良/ラン...",False,3eo2gub3ty,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て情報局先行 該当名義3名義中の3番手全て初期選
+すり替えなし下3桁提示可能変更ボタンあり
+取引き後は公演中止以外の本人確認/交通機関の遅延／
+体調不良/ラン...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+97rngzajsk,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"1名義中1番手（同行）
+
+局名義初期当選/有効期限内/変更ボタン有/すり替えなし/下3桁掲示可能
+
+・開場時間前に会場周辺にてお待ち合わせ、同時入場を予定してお...",False,97rngzajsk,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"1名義中1番手（同行）
+
+局名義初期当選/有効期限内/変更ボタン有/すり替えなし/下3桁掲示可能
+
+・開場時間前に会場周辺にてお待ち合わせ、同時入場を予定してお...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u5165\u5834\u6642\u767a\u5238""}",2026-11
+b0sxwulrx2,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"4名義中2番手
+2連、1連、1連で当選しております。
+当方が選んだ後、3名義中から選んで頂きます。",False,b0sxwulrx2,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"4名義中2番手
+2連、1連、1連で当選しております。
+当方が選んだ後、3名義中から選んで頂きます。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+ax1l4wbg5u,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,初期当選／該当名義（ボタン有）／期限内／同行／すり替えなし／エラー履歴なし／発送物戻りなし／下3桁提示可能,,,,同行 / QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",False,ax1l4wbg5u,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開演15分前に会場付近にて待ち合わせし同時入場します。
+入場後チケットを回収し当方が連番内のお席を選択後チケットをお渡しします。
+
+遅刻、ランダムエラー、本人確...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+pz0k1bikfk,,bokunodoragon-gohan-tabenai,2026-12-05,17:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手 / 同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,10000,"3名義中3番手
+該当/下3桁提示可能/すり替えなし/変ボ有/有効期限内
+
+同時入場後、一度チケットを回収いたします。
+当方が座席選択後にチケットをお渡しします。...",False,pz0k1bikfk,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手
+該当/下3桁提示可能/すり替えなし/変ボ有/有効期限内
+
+同時入場後、一度チケットを回収いたします。
+当方が座席選択後にチケットをお渡しします。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+foz3jbwa25,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同時入場,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,18000,"3名義中3番手 1枚 
+該当名義/有効期限内/下3桁提示可/すり替えなし
+開場時間~10分前に集合予定です。
+入場後1度チケットを回収し、座席確認後残ったチケッ...",False,foz3jbwa25,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手 1枚 
+該当名義/有効期限内/下3桁提示可/すり替えなし
+開場時間~10分前に集合予定です。
+入場後1度チケットを回収し、座席確認後残ったチケッ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+kxjn4bj3p1,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"12/3〜5の公演前後、または当日ご都合に合わせて手渡しいたします。
+プラベルに変更も可能です。",False,kxjn4bj3p1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"12/3〜5の公演前後、または当日ご都合に合わせて手渡しいたします。
+プラベルに変更も可能です。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d1\u968eI\u301cK\u5217\u30bb\u30f3\u30bf\u30fc\u30d6\u30ed\u30c3\u30af""}",2026-11
+8obcfgpva0,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,none,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,35000,"発券後11月中に発送致します。
+公演中止以外でのキャンセル不可はです。",False,8obcfgpva0,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"発券後11月中に発送致します。
+公演中止以外でのキャンセル不可はです。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+0t2acw2l9c,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,ランダム配布,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,4,12000,"ランダム配布
+
+複数名義所持している為、同時入場後、一度全てのチケットを回収いたします。
+遅くとも開演5分前までにはチケットをお渡し致します。
+
+公演当日、開場...",False,0t2acw2l9c,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"ランダム配布
+
+複数名義所持している為、同時入場後、一度全てのチケットを回収いたします。
+遅くとも開演5分前までにはチケットをお渡し致します。
+
+公演当日、開場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+u32mtaiatr,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,公演前日ログイン情報送信,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,30000,"プラベル出品2.7にしますのでコメントください。
+
+QR/初期当選/期限内/該当(変更ボタンあり)
+同行者チェック可能/重複すり替えなし/下3桁提示可/着ブロ希...",False,u32mtaiatr,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"プラベル出品2.7にしますのでコメントください。
+
+QR/初期当選/期限内/該当(変更ボタンあり)
+同行者チェック可能/重複すり替えなし/下3桁提示可/着ブロ希...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+j1lz2mt1cd,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"⭐️すり替えなし少人数ランダム配布⭐️
+全て情報局先行、該当名義、変更ボタンあり、有効期限内、指定席
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします...",False,j1lz2mt1cd,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"⭐️すり替えなし少人数ランダム配布⭐️
+全て情報局先行、該当名義、変更ボタンあり、有効期限内、指定席
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+mp9a4dz09h,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,16000,"・紙チケット発券済みS席です。
+・都内事前手渡しまたは当日手渡しにてお取引お願いいたします。
+・プラベル出品も可能ですので、ご希望の方はコメントお願いします。...",False,mp9a4dz09h,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"・紙チケット発券済みS席です。
+・都内事前手渡しまたは当日手渡しにてお取引お願いいたします。
+・プラベル出品も可能ですので、ご希望の方はコメントお願いします。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d\uff12\u968e\u301cB\u5217\u30bb\u30f3\u30d6\u30ed9\u301c24\u756a""}",2026-11
+aq4b3idsrc,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,16000,"全て情報局先行 該当名義5名義中の4番手全て初期選
+すり替えなし下3桁提示可能変更ボタンあり
+取引き後は公演中止以外の本人確認/交通機関の遅延／
+体調不良/ラン...",False,aq4b3idsrc,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て情報局先行 該当名義5名義中の4番手全て初期選
+すり替えなし下3桁提示可能変更ボタンあり
+取引き後は公演中止以外の本人確認/交通機関の遅延／
+体調不良/ラン...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+t99su13w60,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"3番手中3番手/全て該当名義
+初期当選/期限内／すり替えなし/下3桁提示可能/名義に不備なし
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラーなど如何...",False,t99su13w60,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3番手中3番手/全て該当名義
+初期当選/期限内／すり替えなし/下3桁提示可能/名義に不備なし
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラーなど如何...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+ib4249k92p,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,同行 / 番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,19000,"3名義中3番手 1枚 
+該当名義/有効期限内/下3桁提示可/すり替えなし
+開場10〜20分前に集合予定です。
+入場後1度チケットを回収し、座席確認後残ったチケッ...",False,ib4249k92p,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中3番手 1枚 
+該当名義/有効期限内/下3桁提示可/すり替えなし
+開場10〜20分前に集合予定です。
+入場後1度チケットを回収し、座席確認後残ったチケッ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+6l3096m2ya,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,"S席　有効期限内該当名義3名義中3番手の同行となります。すり替え無し。
+
+交通機関の影響による遅刻、本人確認や体調不良等でご入場ができなかった場合でも受け取り評...",False,6l3096m2ya,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"S席　有効期限内該当名義3名義中3番手の同行となります。すり替え無し。
+
+交通機関の影響による遅刻、本人確認や体調不良等でご入場ができなかった場合でも受け取り評...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+llyylvlsdg,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,公演前日にQRコード共有,,,,QR,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,40000,"初期当選/期限内/すり替えなし/下3桁提示可能
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラーなど如何なる場合でも返金不可となりますので予めご了承く...",False,llyylvlsdg,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"初期当選/期限内/すり替えなし/下3桁提示可能
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラーなど如何なる場合でも返金不可となりますので予めご了承く...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+o2948l95g1,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,7239,ご購入される方は、以下全てにご同意頂いたものとみなします。【集合時刻：10時45分】重複すり替えありランダム配布です。購入者様に座席選択の権利はございません。発...,False,o2948l95g1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,ご購入される方は、以下全てにご同意頂いたものとみなします。【集合時刻：10時45分】重複すり替えありランダム配布です。購入者様に座席選択の権利はございません。発...,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+fq5hgqb2k1,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,4名義中3番手／すり替えなし／全ての下3桁提示可能／全て初期当選、期限内、該当（ボタン有）、エラー履歴無し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,7000,"開場15分前に会場付近にて待ち合わせし同時入場します。
+
+入場後チケットを全て回収し、1-2番手のチケット選択後、残った3.4番手のチケットからお選びできます。...",False,fq5hgqb2k1,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"開場15分前に会場付近にて待ち合わせし同時入場します。
+
+入場後チケットを全て回収し、1-2番手のチケット選択後、残った3.4番手のチケットからお選びできます。...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+44xbvkkfk9,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,13000,"公式HP 発券済み。
+
+公演中止の場合のみ、手数料を引いた額を返金いたします。
+11/23の東京公演前後での手渡しも可能です。",False,44xbvkkfk9,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP 発券済み。
+
+公演中止の場合のみ、手数料を引いた額を返金いたします。
+11/23の東京公演前後での手渡しも可能です。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968e2D\u301c2G\u5217\u300025\u301c28\u756a""}",2026-11
+kefcafjyao,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,手渡し,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,0,"公演期間中会場にて事前手渡し優先
+または郵送
+
+プライベート出品しますので、ご購入される前にメッセージをお願いいたします。",False,kefcafjyao,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,True,on_request,,"公演期間中会場にて事前手渡し優先
+または郵送
+
+プライベート出品しますので、ご購入される前にメッセージをお願いいたします。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""1\u968eD~E\u5217 \u30bb\u30f3\u30d6\u30ed""}",2026-11
+2se5f45223,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,14000,"※すり替えなし※ランダム配布
+入場後解散せずすぐにお渡し致します。
+
+情報局先行 初期当選 該当名義 変更ボタンあり 有効期限内 
+
+・開場30分前を目安に会場...",False,2se5f45223,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"※すり替えなし※ランダム配布
+入場後解散せずすぐにお渡し致します。
+
+情報局先行 初期当選 該当名義 変更ボタンあり 有効期限内 
+
+・開場30分前を目安に会場...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+hl6c5crbkg,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,17500,受取されましたら速やかに受取のお手続きをお願いいたします。公演中止の際にのみチケット返送後に手数料・送料を差引の上ご返金いたします。,False,hl6c5crbkg,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,受取されましたら速やかに受取のお手続きをお願いいたします。公演中止の際にのみチケット返送後に手数料・送料を差引の上ご返金いたします。,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968e 2H\u5217 9-24\u756a \u30bb\u30f3\u30bf\u30fc\u30d6\u30ed\u30c3\u30af""}",2026-11
+tij2ux20vr,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,郵送もしくは手渡し。柔軟に対応いたします。,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,13000,"公式HP先行発券済み。注釈なし。
+公演中止以外の返金はいたしません。
+公演中止時は手数料を差し引いて返金いたします。",False,tij2ux20vr,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式HP先行発券済み。注釈なし。
+公演中止以外の返金はいたしません。
+公演中止時は手数料を差し引いて返金いたします。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d2\u968eI~L\u5217\u30bb\u30f3\u30bf\u30fc\u30d6\u30ed\u30c3\u30af""}",2026-11
+09mrtn5il4,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,入金後3日以内に郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"HP先行にて当選
+プラベルでのお取引も可能ですので、ご希望の方はコメントをお願いいたします。
+
+メンバーの欠席等、公演中止以外のいかなる理由でも返金対応はできま...",False,09mrtn5il4,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"HP先行にて当選
+プラベルでのお取引も可能ですので、ご希望の方はコメントをお願いいたします。
+
+メンバーの欠席等、公演中止以外のいかなる理由でも返金対応はできま...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968e2D\u521713\u301c20\u756a""}",2026-11
+c64i7g8ilf,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,30000,"全て情報局先行 該当名義5名義中の3番手全て初期当選すり替えなし下3桁提示可能変更ボタンあり
+
+取引き後は公演中止以外の本人確認/交通機関の遅延／体調不良/ラン...",False,c64i7g8ilf,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"全て情報局先行 該当名義5名義中の3番手全て初期当選すり替えなし下3桁提示可能変更ボタンあり
+
+取引き後は公演中止以外の本人確認/交通機関の遅延／体調不良/ラン...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+rn7abecwha,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,12000,・複数名義所持している為、同時入場後、一度全てのチケットを回収いたします。当方が座席選択後にランダムでチケットをお渡しします。購入者様は座席をお選びいただくこと...,False,rn7abecwha,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,・複数名義所持している為、同時入場後、一度全てのチケットを回収いたします。当方が座席選択後にランダムでチケットをお渡しします。購入者様は座席をお選びいただくこと...,event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+l2ete95nl3,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,公演日7日前までに郵送,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,30000,"発券済みチケットです。
+取引後のキャンセル・座席へのクレーム・本人確認など如何なる場合でも返金不可となりますので予めご了承ください。
+",False,l2ete95nl3,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"発券済みチケットです。
+取引後のキャンセル・座席へのクレーム・本人確認など如何なる場合でも返金不可となりますので予めご了承ください。
+",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968e2B\u30bb\u30f3\u30bf\u30fc""}",2026-11
+x9pmr1sti5,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,40000,"該当名義のみ3名義中2番手/初期当選/期限内／すり替えなし/下3桁提示可能/名義に不備なし
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラーなど如何な...",False,x9pmr1sti5,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"該当名義のみ3名義中2番手/初期当選/期限内／すり替えなし/下3桁提示可能/名義に不備なし
+
+取引決定後のキャンセル、座席へのクレーム、ランダムエラーなど如何な...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+ojvwfpbjx9,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,都内手渡しまたは郵送にて,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,13000,"公式サイト先行
+
+こちら発券済みになります。
+郵送または都内手渡しにてお渡し致します。
+
+公演中止以外は如何なる場合でも返金は不可となりますので、ご了承ください...",False,ojvwfpbjx9,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"公式サイト先行
+
+こちら発券済みになります。
+郵送または都内手渡しにてお渡し致します。
+
+公演中止以外は如何なる場合でも返金は不可となりますので、ご了承ください...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""2\u968e2L\u52175-10""}",2026-11
+x24c3bj1do,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,当日手渡し,,,,同行,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,15000,"HP先行2名義中1番手同行すり替えなし
+
+開場15分前に会場付近にて待ち合わせし同時入場します。
+
+コンビニにて事前に発券したものの2名義中1番手で選んだ席を当...",False,x24c3bj1do,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"HP先行2名義中1番手同行すり替えなし
+
+開場15分前に会場付近にて待ち合わせし同時入場します。
+
+コンビニにて事前に発券したものの2名義中1番手で選んだ席を当...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u672a\u5b9a""}",2026-11
+7r6p0vavrx,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,入金後3日以内に郵送予定,,,,,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,22000,"紙チケです。公演中止以外の返金不可。
+当日手渡しも検討いたしますのでご希望の方はコメントください。",False,7r6p0vavrx,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"紙チケです。公演中止以外の返金不可。
+当日手渡しも検討いたしますのでご希望の方はコメントください。",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d1\u968eE-G\u5217 20\u301c30\u756a""}",2026-11
+h8q8rexvan,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,同行 / 番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,20000,"2名義中2番手 すり替えなし 下3桁提示可能 どちらも該当名義 情報局初期当選分
+2連×1・単番×1所持しております。3枚中いずれかをお渡しします。
+座席の選択...",False,h8q8rexvan,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"2名義中2番手 すり替えなし 下3桁提示可能 どちらも該当名義 情報局初期当選分
+2連×1・単番×1所持しております。3枚中いずれかをお渡しします。
+座席の選択...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+mwvh8klpyr,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,paper,female,当日手渡し,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,10000,"HP先行2名義中2番手すり替えなし
+
+開場15分前に会場付近にて待ち合わせし同時入場します。
+
+コンビニで事前に発券した2名義分のチケットを当方が座席選択後に2...",False,mwvh8klpyr,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"HP先行2名義中2番手すり替えなし
+
+開場15分前に会場付近にて待ち合わせし同時入場します。
+
+コンビニで事前に発券した2名義分のチケットを当方が座席選択後に2...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""\u672a\u5b9a""}",2026-11
+zi4tfzey9b,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,ランダム,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,8500,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場1時間前を予定しています。※必ず時間厳守でお願い致します。詳...",False,zi4tfzey9b,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"少人数ランダム配布
+
+ご購入頂いた時点で以下全てにご同意頂いたこととみなします。
+
+・集合時間は開場1時間前を予定しています。※必ず時間厳守でお願い致します。詳...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+tzvbrhek3h,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,1,25000,"3名義中2番手 1枚 
+該当名義/有効期限内/下3桁提示可/すり替えなし
+開場10〜20分前に集合予定です。
+入場後1度チケットを回収し、座席確認後残ったチケッ...",False,tzvbrhek3h,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中2番手 1枚 
+該当名義/有効期限内/下3桁提示可/すり替えなし
+開場10〜20分前に集合予定です。
+入場後1度チケットを回収し、座席確認後残ったチケッ...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,,2026-11
+72y6keoidi,,bokunodoragon-gohan-tabenai,2026-12-06,12:00,サンケイホールブリーゼ,electronic,female,同行,,,,番手,2026-11-16 04:14:07,scrape_observed,2026-11-16 04:14:07,,,listing,2,25000,"3名義中2番手 すりかえなし プラベル取引可
+局先行/該当名義/期限内/変ボあり/下3桁提示可
+
+
+・当日会場付近で待ち合わせの上、同時入場いたします。発券後は...",False,72y6keoidi,2026-11-16 04:14:07,active,2026-11-16 04:14:07,,event_api,,event_api,,"3名義中2番手 すりかえなし プラベル取引可
+局先行/該当名義/期限内/変ボあり/下3桁提示可
+
+
+・当日会場付近で待ち合わせの上、同時入場いたします。発券後は...",event_api_preview,,False,,wemk3Jr5XUFtKFYLs7Zx,"{""isSpecified"": true, ""value"": ""S\u5e2d \u5ea7\u5e2d\u672a\u5b9a""}",2026-11
