@@ -958,22 +958,26 @@ def refresh_priority_content(targets, now, cache, policy):
                 continue
             if code in cache and not reusable_public_content(row, code, cache[code]):
                 cache.pop(code)
-            due.append((reason == 'expired_full_description', row.get('description_checked_at', ''), code))
+            order = {'public_description_preview_changed': 0, 'expired_full_description': 2}.get(reason, 1)
+            due.append((order, row.get('description_checked_at', ''), code))
         due.sort()
         plans[performer] = [code for _, _, code in due]
         ranks = Counter()
-        for routine, _, code in due:
-            ranked.append((routine, ranks[routine], code))
-            ranks[routine] += 1
+        for order, _, code in due:
+            ranked.append((order, ranks[order], code))
+            ranks[order] += 1
 
     ranked.sort(key=lambda item: item[:2])
     codes = list(dict.fromkeys(code for _, _, code in ranked))
-    priority = {code for routine, _, code in ranked if not routine}
-    print(f'[PUBLIC CONTENT PRIORITY] {len(priority)} new or changed; '
+    priority = {code for order, _, code in ranked if order < 2}
+    changed = {code for order, _, code in ranked if order == 0}
+    print(f'[PUBLIC CONTENT PRIORITY] {len(priority)} new or changed ({len(changed)} visible changes); '
           f'{len(codes) - len(priority)} due for periodic verification', flush=True)
     responses = query_public_listings(codes, cache, [len(codes)], PUBLIC_DETAIL_DEADLINE, policy)
     priority_pending = sum(code not in responses for code in priority)
-    print(f'[PUBLIC CONTENT PRIORITY] {len(priority)} priority lookups, {priority_pending} pending', flush=True)
+    changed_pending = sum(code not in responses for code in changed)
+    print(f'[PUBLIC CONTENT PRIORITY] {len(priority)} priority lookups, {priority_pending} pending '
+          f'({changed_pending} visible changes pending)', flush=True)
 
     for performer, pending in plans.items():
         if any(code in responses for code in pending):

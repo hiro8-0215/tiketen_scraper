@@ -8,9 +8,9 @@ available seat and tag fields. Listing descriptions are previews, saved in
 `description_source=public_detail`, `description_is_full=True` and
 `description_checked_at`. Full public text can legitimately be empty.
 
-The ordinary details phase checks every group for missing full text and
-visible preview changes before using request slots for periodic rechecks.
-It shares priority slots across groups and saves replies already received
+The ordinary details phase checks every group for visible preview changes
+first, then missing full text, then periodic rechecks. It shares priority
+slots across groups within each band and saves replies already received
 even if the request window closes. Full text becomes due for a periodic
 recheck at 24 hours. An edit beyond an unchanged preview can only be seen
 through a subsequent detail lookup; higher-priority work or rate limits can

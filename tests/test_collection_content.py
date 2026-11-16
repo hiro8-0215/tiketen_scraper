@@ -60,7 +60,7 @@ class ContentTest(unittest.TestCase):
                 scraper.save_master('early', {'old':old})
                 scraper.save_master('late', {'changed':changed})
                 scraper.save_master('new-group', {'new':new})
-                scraper.refresh_priority_content([{'name':'early'}, {'name':'late'}, {'name':'new-group'}],
+                scraper.refresh_priority_content([{'name':'early'}, {'name':'new-group'}, {'name':'late'}],
                                                  now, {}, None)
                 self.assertEqual(lookup.call_args.args[0], ['changed','new','old'])
                 saved_old = scraper.load_master('early')['old']
