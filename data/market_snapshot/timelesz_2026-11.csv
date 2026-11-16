@@ -1,6 +1,6 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,current_active_quantity,historical_listing_rows,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
 2026-11,endless-shock-memories-continue,2026-11-28,18:00,東京ガーデンシアター,42,25,25,38,27,1,258,46749.958333333336,18000,150000,2,13,49702.475,5000,180600
-2026-11,endless-shock-memories-continue,2026-11-29,13:00,東京ガーデンシアター,46,18,18,23,22,3,292,42027.72222222222,17000,65000,5,19,35570.431818181816,5000,65000
+2026-11,endless-shock-memories-continue,2026-11-29,13:00,東京ガーデンシアター,47,19,19,24,23,3,292,42447.31578947369,17000,65000,5,19,35891.08888888889,5000,65000
 2026-11,endless-shock-memories-continue,2026-11-29,19:00,東京ガーデンシアター,45,23,23,27,28,5,256,50910.04347826087,23000,258532,3,14,47168.16279069767,5000,258532
 2026-11,endless-shock-memories-continue,2026-11-30,13:00,東京ガーデンシアター,46,17,17,22,20,3,240,46882.35294117647,22000,120000,7,19,36702.53333333333,16000,120000
 2026-11,endless-shock-memories-continue,2026-12-11,18:00,札幌文化芸術劇場 hitaru,7,7,7,8,7,0,49,23642.85714285714,8000,50000,0,0,23642.85714285714,8000,50000
