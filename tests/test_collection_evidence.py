@@ -213,5 +213,64 @@ class CollectionEvidenceTest(unittest.TestCase):
         self.assertEqual(result, 'stale')
         self.assertEqual(rows['old']['observation_state'], 'active')
 
+    def test_unlisted_public_active_retains_api_sighting_and_rotates_in_band2_without_ping_pong(self):
+        row = {
+            'ticket_id': 'unlisted', 'event_id': 'event', 'status': 'listing',
+            'observation_state': 'active', 'status_source': 'event_api',
+            'first_observed_at': '2026-11-10 00:00:00',
+            'last_observed_at': '2026-11-11 09:00:00',
+            'state_checked_at': '2026-11-11 09:00:00',
+            'absence_first_observed_at': '',
+        }
+        unverified = {
+            'ticket_id': 'unverified', 'event_id': 'event', 'status': 'listing',
+            'observation_state': 'absent_unverified', 'status_source': 'event_api',
+            'first_observed_at': '2026-11-10 00:00:00',
+            'last_observed_at': '2026-11-12 08:00:00',
+            'state_checked_at': '2026-11-12 08:00:00',
+            'absence_first_observed_at': '2026-11-12 09:00:00',
+        }
+        master = {'unlisted': row, 'unverified': unverified}
+        counts, candidates = evidence.prepare_public_listings(
+            master, {'unlisted': row.copy()}, set(), '2026-11-11 10:00:00'
+        )
+        self.assertEqual(candidates, [('unlisted', True)])
+        evidence.apply_public_evidence(
+            master, 'unlisted',
+            {'shareCode': 'unlisted', 'eventId': 'firestore', 'status': 'active'},
+            'firestore', '2026-11-12 10:05:00',
+        )
+        # Keep the last event-list sighting timestamp instead of overwriting it,
+        # while continuing to track the listing via state_checked_at in band 2
+        # behind unverified rows and without flipping to absent_unverified.
+        self.assertEqual(row['last_observed_at'], '2026-11-11 09:00:00')
+        self.assertEqual(row['state_checked_at'], '2026-11-12 10:05:00')
+        self.assertEqual(row['observation_state'], 'active')
+        counts_next, candidates_next = evidence.prepare_public_listings(
+            master, {k: v.copy() for k, v in master.items()}, set(), '2026-11-13 00:00:00'
+        )
+        self.assertEqual([c for c, _ in candidates_next], ['unverified', 'unlisted'])
+        self.assertEqual(counts_next['historical_unresolved'], 0)
+        self.assertEqual(row['observation_state'], 'active')
+
+    def test_change_ledger_skips_historical_alias_chain_flattening(self):
+        before = {
+            'gen1': {'ticket_id': 'gen1', 'event_id': 'event', 'status': 'listing',
+                     'observation_state': 'alias', 'canonical_ticket_id': 'gen2', 'price': '10000'},
+            'gen2': {'ticket_id': 'gen2', 'event_id': 'event', 'status': 'listing',
+                     'observation_state': 'active', 'canonical_ticket_id': 'gen2', 'price': '10000'},
+        }
+        after = {
+            'gen1': {**before['gen1'], 'canonical_ticket_id': 'gen3'},
+            'gen2': {**before['gen2'], 'observation_state': 'alias', 'canonical_ticket_id': 'gen3'},
+            'gen3': {'ticket_id': 'gen3', 'event_id': 'event', 'status': 'listing',
+                     'observation_state': 'active', 'canonical_ticket_id': 'gen3', 'price': '10000'},
+        }
+        with tempfile.TemporaryDirectory() as folder, patch.object(scraper, 'DATA_DIR', folder):
+            scraper.save_ticket_changes('artist', before, after, '2026-11-16 12:00:00', 'utc')
+            path = next(Path(folder).glob('ticket_changes_*.jsonl'))
+            records = [json.loads(line) for line in path.read_text().splitlines()]
+        self.assertEqual([r['ticket_id'] for r in records], ['gen2', 'gen3'])
+
 if __name__=='__main__':
     unittest.main()

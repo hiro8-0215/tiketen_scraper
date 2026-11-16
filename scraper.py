@@ -509,8 +509,9 @@ def mark_confirmed_absences_deleted(master, active_codes_by_event, now_str):
                 'absent_unknown', 'absent_unverified', 'inactive', 'paused',
                 'public_unclassified', 'expired'}
             and not (row.get('observation_state') == 'active'
-                     and row.get('state_checked_at', '') >= now_str
-                     and row.get('status_source') == 'public_detail')
+                     and row.get('status_source') == 'public_detail'
+                     and (row.get('state_checked_at', '') >= now_str
+                          or row.get('absence_first_observed_at')))
             and ticket_id not in active_codes_by_event[event_id]
         ):
             row['status'] = 'deleted'
@@ -683,6 +684,9 @@ def canonicalize_master(master):
         result[str(winner.get('ticket_id', ''))] = winner
     return result, len(master) - len(result)
 
+_SURROGATE_RE = re.compile(r'[\ud800-\udfff]')
+
+
 def sanitize_unicode(value):
     """Preserve valid Unicode and replace only malformed UTF-16 surrogates.
 
@@ -692,7 +696,7 @@ def sanitize_unicode(value):
     point; a lone surrogate is represented explicitly with U+FFFD instead of
     aborting the entire scrape or silently dropping text.
     """
-    if not isinstance(value, str):
+    if not isinstance(value, str) or not _SURROGATE_RE.search(value):
         return value
 
     output = []
@@ -750,10 +754,15 @@ def save_ticket_changes(performer, before, master, observed_at, observed_at_utc)
     compared = [field for field in fields if field not in
                 {'state_checked_at', 'description_checked_at', 'content_checked_at',
                  'status_source', 'price_source'}]
+    compared_without_canonical = [field for field in compared if field != 'canonical_ticket_id']
     records = []
     for code, row in master.items():
         old = before.get(code)
         if old is not None and all(str(old.get(f, '')) == str(row.get(f, '')) for f in compared):
+            continue
+        if (old is not None and old.get('observation_state') == 'alias'
+                and row.get('observation_state') == 'alias'
+                and all(str(old.get(f, '')) == str(row.get(f, '')) for f in compared_without_canonical)):
             continue
         first = row.get('first_observed_at')
         origin = row.get('identity_first_observed_at')
@@ -1115,20 +1124,23 @@ def write_observations(records):
             stream.write(json.dumps(record, ensure_ascii=False) + '\n')
 
 
-def public_state_order(batches):
+def public_state_order(batches, unverified_codes=()):
     ranked = []
     for events in batches.values():
         for _, _, candidates, _ in events:
             ranks = Counter()
             for code, newly_missing in candidates:
-                ranked.append((not newly_missing, ranks[newly_missing], code))
-                ranks[newly_missing] += 1
+                band = 0 if newly_missing else (1 if code in unverified_codes else 2)
+                ranked.append((band, ranks[band], code))
+                ranks[band] += 1
     ranked.sort(key=lambda item: item[:2])
     return list(dict.fromkeys(code for _, _, code in ranked))
 
 
-def finish_public_state_poll(batches, observations, cache, budget, deadline, policy):
-    responses = query_public_listings(public_state_order(batches), cache, budget, deadline, policy)
+def finish_public_state_poll(batches, observations, cache, budget, deadline, policy, unverified_codes=()):
+    responses = query_public_listings(
+        public_state_order(batches, unverified_codes), cache, budget, deadline, policy
+    )
     for performer, events in batches.items():
         checked = [
             (event_id, counts, code)
@@ -1185,9 +1197,11 @@ def main():
     status_minutes = int(os.environ.get('PUBLIC_STATUS_RUNTIME_MINUTES', '35'))
     if not 0 <= status_minutes <= 35:
         raise ValueError('PUBLIC_STATUS_RUNTIME_MINUTES must be between 0 and 35')
+    recheck_hours = max(0.0, float(os.environ.get('PUBLIC_UNAVAILABLE_RECHECK_HOURS', '0')))
     public_deadline = time.monotonic() + status_minutes * 60
     state_attempts = {}
     public_state_batches = {}
+    unverified_state_codes = set()
     observations = {}
     print(f"Scrape mode: {SCRAPE_MODE}")
     if SCRAPE_MODE == 'details':
@@ -1519,7 +1533,14 @@ def main():
                         master[t_id] = row
 
             if SCRAPE_MODE == 'api':
-                public_counts, candidates = prepare_public_listings(master, prior_active, event_active_codes, now_str)
+                public_counts, candidates = prepare_public_listings(
+                    master, prior_active, event_active_codes, now_str,
+                    recheck_after=timedelta(hours=recheck_hours),
+                )
+                unverified_state_codes.update(
+                    code for code, _ in candidates
+                    if master.get(code, {}).get('observation_state') == 'absent_unverified'
+                )
                 public_state_batches.setdefault(performer, []).append(
                     (slug, ev_firestore_id, candidates, public_counts))
             else:
@@ -1616,7 +1637,8 @@ def main():
     if SCRAPE_MODE == 'api':
         print('[PUBLIC STATE] Inventory saved; checking newly absent listings first.', flush=True)
         finish_public_state_poll(public_state_batches, observations, public_cache, public_budget,
-                                 time.monotonic() + status_minutes * 60, public_policy)
+                                 time.monotonic() + status_minutes * 60, public_policy,
+                                 unverified_state_codes)
         missing = [
             target['name'] for target in targets
             if not os.path.exists(

@@ -298,6 +298,50 @@ class CoverageRecoveryTest(unittest.TestCase):
         self.assertEqual(row['observation_state'], 'inactive')
         self.assertEqual(row['state_checked_at'], checked_at)
 
+    def test_unverified_absences_precede_verified_inactive_and_respect_cooldown(self):
+        rows = {
+            'recent_inactive': {
+                'status': 'listing', 'observation_state': 'inactive',
+                'last_observed_at': '2026-11-16 10:50:00',
+                'state_checked_at': '2026-11-16 10:55:00',
+                'absence_first_observed_at': '2026-11-16 10:55:00',
+            },
+            'due_inactive_newer_check': {
+                'status': 'listing', 'observation_state': 'inactive',
+                'last_observed_at': '2026-11-16 04:00:00',
+                'state_checked_at': '2026-11-16 04:30:00',
+                'absence_first_observed_at': '2026-11-16 04:30:00',
+            },
+            'due_inactive_older_check': {
+                'status': 'listing', 'observation_state': 'inactive',
+                'last_observed_at': '2026-11-16 03:00:00',
+                'state_checked_at': '2026-11-16 03:30:00',
+                'absence_first_observed_at': '2026-11-16 03:30:00',
+            },
+            'unverified': {
+                'status': 'listing', 'observation_state': 'absent_unverified',
+                'last_observed_at': '2026-11-16 02:00:00',
+                'state_checked_at': '2026-11-16 02:00:00',
+                'absence_first_observed_at': '2026-11-16 02:30:00',
+            },
+            'newly_missing': {
+                'status': 'listing', 'observation_state': 'active',
+                'last_observed_at': '2026-11-16 10:00:00',
+                'state_checked_at': '2026-11-16 10:00:00',
+                'absence_first_observed_at': '',
+            },
+        }
+        prior = {k: v.copy() for k, v in rows.items()}
+        counts, candidates = evidence.prepare_public_listings(
+            rows, prior, set(), '2026-11-16 11:00:00', recheck_after=timedelta(hours=6)
+        )
+        self.assertEqual(
+            [code for code, _ in candidates],
+            ['newly_missing', 'unverified', 'due_inactive_older_check', 'due_inactive_newer_check'],
+        )
+        self.assertEqual(counts['pending'], 4)
+        self.assertEqual(rows['recent_inactive']['observation_state'], 'inactive')
+
     def test_state_priority_counts_real_attempts_and_ignores_pending_only(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'observation_20261116.jsonl'

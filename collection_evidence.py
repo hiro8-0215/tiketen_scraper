@@ -179,7 +179,8 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
         if target is None:
             target = row.copy()
             target.update(ticket_id=code, first_observed_at=now, last_observed_at=now,
-                          first_observed_source='public_alias_observed')
+                          first_observed_source='public_alias_observed',
+                          absence_first_observed_at='')
             master[code] = target
         if target is None or target.get('event_id') != row.get('event_id'):
             raise ValueError('Canonical public code is not in the event snapshot')
@@ -210,8 +211,12 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     if status == 'active':
         # Keep the API sighting timestamp when it already confirmed this code;
         # state_checked_at independently records the later public lookup.
-        if row.get('observation_state') != 'active' or not row.get('last_observed_at'):
+        if ((code != old_code and row.get('observation_state') != 'active')
+                or not row.get('last_observed_at')
+                or (row.get('observation_state') != 'active' and not row.get('absence_first_observed_at'))):
             row['last_observed_at'] = now
+        if code != old_code:
+            row['absence_first_observed_at'] = ''
         row['observation_state'] = 'active'
     elif status == 'sold':
         if row.get('status') != 'sold':
@@ -245,13 +250,14 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     return 'alias' if code != old_code else status
 
 
-def prepare_public_listings(master, prior, active_codes, now):
-    """Mark missing listings and rank new absences ahead of earlier ones."""
+def prepare_public_listings(master, prior, active_codes, now, *, recheck_after=timedelta(0)):
+    """Mark missing listings and rank new absences and unverified rows first."""
     counts = {'checked': 0, 'alias': 0, 'sold': 0, 'cancelled': 0,
               'not_found': 0, 'active': 0, 'expired': 0, 'inactive': 0, 'paused': 0,
               'unclassified': 0, 'stale': 0, 'failed': 0,
               'pending': 0, 'historical_unresolved': 0}
-    cutoff = datetime.fromisoformat(now) - timedelta(hours=36)
+    now_dt = datetime.fromisoformat(now)
+    cutoff = now_dt - timedelta(hours=36)
     candidates = []
     for code, previous in prior.items():
         row = master.get(code)
@@ -264,12 +270,18 @@ def prepare_public_listings(master, prior, active_codes, now):
         if not row.get('absence_first_observed_at'):
             row['absence_first_observed_at'] = now
         previously_unavailable = previous.get('observation_state') in {'inactive', 'paused', 'public_unclassified'}
-        if not previously_unavailable:
+        previously_unlisted_active = (
+            not newly_missing
+            and previous.get('observation_state') == 'active'
+            and previous.get('status_source') == 'public_detail'
+            and bool(previous.get('absence_first_observed_at'))
+        )
+        if not previously_unavailable and not previously_unlisted_active:
             row['observation_state'] = 'absent_unverified'
         try:
             last_seen = previous.get('last_observed_at', '')
-            if previously_unavailable:
-                # A recently verified stopped listing remains worth refreshing;
+            if previously_unavailable or previously_unlisted_active:
+                # A recently verified stopped or unlisted listing remains worth refreshing;
                 # do not silently abandon it 36h after its last active sighting.
                 last_seen = max(last_seen, previous.get('state_checked_at', ''))
             recent = datetime.fromisoformat(last_seen) >= cutoff
@@ -278,9 +290,19 @@ def prepare_public_listings(master, prior, active_codes, now):
         if not recent:
             counts['historical_unresolved'] += 1
             continue
+        if (previously_unavailable or previously_unlisted_active) and recheck_after > timedelta(0):
+            try:
+                checked_dt = datetime.fromisoformat(previous.get('state_checked_at', ''))
+                if now_dt - checked_dt < recheck_after:
+                    continue
+            except ValueError:
+                pass
         candidates.append((code, newly_missing))
     candidates.sort(key=lambda item: prior[item[0]].get('last_observed_at', ''), reverse=True)
-    candidates.sort(key=lambda item: not item[1])
+    candidates.sort(key=lambda item: (
+        0 if item[1] else (1 if master[item[0]].get('observation_state') == 'absent_unverified' else 2),
+        '' if (item[1] or master[item[0]].get('observation_state') == 'absent_unverified') else prior[item[0]].get('state_checked_at', ''),
+    ))
     counts['pending'] = len(candidates)
     return counts, candidates
 

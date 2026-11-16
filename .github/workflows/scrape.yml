@@ -60,6 +60,7 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: '3.11' # Python 3.11 を使用
+          cache: 'pip'
           
       - name: 依存関係パッケージのインストール
         run: |
