@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import base64
 import glob
+import hashlib
 import json
 import os
 import sys
@@ -21,9 +22,57 @@ JST = timezone(timedelta(hours=9), "JST")
 MAX_FILE_BYTES = 35 * 1024 * 1024
 MAX_UPLOAD_ATTEMPTS = 5
 INITIAL_UPLOAD_ATTEMPTS = 2
-UPLOAD_BUDGET_SECONDS = 25 * 60
+UPLOAD_BUDGET_SECONDS = 40 * 60
 RECOVERY_DELAYS = (60, 120)
 RETRYABLE_HTTP_CODES = {404, 408, 429, 500, 502, 503, 504}
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def load_upload_cache(cache_path: Path | None, subfolder: str) -> dict[str, str]:
+    if cache_path is None or not cache_path.exists():
+        return {}
+    try:
+        payload = json.loads(cache_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    if not isinstance(payload, dict) or payload.get("subfolder") != subfolder:
+        return {}
+    parts = payload.get("parts")
+    if not isinstance(parts, dict):
+        return {}
+    return {
+        str(k): str(v)
+        for k, v in parts.items()
+        if isinstance(k, str) and isinstance(v, str)
+    }
+
+
+def save_upload_cache(
+    cache_path: Path | None, subfolder: str, parts: dict[str, str]
+) -> None:
+    if cache_path is None:
+        return
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = cache_path.with_suffix(cache_path.suffix + ".tmp")
+    try:
+        temporary.write_text(
+            json.dumps(
+                {"subfolder": subfolder, "parts": parts},
+                ensure_ascii=True,
+                sort_keys=True,
+            ),
+            encoding="utf-8",
+        )
+        os.replace(temporary, cache_path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 class TransientUploadError(RuntimeError):
@@ -121,7 +170,7 @@ def upload_file(webapp_url: str, token: str, path: Path, subfolder: str,
 
 
 def upload_files(webapp_url: str, token: str, paths: list[Path], subfolder: str,
-                 deadline: float | None = None) -> None:
+                 deadline: float | None = None, *, on_uploaded=None) -> None:
     """Keep successful uploads, then recover only transiently failed files."""
     if deadline is None:
         deadline = time.monotonic() + UPLOAD_BUDGET_SECONDS
@@ -140,6 +189,8 @@ def upload_files(webapp_url: str, token: str, paths: list[Path], subfolder: str,
                     raise TransientUploadError('Google Drive upload time budget exhausted')
                 upload_file(webapp_url, token, path, subfolder, deadline=deadline, max_attempts=attempts)
                 failures.pop(path.name, None)
+                if on_uploaded is not None:
+                    on_uploaded(path)
             except TransientUploadError as error:
                 if time.monotonic() >= deadline:
                     raise
@@ -172,14 +223,36 @@ def main() -> None:
         anonymous_sold = source_dir / 'anonymous_sold_inventory.jsonl'
         if anonymous_sold.exists():
             paths.append(anonymous_sold)
+    cache_env = os.environ.get("GDRIVE_UPLOAD_CACHE_PATH", "").strip()
+    force_full = os.environ.get("GDRIVE_FORCE_FULL_UPLOAD", "").strip().lower() in {"1", "true", "yes"}
+    cache_path = Path(cache_env) if cache_env else None
+    uploaded_hashes = {} if force_full else load_upload_cache(cache_path, subfolder)
     with tempfile.TemporaryDirectory(prefix='drive-backup-') as directory:
         data, manifests = prepare_uploads(paths, Path(directory), MAX_FILE_BYTES)
-        print(f"Uploading {len(data)} data files and {len(manifests)} manifests to {subfolder}", flush=True)
+        digests = {path.name: file_sha256(path) for path in [*data, *manifests]}
+        pending_data = [
+            path for path in data
+            if uploaded_hashes.get(path.name) != digests[path.name]
+        ]
+        skipped = len(data) - len(pending_data)
+        if skipped:
+            print(f"Skipping {skipped} unchanged data files already uploaded to {subfolder}", flush=True)
+        print(f"Uploading {len(pending_data)} data files and {len(manifests)} manifests to {subfolder}", flush=True)
+
+        def record_uploaded(path: Path) -> None:
+            uploaded_hashes[path.name] = digests[path.name]
+            save_upload_cache(cache_path, subfolder, uploaded_hashes)
+
         deadline = time.monotonic() + UPLOAD_BUDGET_SECONDS
-        upload_files(webapp_url, token, data, subfolder, deadline=deadline)
+        if pending_data:
+            upload_files(webapp_url, token, pending_data, subfolder, deadline=deadline, on_uploaded=record_uploaded)
         # Publish metadata only when every part succeeded, using the same budget.
-        if manifests:
-            upload_files(webapp_url, token, manifests, subfolder, deadline=deadline)
+        pending_manifests = [
+            path for path in manifests
+            if pending_data or uploaded_hashes.get(path.name) != digests[path.name]
+        ]
+        if pending_manifests:
+            upload_files(webapp_url, token, pending_manifests, subfolder, deadline=deadline, on_uploaded=record_uploaded)
     print("Google Drive backup completed.", flush=True)
 
 

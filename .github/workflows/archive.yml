@@ -19,8 +19,14 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # 送信・再試行25分 + チェックアウトと送信準備の余裕
+    timeout-minutes: 45  # 送信・再試行40分 + チェックアウトと送信準備の余裕
     steps:
+      - name: バックアップ先サブフォルダ名の算出
+        id: target
+        run: |
+          subfolder=$(TZ=Asia/Tokyo date +'data_%-m_%-d')
+          echo "subfolder=$subfolder" >> "$GITHUB_OUTPUT"
+
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v7
         with:
@@ -38,6 +44,14 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: 同日アップロード済みパートのキャッシュを復元
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ runner.temp }}/gdrive-upload-cache
+          key: gdrive-upload-${{ steps.target.outputs.subfolder }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            gdrive-upload-${{ steps.target.outputs.subfolder }}-
+
       - name: 明示的に有効な場合だけJSONLを取得
         env:
           GDRIVE_INCLUDE_JSONL: ${{ vars.GDRIVE_INCLUDE_JSONL }}
@@ -53,6 +67,15 @@ jobs:
           GDRIVE_WEBAPP_URL: ${{ secrets.GDRIVE_WEBAPP_URL }}
           GDRIVE_UPLOAD_TOKEN: ${{ secrets.GDRIVE_UPLOAD_TOKEN }}
           GDRIVE_SOURCE_DIR: data
+          GDRIVE_UPLOAD_CACHE_PATH: ${{ runner.temp }}/gdrive-upload-cache/upload_state.json
+          GDRIVE_FORCE_FULL_UPLOAD: ${{ github.event_name == 'workflow_dispatch' }}
           # Enable only after redeploying Code.gs with numbered JSONL part support.
           GDRIVE_INCLUDE_JSONL: ${{ vars.GDRIVE_INCLUDE_JSONL }}
         run: python upload_to_gdrive.py
+
+      - name: 同日アップロード済みパートのキャッシュを保存
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ runner.temp }}/gdrive-upload-cache
+          key: gdrive-upload-${{ steps.target.outputs.subfolder }}-${{ github.run_id }}-${{ github.run_attempt }}

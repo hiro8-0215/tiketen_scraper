@@ -213,6 +213,80 @@ class DriveUploadRetryTest(unittest.TestCase):
         urlopen.assert_called_once()
         sleep.assert_not_called()
 
+    def test_upload_cache_skips_unchanged_parts_in_same_subfolder_and_resumes_after_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cache_file = root / "cache" / "upload_state.json"
+            first = root / "first_master.csv"
+            second = root / "second_master.csv"
+            first.write_text("ticket_id\n1\n", encoding="utf-8")
+            second.write_text("ticket_id\n2\n", encoding="utf-8")
+            env = {
+                "GDRIVE_WEBAPP_URL": "https://example.invalid/exec",
+                "GDRIVE_UPLOAD_TOKEN": "token",
+                "GDRIVE_SOURCE_DIR": str(root),
+                "GDRIVE_INCLUDE_JSONL": "",
+                "GDRIVE_UPLOAD_CACHE_PATH": str(cache_file),
+                "GDRIVE_FORCE_FULL_UPLOAD": "",
+            }
+            uploaded = []
+
+            def fail_on_second(url, token, path, folder, deadline=None, *, max_attempts):
+                if path.name == "second_master.csv":
+                    raise RuntimeError("interrupted after first")
+                uploaded.append(path.name)
+
+            with (
+                patch.dict(upload_to_gdrive.os.environ, env),
+                patch.object(upload_to_gdrive, "upload_file", side_effect=fail_on_second),
+                patch("builtins.print"),
+                self.assertRaisesRegex(RuntimeError, "interrupted after first"),
+            ):
+                upload_to_gdrive.main()
+            self.assertEqual(uploaded, ["first_master.csv"])
+            self.assertTrue(cache_file.exists())
+
+            # Resume: first_master.csv is already uploaded and unchanged, so only second + manifest are uploaded.
+            uploaded.clear()
+            with (
+                patch.dict(upload_to_gdrive.os.environ, env),
+                patch.object(upload_to_gdrive, "upload_file", side_effect=lambda u, t, p, f, deadline=None, *, max_attempts: uploaded.append(p.name)),
+                patch("builtins.print"),
+            ):
+                upload_to_gdrive.main()
+            self.assertEqual(uploaded, ["second_master.csv", "drive_backup_manifest_master.csv"])
+
+            # Next hourly run with no changes: 0 uploads needed.
+            uploaded.clear()
+            with (
+                patch.dict(upload_to_gdrive.os.environ, env),
+                patch.object(upload_to_gdrive, "upload_file", side_effect=lambda u, t, p, f, deadline=None, *, max_attempts: uploaded.append(p.name)),
+                patch("builtins.print"),
+            ):
+                upload_to_gdrive.main()
+            self.assertEqual(uploaded, [])
+
+            # Modify second_master.csv: only second_master.csv and manifest are uploaded.
+            second.write_text("ticket_id\n2\n3\n", encoding="utf-8")
+            uploaded.clear()
+            with (
+                patch.dict(upload_to_gdrive.os.environ, env),
+                patch.object(upload_to_gdrive, "upload_file", side_effect=lambda u, t, p, f, deadline=None, *, max_attempts: uploaded.append(p.name)),
+                patch("builtins.print"),
+            ):
+                upload_to_gdrive.main()
+            self.assertEqual(uploaded, ["second_master.csv", "drive_backup_manifest_master.csv"])
+
+            # Force full upload (e.g. manual workflow_dispatch) uploads all files.
+            uploaded.clear()
+            with (
+                patch.dict(upload_to_gdrive.os.environ, {**env, "GDRIVE_FORCE_FULL_UPLOAD": "true"}),
+                patch.object(upload_to_gdrive, "upload_file", side_effect=lambda u, t, p, f, deadline=None, *, max_attempts: uploaded.append(p.name)),
+                patch("builtins.print"),
+            ):
+                upload_to_gdrive.main()
+            self.assertEqual(uploaded, ["first_master.csv", "second_master.csv", "drive_backup_manifest_master.csv"])
+
 
 if __name__ == "__main__":
     unittest.main()
