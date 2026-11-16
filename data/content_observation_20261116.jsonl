@@ -98,3 +98,16 @@
 {"performer": "sixtones", "observed_at_utc": "2026-11-16T09:40:13.983306+00:00", "scope": "observed_active", "selected": 3, "checked": 3, "full": 3, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
 {"performer": "west-dot", "observed_at_utc": "2026-11-16T09:40:33.803341+00:00", "scope": "observed_active", "selected": 3, "checked": 3, "full": 3, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
 {"performer": "hey-say-jump", "observed_at_utc": "2026-11-16T09:40:51.698894+00:00", "scope": "observed_active", "selected": 4, "checked": 4, "full": 4, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "ambitious", "observed_at_utc": "2026-11-16T10:37:56.824104+00:00", "scope": "observed_active", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "boys-be", "observed_at_utc": "2026-11-16T10:37:56.981594+00:00", "scope": "observed_active", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "travis-japan", "observed_at_utc": "2026-11-16T10:37:56.996649+00:00", "scope": "observed_active", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "key-to-lit", "observed_at_utc": "2026-11-16T10:37:57.424801+00:00", "scope": "observed_active", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "timelesz", "observed_at_utc": "2026-11-16T10:38:00.369324+00:00", "scope": "observed_active", "selected": 1, "checked": 1, "full": 1, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "acees", "observed_at_utc": "2026-11-16T10:40:54.028422+00:00", "scope": "observed_active", "selected": 56, "checked": 56, "full": 56, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "naniwa-danshi", "observed_at_utc": "2026-11-16T10:40:54.819762+00:00", "scope": "observed_active", "selected": 0, "checked": 0, "full": 0, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "ae-group", "observed_at_utc": "2026-11-16T10:41:07.197689+00:00", "scope": "observed_active", "selected": 2, "checked": 2, "full": 2, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "b-and-zai", "observed_at_utc": "2026-11-16T10:41:20.531024+00:00", "scope": "observed_active", "selected": 4, "checked": 4, "full": 4, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "snow-man", "observed_at_utc": "2026-11-16T10:41:26.654063+00:00", "scope": "observed_active", "selected": 2, "checked": 2, "full": 2, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "sixtones", "observed_at_utc": "2026-11-16T10:42:26.655449+00:00", "scope": "observed_active", "selected": 8, "checked": 8, "full": 8, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "west-dot", "observed_at_utc": "2026-11-16T10:42:38.601140+00:00", "scope": "observed_active", "selected": 2, "checked": 2, "full": 2, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
+{"performer": "hey-say-jump", "observed_at_utc": "2026-11-16T10:42:44.391124+00:00", "scope": "observed_active", "selected": 1, "checked": 1, "full": 1, "failed": 0, "null": 0, "pending": 0, "request_errors": {}}
