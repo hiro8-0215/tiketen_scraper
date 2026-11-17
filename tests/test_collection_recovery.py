@@ -282,6 +282,16 @@ class PublicRequestRecoveryTest(unittest.TestCase):
 
 
 class CoverageRecoveryTest(unittest.TestCase):
+    def test_state_backlog_only_uses_spare_time_before_detail_reserve(self):
+        for remaining, queued, expected_duration in [(1210, 160, 720), (1210, 161, 910),
+                                                       (960, 5000, 720)]:
+            with (self.subTest(remaining=remaining, queued=queued),
+                  patch.object(scraper.time, 'monotonic', return_value=200),
+                  patch.object(scraper.time, 'time', return_value=1000),
+                  patch.dict(scraper.os.environ, {'PUBLIC_RUN_DEADLINE_EPOCH': str(1000 + remaining)})):
+                self.assertEqual(scraper.public_state_deadline(12, 16, queued, 4.5),
+                                 200 + expected_duration)
+
     def test_event_discovery_accepts_same_site_absolute_and_relative_links(self):
         page = '''
             <a href="/events/relative">Relative</a>

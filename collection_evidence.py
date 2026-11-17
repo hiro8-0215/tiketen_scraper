@@ -419,11 +419,18 @@ def prepare_public_listings(master, prior, active_codes, now, *, recheck_after=t
             except ValueError:
                 pass
         candidates.append((code, newly_missing))
+    def priority(candidate):
+        code, newly_missing = candidate
+        previous = prior[code]
+        if newly_missing:
+            return 0, ''
+        if master[code].get('observation_state') == 'absent_unverified':
+            # Give the oldest unresolved listings a chance before they age out.
+            return 1, previous.get('last_observed_at', '')
+        return 2, previous.get('state_checked_at', '')
+
     candidates.sort(key=lambda item: prior[item[0]].get('last_observed_at', ''), reverse=True)
-    candidates.sort(key=lambda item: (
-        0 if item[1] else (1 if master[item[0]].get('observation_state') == 'absent_unverified' else 2),
-        '' if (item[1] or master[item[0]].get('observation_state') == 'absent_unverified') else prior[item[0]].get('state_checked_at', ''),
-    ))
+    candidates.sort(key=priority)
     counts['pending'] = len(candidates)
     return counts, candidates
 

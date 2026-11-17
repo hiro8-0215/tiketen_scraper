@@ -128,6 +128,7 @@ jobs:
         env:
           SCRAPE_MODE: api
           PUBLIC_STATUS_RUNTIME_MINUTES: ${{ inputs.recover_details && '265' || '12' }}
+          PUBLIC_STATUS_BACKLOG_RUNTIME_MINUTES: '16'
           PUBLIC_STATUS_CHECK_LIMIT: '6000'
           COLLECTION_COVERAGE_PATH: ${{ runner.temp }}/ticket-collection-coverage.json
         run: python scraper.py

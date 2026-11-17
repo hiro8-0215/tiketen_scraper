@@ -28,6 +28,10 @@ for state and eight minutes for details, subject to a shared 22-minute
 request deadline measured from job setup. That deadline applies to individual
 requests. The audit, packing and push follow under the job timeout. The optional
 repository variable `PUBLIC_API_MIN_INTERVAL` sets the initial spacing.
+When more unverified old IDs are queued than the ordinary state pass could
+check, the state pass can use up to 16 minutes. Extra state lookups stop five
+minutes before the shared deadline to leave time to save and check visible
+description changes.
 On HTTP 429 or an HTTP 503 with a retry instruction, the collector waits and
 sets global spacing to at least 4.5 seconds for the rest of the run.
 Server cooldowns carry over to queued runs, and access denial stops further
@@ -36,7 +40,8 @@ The site's explicit `ticket_detail_ip_blocked` response is reported separately
 and stops detail requests immediately, including in recovery mode.
 The collector saves inventory for every event first. It then checks newly
 absent IDs across events before older unresolved IDs, sharing the available
-requests among events in each priority band. Observation logs include `newly_missing`,
+requests among events in each priority band. Within each event, unresolved IDs
+closest to the 36-hour cutoff are checked first. Observation logs include `newly_missing`,
 `newly_missing_pending`, and `full_from_alias`.
 
 For a single-run attempt, manually select `recover_details` in Ticket Scraper.

@@ -41,11 +41,12 @@ if not 1 <= DETAIL_RUNTIME_MINUTES <= 350:
 MAX_RUNTIME_SECONDS = DETAIL_RUNTIME_MINUTES * 60
 
 
-def public_deadline_after(minutes):
+def public_deadline_after(minutes, *, reserve_minutes=0):
     deadline = time.monotonic() + minutes * 60
     run_deadline = os.environ.get('PUBLIC_RUN_DEADLINE_EPOCH')
     if run_deadline:
-        deadline = min(deadline, time.monotonic() + float(run_deadline) - time.time())
+        remaining = float(run_deadline) - time.time() - reserve_minutes * 60
+        deadline = min(deadline, time.monotonic() + remaining)
     return deadline
 
 
@@ -1162,6 +1163,20 @@ def public_state_order(batches, unverified_codes=()):
     return list(dict.fromkeys(code for _, _, code in ranked))
 
 
+def public_state_deadline(status_minutes, backlog_minutes, unverified_count, min_interval):
+    deadline = public_deadline_after(status_minutes)
+    expected_capacity = status_minutes * 60 / max(min_interval, 4.5)
+    if backlog_minutes > status_minutes and unverified_count > expected_capacity:
+        # An old ID often yields both the outcome and the current full text.
+        # Leave room under the shared cutoff for the separate preview-change pass.
+        extended = public_deadline_after(backlog_minutes, reserve_minutes=5)
+        if extended > deadline:
+            print(f'[PUBLIC STATE] {unverified_count} unresolved IDs; using up to '
+                  f'{backlog_minutes} minutes before the detail reserve.', flush=True)
+            return extended
+    return deadline
+
+
 def finish_public_state_poll(batches, observations, cache, budget, deadline, policy, unverified_codes=()):
     responses = query_public_listings(
         public_state_order(batches, unverified_codes), cache, budget, deadline, policy
@@ -1234,6 +1249,9 @@ def main():
     status_minutes = int(os.environ.get('PUBLIC_STATUS_RUNTIME_MINUTES', '35'))
     if not 0 <= status_minutes <= 350:
         raise ValueError('PUBLIC_STATUS_RUNTIME_MINUTES must be between 0 and 350')
+    backlog_minutes = int(os.environ.get('PUBLIC_STATUS_BACKLOG_RUNTIME_MINUTES', str(status_minutes)))
+    if not 0 <= backlog_minutes <= 350:
+        raise ValueError('PUBLIC_STATUS_BACKLOG_RUNTIME_MINUTES must be between 0 and 350')
     recheck_hours = max(0.0, float(os.environ.get('PUBLIC_UNAVAILABLE_RECHECK_HOURS', '0')))
     public_deadline = public_deadline_after(status_minutes)
     state_attempts = {}
@@ -1655,9 +1673,10 @@ def main():
 
     if SCRAPE_MODE == 'api':
         print('[PUBLIC STATE] Inventory saved; checking newly absent listings first.', flush=True)
+        state_deadline = public_state_deadline(status_minutes, backlog_minutes,
+                                               len(unverified_state_codes), min_interval)
         finish_public_state_poll(public_state_batches, observations, public_cache, public_budget,
-                                 public_deadline_after(status_minutes), public_policy,
-                                 unverified_state_codes)
+                                 state_deadline, public_policy, unverified_state_codes)
         missing = [
             target['name'] for target in targets
             if not os.path.exists(

@@ -253,6 +253,23 @@ class CollectionEvidenceTest(unittest.TestCase):
         self.assertEqual(counts_next['historical_unresolved'], 0)
         self.assertEqual(row['observation_state'], 'active')
 
+    def test_oldest_unresolved_is_checked_before_recent_backlog_after_new_absences(self):
+        rows = {
+            code: {'ticket_id': code, 'event_id': 'show', 'status': 'listing',
+                   'last_observed_at': seen, 'observation_state': state}
+            for code, seen, state in [
+                ('recent', '2026-11-17 20:00:00', 'absent_unverified'),
+                ('oldest', '2026-11-16 21:00:00', 'absent_unverified'),
+                ('just-missing', '2026-11-17 22:00:00', 'active'),
+                ('outside-window', '2026-11-16 09:00:00', 'absent_unverified'),
+            ]
+        }
+        counts, candidates = evidence.prepare_public_listings(
+            rows, {code: row.copy() for code, row in rows.items()}, set(), '2026-11-17 23:00:00'
+        )
+        self.assertEqual(candidates, [('just-missing', True), ('oldest', False), ('recent', False)])
+        self.assertEqual(counts['historical_unresolved'], 1)
+
     def test_change_ledger_skips_historical_alias_chain_flattening(self):
         before = {
             'gen1': {'ticket_id': 'gen1', 'event_id': 'event', 'status': 'listing',
