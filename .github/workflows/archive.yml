@@ -2,24 +2,27 @@ name: Daily Archive to Google Drive
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Ticket Scraper"]
-    types: [completed]
+  workflow_call:
+    inputs:
+      data_ref:
+        type: string
+        required: true
+    secrets:
+      GDRIVE_WEBAPP_URL:
+        required: true
+      GDRIVE_UPLOAD_TOKEN:
+        required: true
 
 permissions:
   contents: read
 
-concurrency:
-  group: google-drive-archive
-  cancel-in-progress: false
-
 jobs:
   archive:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 45  # 送信・再試行40分 + チェックアウトと送信準備の余裕
+    concurrency:
+      group: google-drive-archive
+      cancel-in-progress: false
     steps:
       - name: バックアップ先サブフォルダ名の算出
         id: target
@@ -30,6 +33,7 @@ jobs:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.data_ref }}
           fetch-depth: 1
           sparse-checkout-cone-mode: false
           sparse-checkout: |
@@ -68,7 +72,7 @@ jobs:
           GDRIVE_UPLOAD_TOKEN: ${{ secrets.GDRIVE_UPLOAD_TOKEN }}
           GDRIVE_SOURCE_DIR: data
           GDRIVE_UPLOAD_CACHE_PATH: ${{ runner.temp }}/gdrive-upload-cache/upload_state.json
-          GDRIVE_FORCE_FULL_UPLOAD: ${{ github.event_name == 'workflow_dispatch' }}
+          GDRIVE_FORCE_FULL_UPLOAD: ${{ inputs.data_ref == '' }}
           # Enable only after redeploying Code.gs with numbered JSONL part support.
           GDRIVE_INCLUDE_JSONL: ${{ vars.GDRIVE_INCLUDE_JSONL }}
         run: python upload_to_gdrive.py

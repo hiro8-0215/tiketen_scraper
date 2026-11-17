@@ -1,8 +1,6 @@
 name: Ticket Scraper schedule fallback
 
 on:
-  schedule:
-    - cron: '12 * * * *'
   workflow_dispatch:
 
 permissions:

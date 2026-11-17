@@ -1,7 +1,9 @@
 name: Ticket Scraper
 
 on:
-  workflow_dispatch: # 通常は外部スケジューラから実行
+  schedule:
+    - cron: '12 * * * *'
+  workflow_dispatch:
     inputs:
       recover_details:
         description: "個別状態と全文を同じ実行で回収し、残件があれば監査で失敗にする"
@@ -11,16 +13,45 @@ on:
 permissions:
   contents: write # 実行後にデータをGitHubに保存（プッシュ）するために必要
 
-# 排他制御: 同じワークフローが同時に2つ以上走ることを防止
-# cancel-in-progress: false → 先行ジョブを尊重し、後発はキューで待機
-concurrency:
-  group: ticket-scraper
-  cancel-in-progress: false
-
 jobs:
+  schedule-guard:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+    outputs:
+      run_scrape: ${{ steps.hour.outputs.run_scrape }}
+    steps:
+      - name: この時間帯の先行する収集を確認
+        id: hour
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          hour_start=$(date -u +'%Y-%m-%dT%H:00:00Z')
+          earlier=$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/workflows/scrape.yml/runs" \
+            -f branch="$GITHUB_REF_NAME" -f "created=>=$hour_start" -F per_page=100 \
+            --jq "[.workflow_runs[] | select(.id < $GITHUB_RUN_ID)] | length")
+          if [[ ! "$earlier" =~ ^[0-9]+$ ]]; then
+            echo "Cannot determine whether Ticket Scraper already started at $hour_start"
+            exit 1
+          fi
+          if [[ "$earlier" == '0' ]]; then
+            echo "run_scrape=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Ticket Scraper already started or queued since $hour_start"
+          fi
+
   scrape:
+    needs: schedule-guard
+    if: always() && !cancelled() && (github.event_name == 'workflow_dispatch' || needs.schedule-guard.outputs.run_scrape == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.recover_details && 360 || 60 }}
+    concurrency:
+      group: ticket-scraper
+      cancel-in-progress: false
+    outputs:
+      data_ref: ${{ steps.publish.outputs.data_ref }}
 
     env:
       PYTHONUNBUFFERED: "1"
@@ -115,17 +146,23 @@ jobs:
         run: python repository_data_storage.py pack --data-dir data
 
       - name: 取得したデータを保存（コミット＆プッシュ）
+        id: publish
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add --sparse data/
-          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            echo "data_ref=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git commit -m "自動更新: チケットデータのスクレイピング"
           push_log="$RUNNER_TEMP/ticket-scraper-push.log"
           for attempt in 1 2 3; do
             git pull --rebase origin main
             if git push 2>&1 | tee "$push_log"; then
+              echo "data_ref=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             if [[ "$attempt" -eq 3 ]] || ! grep -Eiq 'fatal error in commit_refs_rules|requested URL returned error: (502|503|504)|connection (reset|timed out)' "$push_log"; then
@@ -141,3 +178,14 @@ jobs:
       - name: 品質確認結果を反映
         if: always() && !cancelled() && steps.audit.outcome == 'failure'
         run: exit 1
+
+  archive:
+    needs: scrape
+    uses: ./.github/workflows/archive.yml
+    permissions:
+      contents: read
+    with:
+      data_ref: ${{ needs.scrape.outputs.data_ref }}
+    secrets:
+      GDRIVE_WEBAPP_URL: ${{ secrets.GDRIVE_WEBAPP_URL }}
+      GDRIVE_UPLOAD_TOKEN: ${{ secrets.GDRIVE_UPLOAD_TOKEN }}

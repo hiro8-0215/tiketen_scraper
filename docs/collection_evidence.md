@@ -56,11 +56,11 @@ Listing coverage, structural errors and failed requests still fail the run.
 The longer recovery mode uses `tools/audit_public_content.py --data-dir data
 --rolling` to require verified active descriptions and completed recent state
 checks. GitHub persists the collected data before surfacing audit errors.
-Only a successful scrape starts the automatic Drive archive.
-The GitHub schedule fallback checks at minute 12 whether this hour already
-has a Ticket Scraper run, including queued runs. It dispatches an ordinary
-run for a missing hour and leaves the external hourly trigger in place.
-The scraper concurrency group serializes a fallback run behind any previous run.
+A successful scrape invokes the Drive archive job in the same workflow
+and hands it the exact pushed commit to back up. GitHub schedules the scraper
+directly at minute 12 and checks for an earlier run in the same hour before
+scraping. The fallback workflow remains available for a missing hour.
+Scraping and Drive uploads each have their own concurrency group.
 Before reporting success, Actions checks this run's exact inventory IDs against
 the saved masters. A missing ID or unsupported later state fails the audit.
 An anonymous sold row remains aggregate evidence even when the run verifies
