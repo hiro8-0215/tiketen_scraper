@@ -5,7 +5,7 @@ import json
 import os
 import sys
 import time
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT))
 from collection_content import content_refresh_reason
 from collection_evidence import fetch_public_ticket
 from scraper import sanitize_unicode
+from tools.audit_collection_run import check_observed_inventory
 
 
 DEFERRED_CONTENT_REASONS = {
@@ -22,14 +23,50 @@ DEFERRED_CONTENT_REASONS = {
 }
 
 
-def audit(folder, live_limit=0, *, rolling=False, inventory_first=False):
+def audit(folder, live_limit=0, *, rolling=False, inventory_first=False, inventory_since=None):
     errors, active, samples, latest, warnings = [], {}, [], {}, []
     backlog = []
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     absence_cutoff = (now - timedelta(hours=36)).isoformat(sep=' ')
+    current_polls = defaultdict(dict)
+    if inventory_since is not None:
+        if inventory_since.tzinfo is None:
+            inventory_since = inventory_since.replace(tzinfo=timezone.utc)
+        inventory_since = inventory_since.astimezone(timezone.utc)
+        earliest_log = 'observation_' + inventory_since.strftime('%Y%m%d')
+        for path in sorted(folder.glob('observation_*.jsonl')):
+            if path.stem < earliest_log:
+                continue
+            with path.open(encoding='utf-8') as stream:
+                for line in stream:
+                    item = json.loads(line)
+                    when = item.get('observed_at_utc')
+                    if when and datetime.fromisoformat(when) >= inventory_since:
+                        current_polls[item['performer']][item['event_id']] = item
+        if not current_polls:
+            errors.append({'reason': 'no_observed_inventory_for_current_run'})
+    verified_inventory_rows = 0
     for path in folder.glob('*_master.csv'):
         with path.open(encoding='utf-8-sig', newline='') as stream:
             records = list(csv.DictReader(stream))
+        performer = path.name.removesuffix('_master.csv')
+        inventory = current_polls.pop(performer, {})
+        if inventory:
+            rows = {row['ticket_id']: row for row in records}
+            if len(rows) != len(records):
+                errors.append({'reason': 'duplicate_master_ticket_id', 'performer': performer})
+            for item in inventory.values():
+                if not item.get('api_fetch_complete'):
+                    continue
+                if not isinstance(item.get('api_active_ids'), list):
+                    errors.append({'reason': 'missing_current_inventory_ids', 'performer': performer,
+                                   'event': item['event_id']})
+                    continue
+                missing, _ = check_observed_inventory(item, rows)
+                if missing:
+                    errors.extend({'reason': 'api_inventory_not_preserved', 'detail': detail} for detail in missing)
+                else:
+                    verified_inventory_rows += len(item['api_active_ids'])
         for row in records:
             if row.get('observation_state') in {'absent_unverified', 'absent_unknown'}:
                 first_absence = row.get('absence_first_observed_at', '')
@@ -52,6 +89,7 @@ def audit(folder, live_limit=0, *, rolling=False, inventory_first=False):
             if not row.get('public_event_id'):
                 errors.append({'id':code,'reason':'missing_public_event_id'})
             active[(row['event_id'],code)] = row
+    errors.extend({'reason': 'missing_current_master', 'performer': performer} for performer in current_polls)
     for path in sorted(folder.glob('content_observation_*.jsonl')):
         with path.open(encoding='utf-8') as stream:
             lines = list(stream)
@@ -120,7 +158,7 @@ def audit(folder, live_limit=0, *, rolling=False, inventory_first=False):
         samples.append(result)
         time.sleep(0.5)
     return {'ok':not errors,'public_coverage_complete':not errors and not backlog,
-            'unique_active_rows':len(active),'live_samples':samples,
+            'unique_active_rows':len(active),'verified_inventory_rows':verified_inventory_rows,'live_samples':samples,
             'latest_content_refresh':latest,'errors':errors,'warnings':warnings,'backlog':backlog,
             'limitations':'Live values can change after collection. Historical null tickets cannot be reconstructed.'}
 
@@ -136,8 +174,10 @@ def main():
     policy.add_argument('--inventory-first', action='store_true',
                         help='Record deferred lookups separately from inventory errors.')
     args=parser.parse_args()
+    since = os.environ.get('COLLECTION_AUDIT_SINCE')
     report=audit(args.data_dir,max(0,args.live_limit),rolling=args.rolling,
-                 inventory_first=args.inventory_first)
+                 inventory_first=args.inventory_first,
+                 inventory_since=datetime.fromisoformat(since) if since else None)
     if args.report:
         args.report.write_text(json.dumps(report,ensure_ascii=True,indent=2),encoding='utf-8')
     backlog_counts = Counter()
@@ -149,6 +189,7 @@ def main():
         with open(summary_path, 'a', encoding='utf-8') as summary:
             summary.write('### Public ticket evidence\n\n')
             summary.write(f"- Active listing rows: {report['unique_active_rows']:,}\n")
+            summary.write(f"- Site inventory IDs verified in saved masters: {report['verified_inventory_rows']:,}\n")
             summary.write(f"- Known listing states and active content fully checked: {report['public_coverage_complete']}\n")
             anonymous = sum(item['count'] for item in report['warnings'] if item['reason'] == 'anonymous_sold_rows')
             if anonymous:
@@ -158,7 +199,8 @@ def main():
             for reason, count in sorted(error_counts.items()):
                 summary.write(f'- Quality errors {reason}: {count:,}\n')
     print(json.dumps({'ok':report['ok'],'public_coverage_complete':report['public_coverage_complete'],
-                      'unique_active_rows':report['unique_active_rows'],'backlog_counts':dict(backlog_counts),
+                      'unique_active_rows':report['unique_active_rows'],
+                      'verified_inventory_rows':report['verified_inventory_rows'],'backlog_counts':dict(backlog_counts),
                       'error_counts':dict(error_counts),
                       'live_samples':len(report['live_samples']),'errors':report['errors'][:20],
                       'warnings':report['warnings']},ensure_ascii=True))

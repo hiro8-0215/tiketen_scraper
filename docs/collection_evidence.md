@@ -59,6 +59,8 @@ The GitHub schedule fallback checks at minute 12 whether this hour already
 has a Ticket Scraper run, including queued runs. It dispatches an ordinary
 run for a missing hour and leaves the external hourly trigger in place.
 The scraper concurrency group serializes a fallback run behind any previous run.
+Before reporting success, Actions checks this run's exact inventory IDs against
+the saved masters. A missing ID or unsupported later state fails the audit.
 An anonymous sold row remains aggregate evidence even when the run verifies
 all known recent listing outcomes. The summary reports those rows separately.
 CSV evidence timestamps and log dates use UTC, including on a local PC.

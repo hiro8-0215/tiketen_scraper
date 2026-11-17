@@ -33,6 +33,7 @@ jobs:
         run: |
           echo "today=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
           echo "tomorrow=$(date -u --date=tomorrow +%Y%m%d)" >> "$GITHUB_OUTPUT"
+          echo "COLLECTION_AUDIT_SINCE=$(date -u +%Y-%m-%dT%H:%M:%S+00:00)" >> "$GITHUB_ENV"
           echo "PUBLIC_TICKET_CACHE_PATH=$RUNNER_TEMP/public-ticket-${{ github.run_id }}-${{ github.run_attempt }}.json" >> "$GITHUB_ENV"
           echo "PUBLIC_API_COOLDOWN_PATH=$RUNNER_TEMP/public-ticket-${{ github.run_id }}-${{ github.run_attempt }}.cooldown" >> "$GITHUB_ENV"
           if [[ "$PUBLIC_RECOVERY" == "true" ]]; then

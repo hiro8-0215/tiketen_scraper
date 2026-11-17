@@ -120,3 +120,27 @@ class ContentAuditTest(unittest.TestCase):
             self.assertFalse(report['public_coverage_complete'])
             self.assertEqual(report['backlog'][0]['reason'], 'recent_absence_without_outcome')
             self.assertFalse(module.audit(folder, rolling=True)['ok'])
+
+    def test_inventory_audit_requires_current_api_ids_in_saved_master(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            now = datetime.now(timezone.utc).replace(microsecond=0)
+            when = now.strftime('%Y-%m-%d %H:%M:%S')
+            self.write(folder, description_checked_at=when, last_observed_at=when)
+            poll = {'performer': 'group', 'event_id': 'event',
+                    'observed_at': when, 'observed_at_utc': now.isoformat(),
+                    'api_fetch_complete': True, 'api_active_count': 1,
+                    'api_active_ids': ['code']}
+            log = folder / f"observation_{now:%Y%m%d}.jsonl"
+            log.write_text(json.dumps(poll) + '\n', encoding='utf-8')
+            offset = timezone(timedelta(hours=-12 if now.hour < 12 else 14))
+            local_start = now.astimezone(offset)
+            self.assertNotEqual(local_start.date(), now.date())
+            report = module.audit(folder, inventory_first=True, inventory_since=local_start)
+            self.assertTrue(report['ok'])
+            self.assertEqual(report['verified_inventory_rows'], 1)
+            poll['api_active_ids'] = ['missing']
+            log.write_text(json.dumps(poll) + '\n', encoding='utf-8')
+            report = module.audit(folder, inventory_first=True, inventory_since=now)
+            self.assertFalse(report['ok'])
+            self.assertEqual(report['errors'][0]['reason'], 'api_inventory_not_preserved')

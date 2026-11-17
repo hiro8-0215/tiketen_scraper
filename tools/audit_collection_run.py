@@ -19,6 +19,39 @@ def read_master(path):
     return {r['ticket_id']: r for r in rows}
 
 
+def check_observed_inventory(observation, rows):
+    performer, event = observation['performer'], observation['event_id']
+    errors = []
+    later_state_updates = 0
+    api_ids = observation.get('api_active_ids')
+    if api_ids is None:
+        active = sum(r.get('event_id') == event and r.get('observation_state') == 'active'
+                     and r.get('last_observed_at') == observation['observed_at']
+                     for r in rows.values())
+        expected = observation['api_active_count']
+        if active != expected:
+            errors.append(f'{performer}/{event}: API active={expected}, saved current={active}')
+        return errors, later_state_updates
+    if (not isinstance(api_ids, list) or any(not isinstance(code, str) or not code for code in api_ids)
+            or len(api_ids) != len(set(api_ids)) or len(api_ids) != observation['api_active_count']):
+        return [f'{performer}/{event}: inconsistent API ID inventory'], 0
+    for code in api_ids:
+        row = rows.get(code)
+        if not row or row.get('event_id') != event:
+            errors.append(f'{performer}/{event}/{code}: API ID not saved')
+        elif (row.get('observation_state') == 'active'
+              and row.get('last_observed_at', '') >= observation['observed_at']):
+            continue
+        elif (row.get('state_checked_at', '') >= observation['observed_at']
+              and row.get('observation_state') in {'alias', 'sold_confirmed', 'deleted_confirmed',
+                                                   'inactive', 'paused', 'public_unclassified', 'expired'}
+              and (row.get('status_source') == 'public_detail' or row.get('observation_state') == 'alias')):
+            later_state_updates += 1
+        else:
+            errors.append(f'{performer}/{event}/{code}: API state lost without later evidence')
+    return errors, later_state_updates
+
+
 def audit(before_dir, after_dir):
     errors, totals, states = [], Counter(), Counter()
     for source in sorted(before_dir.glob('*_master.csv')):
@@ -72,43 +105,17 @@ def audit(before_dir, after_dir):
     checks = Counter()
     request_errors = Counter()
     later_state_updates = 0
-    for (performer, event), observation in latest.items():
+    for (performer, _), observation in latest.items():
         if 'public_status_checks' not in observation:
             continue
         evidence = observation['public_status_checks']
         checks.update({name: count for name, count in evidence.items() if type(count) is int})
         request_errors.update(evidence.get('request_errors', {}))
-        rows = read_master(after_dir / f'{performer}_master.csv')
         if observation.get('api_fetch_complete'):
-            api_ids = observation.get('api_active_ids')
-            if api_ids is not None:
-                if len(api_ids) != len(set(api_ids)) or len(api_ids) != observation['api_active_count']:
-                    errors.append(f'{performer}/{event}: inconsistent API ID inventory')
-                for code in api_ids:
-                    row = rows.get(code)
-                    if not row or row.get('event_id') != event:
-                        errors.append(f'{performer}/{event}/{code}: API ID not saved')
-                        continue
-                    if row.get('observation_state') == 'active':
-                        continue
-                    confirmed_later = (
-                        row.get('state_checked_at', '') >= observation['observed_at']
-                        and row.get('observation_state') in {
-                            'alias', 'sold_confirmed', 'deleted_confirmed', 'inactive', 'paused',
-                            'public_unclassified', 'expired'}
-                        and (row.get('status_source') == 'public_detail'
-                             or row.get('observation_state') == 'alias'))
-                    if confirmed_later:
-                        later_state_updates += 1
-                    else:
-                        errors.append(f'{performer}/{event}/{code}: API state lost without later evidence')
-                continue
-            active = sum(r.get('event_id') == event and r.get('observation_state') == 'active'
-                         and r.get('last_observed_at') == observation['observed_at']
-                         for r in rows.values())
-            expected = observation['api_active_count']
-            if active != expected:
-                errors.append(f'{performer}/{event}: API active={expected}, saved current={active}')
+            rows = read_master(after_dir / f'{performer}_master.csv')
+            missing, later_count = check_observed_inventory(observation, rows)
+            errors.extend(missing)
+            later_state_updates += later_count
     ledger_records = 0
     for path in change_log_paths(after_dir):
         with path.open(encoding='utf-8') as stream:
