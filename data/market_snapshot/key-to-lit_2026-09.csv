@@ -1,0 +1,8 @@
+﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,current_active_quantity,historical_listing_rows,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
+2026-09,key-to-lit-arena-tour-2026-neo-classics,2026-10-03,18:00,マリンメッセ福岡 A館,260,0,0,0,166,166,477,0,0,0,67,27,29976.98418972332,1034,65000
+2026-09,key-to-lit-arena-tour-2026-neo-classics,2026-10-04,12:30,マリンメッセ福岡 A館,173,0,0,0,120,120,289,0,0,0,34,19,32237.880239520957,6500,80000
+2026-09,key-to-lit-arena-tour-2026-neo-classics,2026-10-04,17:30,マリンメッセ福岡 A館,197,0,0,0,140,140,363,0,0,0,36,21,27948.032608695652,100,55000
+2026-09,key-to-lit-arena-tour-2026-neo-classics,2026-10-08,18:00,セキスイハイムスーパーアリーナ,1,0,0,0,0,0,2,0,0,0,0,1,42000.0,42000,42000
+2026-09,key-to-lit-arena-tour-2026-neo-classics,2026-10-09,18:00,セキスイハイムスーパーアリーナ,179,0,0,0,151,151,411,0,0,0,15,13,38559.86363636364,3500,299999
+2026-09,key-to-lit-arena-tour-2026-neo-classics,2026-10-10,12:30,セキスイハイムスーパーアリーナ,163,0,0,0,150,150,398,0,0,0,10,3,44482.82208588957,12000,78000
+2026-09,key-to-lit-arena-tour-2026-neo-classics,2026-10-10,17:30,セキスイハイムスーパーアリーナ,204,0,0,0,171,171,463,0,0,0,32,1,46644.59405940594,1900,130000
