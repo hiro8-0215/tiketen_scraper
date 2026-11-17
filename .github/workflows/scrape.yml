@@ -80,6 +80,7 @@ jobs:
         env:
           SCRAPE_MODE: api
           PUBLIC_STATUS_RUNTIME_MINUTES: ${{ inputs.recover_details && '35' || '5' }}
+          PUBLIC_STATUS_CHECK_LIMIT: ${{ inputs.recover_details && '6000' || '45' }}
           COLLECTION_COVERAGE_PATH: ${{ runner.temp }}/ticket-collection-coverage.json
         run: python scraper.py
 
@@ -87,6 +88,7 @@ jobs:
         env:
           SCRAPE_MODE: details
           PUBLIC_DETAIL_RUNTIME_MINUTES: ${{ inputs.recover_details && '300' || '8' }}
+          PUBLIC_CONTENT_CHECK_LIMIT: ${{ inputs.recover_details && '6000' || '35' }}
         run: python scraper.py
         
       # Audit before packing; keep checkpoints even if quality is incomplete.

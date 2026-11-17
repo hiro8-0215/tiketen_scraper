@@ -16,8 +16,8 @@ from playwright.sync_api import sync_playwright
 from collection_evidence import EVIDENCE_COLUMNS, reconcile_public_listings
 from collection_evidence import (
     fetch_public_ticket, apply_public_evidence, PublicRequestPolicy,
-    public_error_label, flatten_canonical_links, prepare_public_listings,
-    query_public_listings, apply_public_listing_check,
+    public_error_label, is_deferred_public_error, flatten_canonical_links,
+    prepare_public_listings, query_public_listings, apply_public_listing_check,
 )
 from collection_content import apply_event_content, content_refresh_reason, has_public_full_text
 from concurrent.futures import ThreadPoolExecutor
@@ -903,9 +903,9 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None
             except Exception as error:
                 label = public_error_label(error)
                 cache[code] = (None, label, '')
-                if label != 'budget':
+                if not is_deferred_public_error(label):
                     print(f'[PUBLIC CONTENT FETCH ERROR] {code}: {label}', flush=True)
-            if cache[code][1] != 'budget':
+            if not is_deferred_public_error(cache[code][1]):
                 time.sleep(0.5)
         value, error, checked_at = cache[code]
         return code, value, error, checked_at
@@ -914,6 +914,9 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None
             if error:
                 if error in {'time_limit', 'budget'}:
                     counts['pending'] += 1
+                elif str(error).startswith('deferred:'):
+                    counts['pending'] += 1
+                    request_errors[error.removeprefix('deferred:')] += 1
                 else:
                     counts['failed'] += 1
                     request_errors[error] += 1
@@ -982,21 +985,29 @@ def refresh_priority_content(targets, now, cache, policy):
     changed = {code for order, _, code in ranked if order == 0}
     print(f'[PUBLIC CONTENT PRIORITY] {len(priority)} new or changed ({len(changed)} visible changes); '
           f'{len(codes) - len(priority)} due for periodic verification', flush=True)
-    responses = query_public_listings(codes, cache, [len(codes)], PUBLIC_DETAIL_DEADLINE, policy)
-    priority_pending = sum(code not in responses for code in priority)
-    changed_pending = sum(code not in responses for code in changed)
+    limit = max(0, int(os.environ.get('PUBLIC_CONTENT_CHECK_LIMIT', str(len(codes)))))
+    responses = query_public_listings(codes, cache, [limit], PUBLIC_DETAIL_DEADLINE, policy)
+    resolved = {code for code, (_, error, _) in responses.items()
+                if not is_deferred_public_error(error)}
+    priority_pending = sum(code not in resolved for code in priority)
+    changed_pending = sum(code not in resolved for code in changed)
     print(f'[PUBLIC CONTENT PRIORITY] {len(priority)} priority lookups, {priority_pending} pending '
           f'({changed_pending} visible changes pending)', flush=True)
 
     for performer, pending in plans.items():
-        if any(code in responses for code in pending):
+        if any(code in responses and not is_deferred_public_error(responses[code][1]) for code in pending):
             master = load_master(performer)
             enrich_ticket_details(performer, master, pending, cache, policy, responses=responses)
             save_snapshots(performer, master)
         else:
+            deferred_errors = Counter(
+                responses[code][1].removeprefix('deferred:')
+                for code in pending
+                if code in responses and str(responses[code][1] or '').startswith('deferred:')
+            )
             write_content_observation(performer, len(pending), {
                 'checked': 0, 'full': 0, 'failed': 0, 'null': 0, 'pending': len(pending),
-            })
+            }, deferred_errors)
 
 
 def enrich_ticket_details_browser(performer, master, ticket_ids):
@@ -1148,22 +1159,27 @@ def finish_public_state_poll(batches, observations, cache, budget, deadline, pol
             for code, _ in candidates if code in responses
         ]
         if checked:
-            master = load_master(performer)
-            before = {code: row.copy() for code, row in master.items()}
+            has_evidence = any(responses[code][1] is None for _, _, code in checked)
+            master = load_master(performer) if has_evidence else {}
+            before = {code: row.copy() for code, row in master.items()} if has_evidence else {}
             for event_id, counts, code in checked:
                 apply_public_listing_check(master, code, event_id, responses[code], cache, counts)
-            flatten_canonical_links(master)
-            now = datetime.now().astimezone()
-            save_master(performer, master)
-            save_snapshots(performer, master)
-            save_ticket_changes(performer, before, master, now.strftime('%Y-%m-%d %H:%M:%S'),
-                                now.astimezone(timezone.utc).isoformat())
-            for record in observations[performer]:
-                set_observed_counts(record, master)
+            if has_evidence:
+                flatten_canonical_links(master)
+                now = datetime.now().astimezone()
+                save_master(performer, master)
+                save_snapshots(performer, master)
+                save_ticket_changes(performer, before, master, now.strftime('%Y-%m-%d %H:%M:%S'),
+                                    now.astimezone(timezone.utc).isoformat())
+                for record in observations[performer]:
+                    set_observed_counts(record, master)
         for slug, _, candidates, counts in events:
             new_absences = [code for code, newly_missing in candidates if newly_missing]
             counts['newly_missing'] = len(new_absences)
-            counts['newly_missing_pending'] = sum(code not in responses for code in new_absences)
+            counts['newly_missing_pending'] = sum(
+                code not in responses or is_deferred_public_error(responses[code][1])
+                for code in new_absences
+            )
             print(f'[PUBLIC EVIDENCE] {slug}: {counts}')
     write_observations(record for records in observations.values() for record in records)
 
@@ -1190,8 +1206,14 @@ def main():
     # A new API observation starts a new cache. Only the following details
     # phase can reuse the verified responses associated with that observation.
     public_cache = load_run_cache() if SCRAPE_MODE == 'details' else {}
+    has_prior_success = any(
+        not error and ticket is not None for ticket, error, _ in public_cache.values()
+    )
+    min_interval = max(0.0, float(os.environ.get('PUBLIC_API_MIN_INTERVAL', '4.5')))
     public_policy = PublicRequestPolicy(
-        os.environ.get('PUBLIC_API_COOLDOWN_PATH'), min_interval=3.1,
+        os.environ.get('PUBLIC_API_COOLDOWN_PATH'),
+        min_interval=min_interval,
+        has_prior_success=has_prior_success,
     )
     public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '6000')))]
     status_minutes = int(os.environ.get('PUBLIC_STATUS_RUNTIME_MINUTES', '35'))

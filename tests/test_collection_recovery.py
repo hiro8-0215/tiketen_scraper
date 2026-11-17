@@ -107,6 +107,38 @@ class PublicRequestRecoveryTest(unittest.TestCase):
                 evidence.fetch_public_ticket('another', policy=policy)
             self.assertEqual(request.call_count, 4)
 
+    def test_mid_run_access_denial_after_success_defers_and_carries_across_phases(self):
+        with tempfile.TemporaryDirectory() as directory:
+            cooldown = Path(directory) / 'cooldown'
+            policy = evidence.PublicRequestPolicy(cooldown)
+            rows = {
+                'ok': {'ticket_id': 'ok', 'event_id': 'e1', 'status': 'listing',
+                       'last_observed_at': '2026-11-16 10:00:00'},
+                'throttled': {'ticket_id': 'throttled', 'event_id': 'e1', 'status': 'listing',
+                              'last_observed_at': '2026-11-16 09:00:00'},
+            }
+            prior = {k: v.copy() for k, v in rows.items()}
+            with (patch.object(evidence.urllib.request, 'urlopen', side_effect=[
+                      response(success=True, ticket={'shareCode': 'ok', 'eventId': 'fire', 'status': 'sold'}),
+                      http_error(403),
+                  ]) as request,
+                  patch.object(evidence.time, 'sleep')):
+                counts = evidence.reconcile_public_listings(
+                    rows, prior, set(), 'fire', '2026-11-16 11:00:00',
+                    {}, [2], float('inf'), policy=policy,
+                )
+            self.assertEqual(request.call_count, 2)
+            self.assertEqual(counts['checked'], 1)
+            self.assertEqual(counts['sold'], 1)
+            self.assertEqual(counts['failed'], 0)
+            self.assertEqual(counts['pending'], 1)
+            self.assertEqual(counts.get('request_errors'), {'HTTP 403': 1})
+            policy.save_cooldown()
+            next_phase = evidence.PublicRequestPolicy(cooldown)
+            self.assertTrue(next_phase.has_succeeded)
+            with self.assertRaises(evidence.PublicLookupDeferred):
+                next_phase.before_request(evidence.time.monotonic() + 480)
+
     def test_invalid_json_shape_is_not_a_successful_null_ticket(self):
         with patch.object(evidence.urllib.request, 'urlopen',
                           return_value=response(success=False, ticket=None)) as request:
@@ -379,6 +411,9 @@ class CoverageRecoveryTest(unittest.TestCase):
                                         'issues': [{'reason': 'event_poll_failed'}]}), encoding='utf-8')
             with (patch('sys.argv', ['check_collection_coverage.py', str(path)]),
                   patch.dict(check_collection_coverage.os.environ, {'GITHUB_STEP_SUMMARY': ''}),
+                  patch('builtins.print') as printed,
                   self.assertRaises(SystemExit) as failure):
                 check_collection_coverage.main()
             self.assertEqual(failure.exception.code, 1)
+            self.assertTrue(any('::warning title=Incomplete event coverage::' in str(call.args[0])
+                                for call in printed.call_args_list if call.args))

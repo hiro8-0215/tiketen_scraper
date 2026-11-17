@@ -26,6 +26,14 @@ RETRYABLE_PUBLIC_HTTP = {408, 429, 500, 502, 503, 504}
 class PublicLookupDeferred(RuntimeError):
     """No request can be made safely within the remaining phase budget."""
 
+    def __init__(self, message, *, status_code=None):
+        super().__init__(message)
+        self.status_code = status_code
+
+
+def is_deferred_public_error(error):
+    return error in {'budget', 'time_limit'} or str(error or '').startswith('deferred:')
+
 
 def retry_after_seconds(value):
     if not value:
@@ -46,24 +54,38 @@ def retry_after_seconds(value):
 class PublicRequestPolicy:
     """Share server backoff and repeated access denials across both workers."""
 
-    def __init__(self, cooldown_path=None, *, min_interval=0):
+    def __init__(self, cooldown_path=None, *, min_interval=0, has_prior_success=False):
         self._lock = threading.Lock()
         self._resume_at = 0.0
         self._next_request_at = 0.0
         self._min_interval = min_interval
         self._denied = 0
         self._blocked = False
+        self._succeeded = 1 if has_prior_success else 0
         self._cooldown_path = Path(cooldown_path) if cooldown_path else None
         if self._cooldown_path and self._cooldown_path.exists():
-            retry_epoch = float(self._cooldown_path.read_text(encoding='ascii'))
+            lines = self._cooldown_path.read_text(encoding='ascii').splitlines()
+            retry_epoch = float(lines[0]) if lines else 0.0
             if math.isfinite(retry_epoch):
                 self._resume_at = time.monotonic() + max(0.0, retry_epoch - time.time())
+            if len(lines) > 1 and lines[1].strip() == '1':
+                self._succeeded = max(self._succeeded, 1)
+
+    @property
+    def has_succeeded(self):
+        with self._lock:
+            return self._succeeded > 0
 
     def save_cooldown(self):
         """Carry Retry-After across the two Python phases of this run."""
         if self._cooldown_path:
             remaining = max(0.0, self._resume_at - time.monotonic())
-            self._cooldown_path.write_text(str(time.time() + remaining), encoding='ascii')
+            if self._blocked:
+                remaining = max(remaining, 900.0)
+            text = str(time.time() + remaining)
+            if self._succeeded > 0:
+                text += '\n1'
+            self._cooldown_path.write_text(text, encoding='ascii')
 
     def before_request(self, deadline):
         while True:
@@ -82,9 +104,16 @@ class PublicRequestPolicy:
 
     def record_response(self, status, retry_after=None):
         with self._lock:
-            self._denied = self._denied + 1 if status in {401, 403} else 0
-            if self._denied >= 4 and not self._blocked:
+            if status == 200:
+                self._denied = 0
+                self._succeeded += 1
+            elif status in {401, 403}:
+                self._denied += 1
+            else:
+                self._denied = 0
+            if (self._denied >= 4 or (self._denied >= 1 and self._succeeded > 0)) and not self._blocked:
                 self._blocked = True
+                self._resume_at = max(self._resume_at, time.monotonic() + 900.0)
                 print('[PUBLIC API] pausing this phase after repeated HTTP 401/403', flush=True)
             if status == 429 or (status == 503 and retry_after is not None):
                 delay = max(5, retry_after if retry_after is not None else 30)
@@ -98,6 +127,8 @@ def public_error_label(error):
     if isinstance(error, urllib.error.HTTPError):
         return f'HTTP {error.code}'
     if isinstance(error, PublicLookupDeferred):
+        if error.status_code is not None:
+            return f'deferred:HTTP {error.status_code}'
         return 'budget'
     return type(error).__name__
 
@@ -134,7 +165,15 @@ def fetch_public_ticket(code, *, policy=None, deadline=float('inf')):
             policy.record_response(status, retry_after)
             # In particular, do not retry 401/403/404. Rate-limited retries
             # pass through the shared cooldown before touching the endpoint.
+            if status in {401, 403} and policy.has_succeeded:
+                raise PublicLookupDeferred(
+                    f'HTTP {status} after successful lookups', status_code=status
+                ) from error
             if status not in RETRYABLE_PUBLIC_HTTP or attempt >= 1:
+                if (status == 429 or (status == 503 and retry_after is not None)) and policy.has_succeeded:
+                    raise PublicLookupDeferred(
+                        f'repeated HTTP {status} after successful lookups', status_code=status
+                    ) from error
                 raise
             if status == 429 or (status == 503 and retry_after is not None):
                 continue
@@ -319,7 +358,7 @@ def query_public_listings(codes, cache, budget, deadline, policy):
                 cache[code] = (value, None, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             except Exception as error:
                 cache[code] = (None, public_error_label(error), '')
-            if cache[code][1] != 'budget':
+            if not is_deferred_public_error(cache[code][1]):
                 time.sleep(0.5)  # At most two concurrent public requests.
         value, error, checked_at = cache[code]
         return code, value, error, checked_at
@@ -335,6 +374,11 @@ def query_public_listings(codes, cache, budget, deadline, policy):
 
 def apply_public_listing_check(master, code, event_id, response, cache, counts):
     ticket, error, checked_at = response
+    if str(error or '').startswith('deferred:'):
+        label = error.removeprefix('deferred:')
+        errors = counts.setdefault('request_errors', {})
+        errors[label] = errors.get(label, 0) + 1
+        return
     counts['pending'] -= 1
     if error:
         counts['failed'] += 1
