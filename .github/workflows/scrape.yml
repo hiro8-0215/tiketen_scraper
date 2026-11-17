@@ -181,6 +181,8 @@ jobs:
 
   archive:
     needs: scrape
+    # The schedule guard is skipped for a manual dispatch.
+    if: ${{ !cancelled() && needs.scrape.result == 'success' && needs.scrape.outputs.data_ref != '' }}
     uses: ./.github/workflows/archive.yml
     permissions:
       contents: read
