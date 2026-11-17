@@ -23,14 +23,16 @@ EVIDENCE_COLUMNS = [
 
 
 RETRYABLE_PUBLIC_HTTP = {408, 429, 500, 502, 503, 504}
+PUBLIC_IP_BLOCK = 'ticket_detail_ip_blocked'
 
 
 class PublicLookupDeferred(RuntimeError):
     """No request can be made safely within the remaining phase budget."""
 
-    def __init__(self, message, *, status_code=None):
+    def __init__(self, message, *, status_code=None, ip_blocked=False):
         super().__init__(message)
         self.status_code = status_code
+        self.ip_blocked = ip_blocked
 
 
 def is_deferred_public_error(error):
@@ -53,6 +55,17 @@ def retry_after_seconds(value):
             return None
 
 
+def public_ip_blocked(error):
+    if (error.code != 403 or error.fp is None
+            or 'application/json' not in (error.headers or {}).get('Content-Type', '').lower()):
+        return False
+    try:
+        payload = json.loads(error.read(4096))
+    except (OSError, ValueError):
+        return False
+    return isinstance(payload, dict) and payload.get('error') == PUBLIC_IP_BLOCK
+
+
 class PublicRequestPolicy:
     """Share server backoff and repeated access denials across both workers."""
 
@@ -67,6 +80,7 @@ class PublicRequestPolicy:
         self._succeeded = 1 if has_prior_success else 0
         self._started_requests = 0
         self._reported_responses = Counter()
+        self._ip_blocks = 0
         self.retry_access_denial = retry_access_denial
         self._server_cooldown_path = Path(server_cooldown_path) if server_cooldown_path else None
         self._server_delayed = False
@@ -97,6 +111,7 @@ class PublicRequestPolicy:
         counts = json.dumps({
             'started': self._started_requests,
             'recorded_statuses': dict(self._reported_responses),
+            'ip_blocks': self._ip_blocks,
             'interval_seconds': self._min_interval,
         })
         print('[PUBLIC API COUNTS] ' + counts, flush=True)
@@ -133,9 +148,11 @@ class PublicRequestPolicy:
                     return min(15, remaining)
             time.sleep(wait)
 
-    def record_response(self, status, retry_after=None):
+    def record_response(self, status, retry_after=None, *, ip_blocked=False):
         with self._lock:
             self._reported_responses[status] += 1
+            if ip_blocked:
+                self._ip_blocks += 1
             if status == 200:
                 self._denied = 0
                 self._succeeded += 1
@@ -143,16 +160,18 @@ class PublicRequestPolicy:
                 self._denied += 1
             else:
                 self._denied = 0
-            if (status == 403 and self.retry_access_denial and self._succeeded > 0
+            if (status == 403 and not ip_blocked and self.retry_access_denial and self._succeeded > 0
                     and self._denied == 1 and not self._blocked):
                 self._server_delayed = True
                 self._resume_at = max(self._resume_at, time.monotonic() + max(900.0, retry_after or 0))
                 print('[PUBLIC API] HTTP 403 in recovery; waiting before one retry', flush=True)
-            elif (status == 401 or self._denied >= 4 or (self._denied and self._succeeded)) and not self._blocked:
+            elif ((ip_blocked or status == 401 or self._denied >= 4 or (self._denied and self._succeeded))
+                  and not self._blocked):
                 self._blocked = True
                 self._server_delayed = True
                 self._resume_at = max(self._resume_at, time.monotonic() + max(900.0, retry_after or 0))
-                print(f'[PUBLIC API] pausing this phase after HTTP {status}', flush=True)
+                reason = f' ({PUBLIC_IP_BLOCK})' if ip_blocked else ''
+                print(f'[PUBLIC API] pausing this run after HTTP {status}{reason}', flush=True)
             if status == 429 or (status == 503 and retry_after is not None):
                 self._server_delayed = True
                 self._min_interval = max(self._min_interval, 4.5)
@@ -164,11 +183,12 @@ class PublicRequestPolicy:
 
 
 def public_error_label(error):
+    reason = f' ({PUBLIC_IP_BLOCK})' if getattr(error, 'ip_blocked', False) else ''
     if isinstance(error, urllib.error.HTTPError):
-        return f'HTTP {error.code}'
+        return f'HTTP {error.code}{reason}'
     if isinstance(error, PublicLookupDeferred):
         if error.status_code is not None:
-            return f'deferred:HTTP {error.status_code}'
+            return f'deferred:HTTP {error.status_code}{reason}'
         return 'budget'
     return type(error).__name__
 
@@ -212,16 +232,17 @@ def fetch_public_ticket(code, *, policy=None, deadline=float('inf')):
         except urllib.error.HTTPError as error:
             status = error.code
             retry_after = retry_after_seconds(error.headers.get('Retry-After') if error.headers else None)
+            error.ip_blocked = public_ip_blocked(error)
             error.close()
-            policy.record_response(status, retry_after)
+            policy.record_response(status, retry_after, ip_blocked=error.ip_blocked)
             # A longer recovery run can wait out one access denial after
             # proven progress. The shared cooldown also covers throttling.
             if status == 403 and policy.has_succeeded:
-                if policy.retry_access_denial and attempt == 0:
+                if policy.retry_access_denial and attempt == 0 and not error.ip_blocked:
                     retrying_denial = True
                     continue
                 raise PublicLookupDeferred(
-                    f'HTTP {status} after successful lookups', status_code=status
+                    f'HTTP {status} after successful lookups', status_code=status, ip_blocked=error.ip_blocked
                 ) from error
             if status not in RETRYABLE_PUBLIC_HTTP or attempt >= 1:
                 if (status == 429 or (status == 503 and retry_after is not None)) and policy.has_succeeded:

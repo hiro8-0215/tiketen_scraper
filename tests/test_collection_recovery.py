@@ -199,6 +199,30 @@ class PublicRequestRecoveryTest(unittest.TestCase):
             self.assertEqual(request.call_count, 3)
             wait.assert_called_once_with(900)
 
+    def test_explicit_ip_block_stops_recovery_with_or_without_prior_success(self):
+        for prior_success in (False, True):
+            with self.subTest(prior_success=prior_success), tempfile.TemporaryDirectory() as directory:
+                cooldown = Path(directory) / 'cooldown'
+                policy = evidence.PublicRequestPolicy(
+                    cooldown, has_prior_success=prior_success, retry_access_denial=True)
+                denied = urllib.error.HTTPError(
+                    'https://example.invalid', 403, 'test',
+                    {'Content-Type': 'application/json; charset=utf-8'},
+                    response(error='ticket_detail_ip_blocked'),
+                )
+                expected_type = evidence.PublicLookupDeferred if prior_success else urllib.error.HTTPError
+                prefix = 'deferred:' if prior_success else ''
+                with patch.object(evidence.urllib.request, 'urlopen', side_effect=denied) as request:
+                    with self.assertRaises(expected_type) as failure:
+                        evidence.fetch_public_ticket('code', policy=policy)
+                    self.assertEqual(evidence.public_error_label(failure.exception),
+                                     prefix + 'HTTP 403 (ticket_detail_ip_blocked)')
+                    policy.save_cooldown()
+                    following_phase = evidence.PublicRequestPolicy(cooldown)
+                    with self.assertRaises(evidence.PublicLookupDeferred):
+                        evidence.fetch_public_ticket('another', policy=following_phase)
+                    request.assert_called_once()
+
     def test_server_cooldown_survives_queued_run_without_inheriting_success(self):
         with tempfile.TemporaryDirectory() as directory:
             stage = Path(directory) / 'current'
