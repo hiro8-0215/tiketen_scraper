@@ -6,7 +6,7 @@ import os
 import sys
 import time
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,22 +18,29 @@ from scraper import sanitize_unicode
 
 DEFERRED_CONTENT_REASONS = {
     'unverified_full_description', 'expired_full_description', 'public_description_preview_changed',
+    'public_description_older_than_list',
 }
 
 
 def audit(folder, live_limit=0, *, rolling=False, inventory_first=False):
     errors, active, samples, latest, warnings = [], {}, [], {}, []
     backlog = []
-    now = datetime.now()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    absence_cutoff = (now - timedelta(hours=36)).isoformat(sep=' ')
     for path in folder.glob('*_master.csv'):
         with path.open(encoding='utf-8-sig', newline='') as stream:
             records = list(csv.DictReader(stream))
         for row in records:
+            if row.get('observation_state') in {'absent_unverified', 'absent_unknown'}:
+                first_absence = row.get('absence_first_observed_at', '')
+                if first_absence >= absence_cutoff:
+                    findings = errors if rolling else backlog
+                    findings.append({'id': row['ticket_id'], 'reason': 'recent_absence_without_outcome'})
             if row.get('observation_state') != 'active':
                 continue
             code = row['ticket_id']
             if rolling or inventory_first:
-                reason = content_refresh_reason(row, now)
+                reason = content_refresh_reason(row, now, require_latest=True)
                 if reason:
                     findings = backlog if inventory_first and reason in DEFERRED_CONTENT_REASONS else errors
                     findings.append({'id': code, 'reason': reason})
@@ -55,7 +62,7 @@ def audit(folder, live_limit=0, *, rolling=False, inventory_first=False):
         if (item.get('failed') or item.get('pending')
                 or (item.get('null') and item.get('scope') == 'observed_active')):
             findings = warnings if rolling or inventory_first else errors
-            if inventory_first and item.get('failed'):
+            if item.get('failed'):
                 findings = errors
             findings.append({'performer':performer,'reason':'incomplete_public_refresh',
                            'failed':item.get('failed'),'pending':item.get('pending'),'null':item.get('null')})
@@ -71,6 +78,9 @@ def audit(folder, live_limit=0, *, rolling=False, inventory_first=False):
                 polls[(item.get('performer'),item.get('event_id'))] = item
     for (performer,event), item in polls.items():
         checks = item.get('public_status_checks', {})
+        if unresolved_sold := item.get('unresolved_sold_count'):
+            warnings.append({'performer': performer, 'event': event,
+                             'reason': 'anonymous_sold_rows', 'count': unresolved_sold})
         if checks.get('failed') or checks.get('pending'):
             findings = backlog if inventory_first and not checks.get('failed') else errors
             findings.append({'performer':performer,'event':event,
@@ -133,17 +143,23 @@ def main():
     backlog_counts = Counter()
     for item in report['backlog']:
         backlog_counts[item['reason']] += item.get('pending', 1)
+    error_counts = Counter(item['reason'] for item in report['errors'])
     summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary_path:
         with open(summary_path, 'a', encoding='utf-8') as summary:
             summary.write('### Public ticket evidence\n\n')
             summary.write(f"- Active listing rows: {report['unique_active_rows']:,}\n")
-            summary.write(f"- Public evidence fully checked: {report['public_coverage_complete']}\n")
+            summary.write(f"- Known listing states and active content fully checked: {report['public_coverage_complete']}\n")
+            anonymous = sum(item['count'] for item in report['warnings'] if item['reason'] == 'anonymous_sold_rows')
+            if anonymous:
+                summary.write(f"- Sold rows without a listing identifier: {anonymous:,}\n")
             for reason, count in sorted(backlog_counts.items()):
                 summary.write(f'- Deferred {reason}: {count:,}\n')
+            for reason, count in sorted(error_counts.items()):
+                summary.write(f'- Quality errors {reason}: {count:,}\n')
     print(json.dumps({'ok':report['ok'],'public_coverage_complete':report['public_coverage_complete'],
                       'unique_active_rows':report['unique_active_rows'],'backlog_counts':dict(backlog_counts),
-                      'error_counts':dict(Counter(item['reason'] for item in report['errors'])),
+                      'error_counts':dict(error_counts),
                       'live_samples':len(report['live_samples']),'errors':report['errors'][:20],
                       'warnings':report['warnings']},ensure_ascii=True))
     raise SystemExit(0 if report['ok'] else 1)

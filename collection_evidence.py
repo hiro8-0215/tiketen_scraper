@@ -5,6 +5,7 @@ import threading
 import time
 import urllib.error
 import urllib.request
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
@@ -54,7 +55,8 @@ def retry_after_seconds(value):
 class PublicRequestPolicy:
     """Share server backoff and repeated access denials across both workers."""
 
-    def __init__(self, cooldown_path=None, *, min_interval=0, has_prior_success=False):
+    def __init__(self, cooldown_path=None, *, min_interval=0, has_prior_success=False,
+                 retry_access_denial=False):
         self._lock = threading.Lock()
         self._resume_at = 0.0
         self._next_request_at = 0.0
@@ -62,6 +64,9 @@ class PublicRequestPolicy:
         self._denied = 0
         self._blocked = False
         self._succeeded = 1 if has_prior_success else 0
+        self._started_requests = 0
+        self._reported_responses = Counter()
+        self.retry_access_denial = retry_access_denial
         self._cooldown_path = Path(cooldown_path) if cooldown_path else None
         if self._cooldown_path and self._cooldown_path.exists():
             lines = self._cooldown_path.read_text(encoding='ascii').splitlines()
@@ -70,6 +75,8 @@ class PublicRequestPolicy:
                 self._resume_at = time.monotonic() + max(0.0, retry_epoch - time.time())
             if len(lines) > 1 and lines[1].strip() == '1':
                 self._succeeded = max(self._succeeded, 1)
+            if len(lines) > 2 and (carried_interval := float(lines[2])) > self._min_interval:
+                self._min_interval = carried_interval
 
     @property
     def has_succeeded(self):
@@ -77,33 +84,38 @@ class PublicRequestPolicy:
             return self._succeeded > 0
 
     def save_cooldown(self):
-        """Carry Retry-After across the two Python phases of this run."""
+        """Carry request spacing and server cooldown across phases of this run."""
+        print('[PUBLIC API COUNTS] ' + json.dumps({
+            'started': self._started_requests,
+            'recorded_statuses': dict(self._reported_responses),
+            'interval_seconds': self._min_interval,
+        }), flush=True)
         if self._cooldown_path:
-            remaining = max(0.0, self._resume_at - time.monotonic())
+            remaining = max(0.0, max(self._resume_at, self._next_request_at) - time.monotonic())
             if self._blocked:
                 remaining = max(remaining, 900.0)
-            text = str(time.time() + remaining)
-            if self._succeeded > 0:
-                text += '\n1'
+            text = f'{time.time() + remaining}\n{int(self._succeeded > 0)}\n{self._min_interval}'
             self._cooldown_path.write_text(text, encoding='ascii')
 
     def before_request(self, deadline):
         while True:
             with self._lock:
                 if self._blocked:
-                    raise PublicLookupDeferred('repeated HTTP 401/403')
+                    raise PublicLookupDeferred('public API paused after an access denial')
                 now = time.monotonic()
                 wait = max(self._resume_at, self._next_request_at) - now
                 remaining = deadline - now
                 if remaining <= max(0.0, wait):
                     raise PublicLookupDeferred('public API deadline or cooldown')
                 if wait <= 0:
+                    self._started_requests += 1
                     self._next_request_at = now + self._min_interval
                     return min(15, remaining)
             time.sleep(wait)
 
     def record_response(self, status, retry_after=None):
         with self._lock:
+            self._reported_responses[status] += 1
             if status == 200:
                 self._denied = 0
                 self._succeeded += 1
@@ -111,11 +123,16 @@ class PublicRequestPolicy:
                 self._denied += 1
             else:
                 self._denied = 0
-            if (self._denied >= 4 or (self._denied >= 1 and self._succeeded > 0)) and not self._blocked:
+            if (status == 403 and self.retry_access_denial and self._succeeded > 0
+                    and self._denied == 1 and not self._blocked):
+                self._resume_at = max(self._resume_at, time.monotonic() + max(900.0, retry_after or 0))
+                print('[PUBLIC API] HTTP 403 in recovery; waiting before one retry', flush=True)
+            elif (status == 401 or self._denied >= 4 or (self._denied and self._succeeded)) and not self._blocked:
                 self._blocked = True
-                self._resume_at = max(self._resume_at, time.monotonic() + 900.0)
-                print('[PUBLIC API] pausing this phase after repeated HTTP 401/403', flush=True)
+                self._resume_at = max(self._resume_at, time.monotonic() + max(900.0, retry_after or 0))
+                print(f'[PUBLIC API] pausing this phase after HTTP {status}', flush=True)
             if status == 429 or (status == 503 and retry_after is not None):
+                self._min_interval = max(self._min_interval, 4.5)
                 delay = max(5, retry_after if retry_after is not None else 30)
                 until = time.monotonic() + delay
                 if until > self._resume_at:
@@ -146,26 +163,40 @@ def fetch_public_ticket(code, *, policy=None, deadline=float('inf')):
         headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'},
     )
     policy = PublicRequestPolicy() if policy is None else policy
+    retrying_denial = False
     for attempt in range(3):
-        timeout = policy.before_request(deadline)
+        try:
+            timeout = policy.before_request(deadline)
+        except PublicLookupDeferred as error:
+            if retrying_denial:
+                raise PublicLookupDeferred('HTTP 403 cooldown exceeds remaining budget',
+                                           status_code=403) from error
+            raise
+        retrying_denial = False
         try:
             with urllib.request.urlopen(request, timeout=timeout) as response:
                 payload = json.load(response)
-            policy.record_response(200)
             if not isinstance(payload, dict) or payload.get('success') is not True or 'ticket' not in payload:
                 raise ValueError('Invalid public ticket response')
             ticket = payload['ticket']
             if ticket is not None and not isinstance(ticket, dict):
                 raise ValueError('Invalid public ticket object')
+            if ticket is not None and all(
+                    isinstance(ticket.get(key), str) and ticket[key].strip()
+                    for key in ('shareCode', 'eventId', 'status')):
+                policy.record_response(200)
             return ticket
         except urllib.error.HTTPError as error:
             status = error.code
             retry_after = retry_after_seconds(error.headers.get('Retry-After') if error.headers else None)
             error.close()
             policy.record_response(status, retry_after)
-            # In particular, do not retry 401/403/404. Rate-limited retries
-            # pass through the shared cooldown before touching the endpoint.
-            if status in {401, 403} and policy.has_succeeded:
+            # A longer recovery run can wait out one access denial after
+            # proven progress. The shared cooldown also covers throttling.
+            if status == 403 and policy.has_succeeded:
+                if policy.retry_access_denial and attempt == 0:
+                    retrying_denial = True
+                    continue
                 raise PublicLookupDeferred(
                     f'HTTP {status} after successful lookups', status_code=status
                 ) from error
@@ -188,9 +219,9 @@ def fetch_public_ticket(code, *, policy=None, deadline=float('inf')):
 
 def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     row = master[old_code]
+    if row.get('state_checked_at', '') > now:
+        return 'stale'
     if ticket is None:
-        if row.get('state_checked_at', '') > now:
-            return 'stale'
         row['observation_state'] = 'absent_unknown'
         row['state_checked_at'] = now
         row['public_ticket_status'] = ''
@@ -211,6 +242,8 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
     content = public_updates(ticket, now)
     if code != old_code:
         target = master.get(code)
+        if target is not None and target.get('observation_state') == 'alias':
+            raise ValueError('Public response points to a superseded alias')
         # The event API can lag a public shareCode rotation even while the
         # listing is active. The direct public response proves the new code
         # and event identity; keep the old code as an alias instead of losing
@@ -219,7 +252,7 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
             target = row.copy()
             target.update(ticket_id=code, first_observed_at=now, last_observed_at=now,
                           first_observed_source='public_alias_observed',
-                          absence_first_observed_at='')
+                          absence_first_observed_at=now)
             master[code] = target
         if target is None or target.get('event_id') != row.get('event_id'):
             raise ValueError('Canonical public code is not in the event snapshot')
@@ -254,8 +287,6 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
                 or not row.get('last_observed_at')
                 or (row.get('observation_state') != 'active' and not row.get('absence_first_observed_at'))):
             row['last_observed_at'] = now
-        if code != old_code:
-            row['absence_first_observed_at'] = ''
         row['observation_state'] = 'active'
     elif status == 'sold':
         if row.get('status') != 'sold':
@@ -294,7 +325,7 @@ def prepare_public_listings(master, prior, active_codes, now, *, recheck_after=t
     counts = {'checked': 0, 'alias': 0, 'sold': 0, 'cancelled': 0,
               'not_found': 0, 'active': 0, 'expired': 0, 'inactive': 0, 'paused': 0,
               'unclassified': 0, 'stale': 0, 'failed': 0,
-              'pending': 0, 'historical_unresolved': 0}
+              'pending': 0, 'historical_unresolved': 0, 'full_from_alias': 0}
     now_dt = datetime.fromisoformat(now)
     cutoff = now_dt - timedelta(hours=36)
     candidates = []
@@ -302,7 +333,14 @@ def prepare_public_listings(master, prior, active_codes, now, *, recheck_after=t
         row = master.get(code)
         if row is None or code in active_codes or row.get('status') != 'listing':
             continue
-        if row.get('observation_state') in {'alias', 'expired', 'absent_unknown'}:
+        if row.get('observation_state') in {'alias', 'expired'}:
+            continue
+        if row.get('observation_state') == 'absent_unknown':
+            first_absence = row.get('absence_first_observed_at', '')
+            last_check = row.get('state_checked_at', '')
+            if (first_absence >= cutoff.isoformat(sep=' ')
+                    and last_check <= (now_dt - timedelta(hours=6)).isoformat(sep=' ')):
+                candidates.append((code, False))
             continue
         newly_missing = (not row.get('absence_first_observed_at')
                          and previous.get('observation_state') in {None, '', 'active'})
@@ -351,22 +389,27 @@ def query_public_listings(codes, cache, budget, deadline, policy):
     def query(code):
         if time.monotonic() >= deadline:
             return code, None, 'budget', ''
-        if code not in cache:
-            try:
-                value = (fetch_public_ticket(code) if policy is None else
-                         fetch_public_ticket(code, policy=policy, deadline=deadline))
-                cache[code] = (value, None, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            except Exception as error:
-                cache[code] = (None, public_error_label(error), '')
-            if not is_deferred_public_error(cache[code][1]):
-                time.sleep(0.5)  # At most two concurrent public requests.
-        value, error, checked_at = cache[code]
-        return code, value, error, checked_at
+        if code in cache:
+            return code, *cache[code]
+        try:
+            value = (fetch_public_ticket(code) if policy is None else
+                     fetch_public_ticket(code, policy=policy, deadline=deadline))
+            checked_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+        except Exception as error:
+            label = public_error_label(error)
+            if not is_deferred_public_error(label):
+                time.sleep(0.5)
+            return code, None, label, ''
+        time.sleep(0.5)
+        return code, value, None, checked_at
     cached = [c for c in codes if c in cache]
     fresh = [c for c in codes if c not in cache]
     selected = cached + fresh[:budget[0]]
     budget[0] -= min(len(fresh), budget[0])
-    with ThreadPoolExecutor(max_workers=2) as pool:
+    # Recovery may retry a denied request after cooldown. Keep that path
+    # serial so there is only one in-flight request when it pauses.
+    workers = 1 if policy is not None and policy.retry_access_denial else 2
+    with ThreadPoolExecutor(max_workers=workers) as pool:
         return {code: (ticket, error, checked_at)
                 for code, ticket, error, checked_at in pool.map(query, selected)
                 if error != 'budget'}
@@ -392,6 +435,10 @@ def apply_public_listing_check(master, code, event_id, response, cache, counts):
         return
     counts['checked'] += 1
     counts[result] += 1
+    if result == 'alias' and isinstance(ticket.get('description'), str):
+        target = master[ticket['shareCode']]
+        if target.get('description_checked_at') == checked_at:
+            counts['full_from_alias'] += 1
     if result != 'stale':
         remember_verified(cache, ticket, error, checked_at)
 

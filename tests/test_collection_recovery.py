@@ -1,6 +1,7 @@
 import io
 import json
 import tempfile
+import threading
 import unittest
 import urllib.error
 from datetime import datetime, timedelta, timezone
@@ -70,6 +71,20 @@ class PublicRequestRecoveryTest(unittest.TestCase):
             wait.assert_called_once_with(2.5)
             self.assertEqual(clock[0], 102.5)
 
+    def test_normal_pass_allows_two_workers_with_a_half_second_wait(self):
+        both_workers = threading.Barrier(2, timeout=3)
+
+        def lookup(code, **kwargs):
+            both_workers.wait()
+            return {'shareCode': code}
+
+        with (patch.object(evidence, 'fetch_public_ticket', side_effect=lookup),
+              patch.object(evidence.time, 'sleep') as pause):
+            results = evidence.query_public_listings(
+                ['one', 'two'], {}, [2], float('inf'), evidence.PublicRequestPolicy())
+        self.assertEqual([results[code][0]['shareCode'] for code in ['one', 'two']], ['one', 'two'])
+        self.assertEqual([call.args[0] for call in pause.call_args_list], [0.5, 0.5])
+
     def test_single_throttle_can_recover_and_cooldown_survives_phase_boundary(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'cooldown'
@@ -95,6 +110,8 @@ class PublicRequestRecoveryTest(unittest.TestCase):
                 self.assertEqual(ticket['shareCode'], 'code')
                 self.assertEqual(request.call_count, 3)
                 self.assertEqual([call.args[0] for call in wait.call_args_list], [30, 10])
+                with self.assertRaises(evidence.PublicLookupDeferred):
+                    policy.before_request(clock[0] + 4)
 
     def test_repeated_access_denials_stop_other_requests(self):
         policy = evidence.PublicRequestPolicy()
@@ -140,11 +157,67 @@ class PublicRequestRecoveryTest(unittest.TestCase):
                 next_phase.before_request(evidence.time.monotonic() + 480)
 
     def test_invalid_json_shape_is_not_a_successful_null_ticket(self):
-        with patch.object(evidence.urllib.request, 'urlopen',
-                          return_value=response(success=False, ticket=None)) as request:
+        policy = evidence.PublicRequestPolicy()
+        with patch.object(evidence.urllib.request, 'urlopen', side_effect=[
+                response(success=False, ticket=None),
+                response(success=True, ticket=None),
+                http_error(403),
+        ]):
             with self.assertRaises(ValueError):
-                evidence.fetch_public_ticket('code')
-            request.assert_called_once()
+                evidence.fetch_public_ticket('code', policy=policy)
+            self.assertIsNone(evidence.fetch_public_ticket('code', policy=policy))
+            with self.assertRaises(urllib.error.HTTPError):
+                evidence.fetch_public_ticket('code', policy=policy)
+        self.assertFalse(policy.has_succeeded)
+
+    def test_authentication_error_is_hard_after_valid_response(self):
+        policy = evidence.PublicRequestPolicy()
+        with patch.object(evidence.urllib.request, 'urlopen', side_effect=[
+                response(success=True, ticket={'shareCode': 'ok', 'eventId': 'fire', 'status': 'active'}),
+                http_error(401),
+        ]):
+            evidence.fetch_public_ticket('ok', policy=policy)
+            with self.assertRaises(urllib.error.HTTPError):
+                evidence.fetch_public_ticket('denied', policy=policy)
+
+    def test_recovery_retries_one_mid_run_denial_after_cooldown(self):
+        policy = evidence.PublicRequestPolicy(retry_access_denial=True)
+        clock = [100.0]
+        ticket = {'shareCode': 'code', 'eventId': 'fire', 'status': 'active'}
+
+        def sleep(seconds):
+            clock[0] += seconds
+
+        with (patch.object(evidence.time, 'monotonic', side_effect=lambda: clock[0]),
+              patch.object(evidence.time, 'sleep', side_effect=sleep) as wait,
+              patch.object(evidence.urllib.request, 'urlopen', side_effect=[
+                  response(success=True, ticket=ticket), http_error(403),
+                  response(success=True, ticket=ticket),
+              ]) as request):
+            evidence.fetch_public_ticket('already-valid', policy=policy, deadline=1100)
+            self.assertEqual(evidence.fetch_public_ticket('code', policy=policy, deadline=1100), ticket)
+            self.assertEqual(request.call_count, 3)
+            wait.assert_called_once_with(900)
+
+    def test_historical_unverified_rows_are_reported_outside_the_recent_lookup_budget(self):
+        now = '2026-11-17 12:00:00'
+        rows = {
+            'old': {'status': 'listing', 'observation_state': 'absent_unverified',
+                    'last_observed_at': '2026-11-15 12:00:00'},
+            **{f'new-{i}': {'status': 'listing', 'observation_state': 'active',
+                            'last_observed_at': '2026-11-17 11:00:00'} for i in range(22)}
+        }
+        counts, candidates = evidence.prepare_public_listings(
+            rows, {code: row.copy() for code, row in rows.items()}, set(), now)
+        self.assertEqual(counts['historical_unresolved'], 1)
+        self.assertEqual({code for code, _ in candidates}, rows.keys() - {'old'})
+
+    def test_public_lookup_deadline_reserves_time_for_workflow_finalization(self):
+        with (patch.dict(scraper.os.environ, {'PUBLIC_RUN_DEADLINE_EPOCH': '1200'}),
+              patch.object(scraper.time, 'time', return_value=1000),
+              patch.object(scraper.time, 'monotonic', return_value=500)):
+            self.assertEqual(scraper.public_deadline_after(12), 700)
+            self.assertEqual(scraper.public_deadline_after(1), 560)
 
     def test_valid_same_event_alias_chain_is_flattened_without_merging_rows(self):
         rows = {

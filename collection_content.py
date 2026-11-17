@@ -14,7 +14,7 @@ def has_public_full_text(row):
     return row.get('description_source') == 'public_detail' and row.get('description_is_full') == 'True'
 
 
-def content_refresh_reason(row, now):
+def content_refresh_reason(row, now, *, require_latest=False):
     if not has_public_full_text(row):
         return 'unverified_full_description'
     try:
@@ -31,6 +31,8 @@ def content_refresh_reason(row, now):
             return 'public_description_preview_changed'
     if now - checked_at >= DETAIL_MAX_AGE:
         return 'expired_full_description'
+    if require_latest and row['description_checked_at'] < row.get('last_observed_at', ''):
+        return 'public_description_older_than_list'
     return None
 
 

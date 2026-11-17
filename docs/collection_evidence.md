@@ -9,7 +9,10 @@ available seat and tag fields. Listing descriptions are previews, saved in
 `description_checked_at`. Full public text can legitimately be empty.
 
 The ordinary details phase checks every group for visible preview changes
-first, then missing full text, then periodic rechecks. It shares priority
+first, then missing full text, then descriptions older than the latest
+inventory observation. After a bulk code change, the state phase can confirm
+the link and full text from one reply. The details phase then checks active
+rows that still need full text in the same run. It shares priority
 slots across groups within each band and saves replies already received
 even if the request window closes. Full text becomes due for a periodic
 recheck at 24 hours. An edit beyond an unchanged preview can only be seen
@@ -19,19 +22,26 @@ original verification timestamp intact. Prices and other fields available in
 the list still follow the latest list observation. The CSV columns and history
 formats are unchanged.
 
-The public API requests are spaced across both workers, and HTTP 429 waits are
-shared and carried to the next phase within the same run. Checkpoints allow
-later runs to continue with unverified rows. Regular Actions polls use a
-5-minute shared deadline for missing-ID lookups and 8 minutes for descriptions.
+The ordinary Actions poll uses two workers and waits 0.5 seconds per worker
+after a lookup. It allows up to 30 minutes for state and 40 minutes for details,
+with a shared 53-minute deadline measured from job setup. The last seven
+minutes of the hourly job are reserved for audit, packing and push. The optional
+repository variable `PUBLIC_API_MIN_INTERVAL` adds spacing across workers.
+On HTTP 429 or an HTTP 503 with a retry instruction, the collector waits and
+sets global spacing to at least 4.5 seconds for the rest of the run.
+Server cooldowns and the slower spacing carry over to the next phase.
 The collector saves inventory for every event first. It then checks newly
 absent IDs across events before older unresolved IDs, sharing the available
-requests among events in each priority band. Observation logs include
-`newly_missing` and `newly_missing_pending`; an older backlog cannot consume
-the request budget before a newly missing ID has a chance to be checked.
-For initial collection or a large backlog, manually select
-`recover_details` in Ticket Scraper for a longer detail pass, or use
-`SCRAPE_MODE=details` with `PUBLIC_DETAIL_RUNTIME_MINUTES` locally. The recovery
-run uses the same request pacing and honors the site's retry instructions.
+requests among events in each priority band. Observation logs include `newly_missing`,
+`newly_missing_pending`, and `full_from_alias`.
+
+For a single-run attempt, manually select `recover_details` in Ticket Scraper.
+That mode gives recent missing IDs up to 265 minutes, then uses the remaining
+shared time for descriptions. After a mid-run HTTP 403 following valid results,
+it allows one retry after a 15-minute cooldown. HTTP 401 and failed validation
+surface as errors. Recovery shares the concurrency group with hourly
+collection, so a long recovery can delay scheduled runs. The runner can finish
+only the work that the site and the shared time budget allow.
 
 `content_observation_*.jsonl` records each batch's full/failed/null/pending
 counts. The regular workflow validates the current inventory and publishes the
@@ -43,6 +53,10 @@ The longer recovery mode uses `tools/audit_public_content.py --data-dir data
 --rolling` to require verified active descriptions and completed recent state
 checks. GitHub persists the collected data before surfacing audit errors.
 Only a successful scrape starts the automatic Drive archive.
+An anonymous sold row remains aggregate evidence even when the run verifies
+all known recent listing outcomes. The summary reports those rows separately.
+CSV evidence timestamps and log dates use UTC, including on a local PC.
+Performance dates and the Drive folder calendar use Japan time.
 
 If an event gains a new URL, matching public event IDs preserve the stored
 event key and let the collector fetch its inventory once. A share code from a
@@ -68,17 +82,17 @@ Sold/cancelled individual public responses can confirm a transition; anonymous A
 remain separate. Sold timestamps are first confirmation times, not exact
 transaction times. A public null or expired code cannot reconstruct lost history.
 
-Current market counts exclude aliases and unverified/unknown absences. Price on
+Current market counts also exclude listings absent from the public inventory
+even if a direct lookup still reports them as active. Price on
 request is recorded as `is_price_on_request=True` / `price_source=on_request`;
 price zero is not a zero-yen transaction. `ticket_changes_YYYYMMDD.jsonl` retains
 changed price, quantity, state and ID linkage facts even when masters are
 overwritten on the same day. Unchanged polls do not duplicate change records.
 
-Public checks prioritize missing IDs seen within 36 hours. The default limit
-is 1500 checks per run, at most two concurrent requests with delay and a 15-minute
-budget. `PUBLIC_STATUS_CHECK_LIMIT` controls the count. Pending, failed and
-historically unresolved counts appear in `observation_*.jsonl`. Keep hourly
-collection so valid old codes can be reconciled before they expire.
+Public checks prioritize missing IDs seen within 36 hours. An eligible
+`absent_unknown` code can be tried again after six hours while the absence
+is recent. Pending, failed, and historically unresolved counts appear in
+`observation_*.jsonl`.
 
 Downstream models must respect aliases/canonical IDs and lifecycle first-seen
 timestamps, rather than count every new public code as a new listing. Existing

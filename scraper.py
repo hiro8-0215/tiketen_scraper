@@ -26,7 +26,7 @@ from public_ticket_cache import load_run_cache, save_run_cache, remember_verifie
 
 # === タイムリミット設定 ===
 # 40分で取得を止めて途中保存。Actionsの品質判定が未取得分を検知する。
-SCRAPE_START_TIME = time.time()
+SCRAPE_START_TIME = time.monotonic()
 SCRAPE_MODE = os.environ.get('SCRAPE_MODE', 'full').strip().lower()
 if SCRAPE_MODE not in {'full', 'api', 'details'}:
     raise RuntimeError(
@@ -39,17 +39,28 @@ DETAIL_RUNTIME_MINUTES = int(os.environ.get('PUBLIC_DETAIL_RUNTIME_MINUTES', '40
 if not 1 <= DETAIL_RUNTIME_MINUTES <= 350:
     raise ValueError('PUBLIC_DETAIL_RUNTIME_MINUTES must be between 1 and 350')
 MAX_RUNTIME_SECONDS = DETAIL_RUNTIME_MINUTES * 60
-PUBLIC_DETAIL_DEADLINE = time.monotonic() + MAX_RUNTIME_SECONDS
+
+
+def public_deadline_after(minutes):
+    deadline = time.monotonic() + minutes * 60
+    run_deadline = os.environ.get('PUBLIC_RUN_DEADLINE_EPOCH')
+    if run_deadline:
+        deadline = min(deadline, time.monotonic() + float(run_deadline) - time.time())
+    return deadline
+
+
+PUBLIC_DETAIL_DEADLINE = public_deadline_after(DETAIL_RUNTIME_MINUTES)
 
 
 def is_time_remaining():
     """残り時間があるかチェック"""
-    return (time.time() - SCRAPE_START_TIME) < MAX_RUNTIME_SECONDS
+    return (time.monotonic() - SCRAPE_START_TIME) < MAX_RUNTIME_SECONDS
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 SNAPSHOT_DIR = os.path.join(DATA_DIR, 'snapshot')
 MARKET_DIR = os.path.join(DATA_DIR, 'market_snapshot')
 ANONYMOUS_SOLD_INVENTORY = 'anonymous_sold_inventory.jsonl'
+JST = timezone(timedelta(hours=9))
 
 KNOWN_API_STATUSES = {'active', 'sold'}
 MAX_UNEXPLAINED_DISAPPEARANCE_FRACTION = 0.80
@@ -777,7 +788,7 @@ def save_ticket_changes(performer, before, master, observed_at, observed_at_utc)
                         'before': _sanitized_row(old or {}, fields),
                         'after': _sanitized_row(row, fields)})
     if records:
-        append_changes(DATA_DIR, datetime.now().strftime('%Y%m%d'), records)
+        append_changes(DATA_DIR, datetime.now(timezone.utc).strftime('%Y%m%d'), records)
 
 def save_snapshots(performer, master):
     import pandas as pd
@@ -799,7 +810,8 @@ def save_snapshots(performer, master):
         group.to_csv(os.path.join(SNAPSHOT_DIR, f'{performer}_{ym}.csv'), index=False, encoding='utf-8-sig')
         
     market_records = []
-    freshness_cutoff = pd.Timestamp.now() - pd.Timedelta(hours=2)
+    snapshot_now = datetime.now(timezone.utc).replace(tzinfo=None)
+    freshness_cutoff = snapshot_now - timedelta(hours=2)
     for ym, group in df.groupby('year_month'):
         for (ev_id, p_date, p_time), sub in group.groupby(['event_id', 'perf_date', 'perf_time']):
             states = sub.get('observation_state', pd.Series('', index=sub.index)).fillna('')
@@ -807,7 +819,8 @@ def save_snapshots(performer, master):
             sub = sub[~states.eq('alias')]
             valid_prices = sub.loc[sub['price'] > 0, 'price'].dropna()
             last_seen = pd.to_datetime(sub['last_observed_at'], errors='coerce')
-            current = sub[(sub['status'] == 'listing') & last_seen.ge(freshness_cutoff)]
+            no_absence = sub.get('absence_first_observed_at', pd.Series('', index=sub.index)).fillna('').eq('')
+            current = sub[sub['status'].eq('listing') & last_seen.between(freshness_cutoff, snapshot_now) & no_absence]
             if 'observation_state' in current:
                 current = current[current['observation_state'].eq('active')]
             # Zero is used for "price on request", not a market price.
@@ -852,7 +865,7 @@ def reusable_public_content(row, code, reply):
 
 
 def write_content_observation(performer, selected, counts, errors=None):
-    now = datetime.now().astimezone()
+    now = datetime.now(timezone.utc)
     log = os.path.join(DATA_DIR, 'content_observation_' + now.strftime('%Y%m%d') + '.jsonl')
     with open(log, 'a', encoding='utf-8') as stream:
         stream.write(json.dumps({'performer': performer, 'observed_at_utc': now.isoformat(),
@@ -899,7 +912,7 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None
             try:
                 ticket = (fetch_public_ticket(code) if policy is None else
                           fetch_public_ticket(code, policy=policy, deadline=PUBLIC_DETAIL_DEADLINE))
-                cache[code] = (ticket, None, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                cache[code] = (ticket, None, datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
             except Exception as error:
                 label = public_error_label(error)
                 cache[code] = (None, label, '')
@@ -947,9 +960,9 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None
                 print(f'[CONTENT CHECKPOINT] {performer}: {index + 1}/{len(pending)}')
     # Detail lookups can establish new rotations after the event API phase.
     flatten_canonical_links(master)
-    now = datetime.now().astimezone()
+    now = datetime.now(timezone.utc)
     save_ticket_changes(performer, before, master, now.strftime('%Y-%m-%d %H:%M:%S'),
-                        now.astimezone(timezone.utc).isoformat())
+                        now.isoformat())
     save_master(performer, master)
     write_content_observation(performer, len(pending), counts, request_errors)
     return counts['pending'] > 0
@@ -965,12 +978,13 @@ def refresh_priority_content(targets, now, cache, policy):
         for code, row in master.items():
             if row.get('status') != 'listing' or row.get('observation_state') != 'active':
                 continue
-            reason = content_refresh_reason(row, now)
+            reason = content_refresh_reason(row, now, require_latest=True)
             if not reason:
                 continue
             if code in cache and not reusable_public_content(row, code, cache[code]):
                 cache.pop(code)
-            order = {'public_description_preview_changed': 0, 'expired_full_description': 2}.get(reason, 1)
+            order = {'public_description_preview_changed': 0, 'expired_full_description': 2,
+                     'public_description_older_than_list': 2}.get(reason, 1)
             due.append((order, row.get('description_checked_at', ''), code))
         due.sort()
         plans[performer] = [code for _, _, code in due]
@@ -984,7 +998,7 @@ def refresh_priority_content(targets, now, cache, policy):
     priority = {code for order, _, code in ranked if order < 2}
     changed = {code for order, _, code in ranked if order == 0}
     print(f'[PUBLIC CONTENT PRIORITY] {len(priority)} new or changed ({len(changed)} visible changes); '
-          f'{len(codes) - len(priority)} due for periodic verification', flush=True)
+          f'{len(codes) - len(priority)} due for reverification', flush=True)
     limit = max(0, int(os.environ.get('PUBLIC_CONTENT_CHECK_LIMIT', str(len(codes)))))
     responses = query_public_listings(codes, cache, [limit], PUBLIC_DETAIL_DEADLINE, policy)
     resolved = {code for code, (_, error, _) in responses.items()
@@ -1129,7 +1143,7 @@ def set_observed_counts(record, master):
 
 
 def write_observations(records):
-    path = os.path.join(DATA_DIR, 'observation_' + datetime.now().strftime('%Y%m%d') + '.jsonl')
+    path = os.path.join(DATA_DIR, 'observation_' + datetime.now(timezone.utc).strftime('%Y%m%d') + '.jsonl')
     with open(path, 'a', encoding='utf-8') as stream:
         for record in records:
             stream.write(json.dumps(record, ensure_ascii=False) + '\n')
@@ -1166,11 +1180,11 @@ def finish_public_state_poll(batches, observations, cache, budget, deadline, pol
                 apply_public_listing_check(master, code, event_id, responses[code], cache, counts)
             if has_evidence:
                 flatten_canonical_links(master)
-                now = datetime.now().astimezone()
+                now = datetime.now(timezone.utc)
                 save_master(performer, master)
                 save_snapshots(performer, master)
                 save_ticket_changes(performer, before, master, now.strftime('%Y-%m-%d %H:%M:%S'),
-                                    now.astimezone(timezone.utc).isoformat())
+                                    now.isoformat())
                 for record in observations[performer]:
                     set_observed_counts(record, master)
         for slug, _, candidates, counts in events:
@@ -1194,17 +1208,16 @@ def main():
     with open(targets_file, 'r', encoding='utf-8') as f:
         targets = normalize_targets(json.load(f))
 
-    now_aware = datetime.now().astimezone()
+    now_aware = datetime.now(timezone.utc)
     now_str = now_aware.strftime('%Y-%m-%d %H:%M:%S')
     content_now = now_aware.replace(tzinfo=None)
-    now_utc = now_aware.astimezone(timezone.utc).isoformat()
-    now_timezone = str(now_aware.tzinfo)
 
     time_limit_reached = False
     coverage_issues = []
     expected_events = fetched_events = 0
     # A new API observation starts a new cache. Only the following details
     # phase can reuse the verified responses associated with that observation.
+    recovery = os.environ.get('PUBLIC_RECOVERY', '').lower() == 'true'
     public_cache = load_run_cache() if SCRAPE_MODE == 'details' else {}
     has_prior_success = any(
         not error and ticket is not None for ticket, error, _ in public_cache.values()
@@ -1214,13 +1227,14 @@ def main():
         os.environ.get('PUBLIC_API_COOLDOWN_PATH'),
         min_interval=min_interval,
         has_prior_success=has_prior_success,
+        retry_access_denial=recovery,
     )
     public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '6000')))]
     status_minutes = int(os.environ.get('PUBLIC_STATUS_RUNTIME_MINUTES', '35'))
-    if not 0 <= status_minutes <= 35:
-        raise ValueError('PUBLIC_STATUS_RUNTIME_MINUTES must be between 0 and 35')
+    if not 0 <= status_minutes <= 350:
+        raise ValueError('PUBLIC_STATUS_RUNTIME_MINUTES must be between 0 and 350')
     recheck_hours = max(0.0, float(os.environ.get('PUBLIC_UNAVAILABLE_RECHECK_HOURS', '0')))
-    public_deadline = time.monotonic() + status_minutes * 60
+    public_deadline = public_deadline_after(status_minutes)
     state_attempts = {}
     public_state_batches = {}
     unverified_state_codes = set()
@@ -1230,11 +1244,10 @@ def main():
         targets = detail_refresh_order(targets)
         print(f'[PUBLIC CONTENT BUDGET] {DETAIL_RUNTIME_MINUTES} minutes', flush=True)
         print('[PUBLIC CONTENT ORDER] ' + ', '.join(target['name'] for target in targets), flush=True)
-        if DETAIL_RUNTIME_MINUTES <= 40:
-            refresh_priority_content(targets, content_now, public_cache, public_policy)
-            save_run_cache(public_cache)
-            public_policy.save_cooldown()
-            return
+        refresh_priority_content(targets, content_now, public_cache, public_policy)
+        save_run_cache(public_cache)
+        public_policy.save_cooldown()
+        return
     else:
         state_attempts = public_state_attempts()
         targets.sort(key=lambda target: max(state_attempts.get(target['name'], {}).values(), default=''))
@@ -1248,23 +1261,6 @@ def main():
             break
         print(f"=== Processing {performer} ===")
         master = load_master(performer)
-        if SCRAPE_MODE == 'details':
-            pending = [
-                ticket_id for ticket_id, row in master.items()
-                if row.get('status') == 'listing'
-                and row.get('observation_state') == 'active'
-                and content_refresh_reason(row, content_now)
-            ]
-            time_limit_reached = enrich_ticket_details(
-                performer, master, pending, public_cache, public_policy
-            )
-            save_snapshots(performer, master)
-            if time_limit_reached and not is_time_remaining():
-                print(
-                    f"[TIME LIMIT] {performer}までの詳細を保存しました。"
-                )
-                break
-            continue
         # Retain all original IDs; proven aliases are annotated, not deleted.
         before_poll = {code: row.copy() for code, row in master.items()}
         
@@ -1295,7 +1291,7 @@ def main():
             coverage_issues.append(dict(performer=performer, event_id=None,
                                         reason='performer_discovery_failed', detail=str(error)))
             continue
-        events = _events_to_poll(discovered_events, master, datetime.now())
+        events = _events_to_poll(discovered_events, master, datetime.now(JST))
         last_attempt = state_attempts.get(performer, {})
         events.sort(key=lambda slug: last_attempt.get(slug, ''))
         expected_events += len(events)
@@ -1353,7 +1349,7 @@ def main():
                 empty_inventory_confirmed = False
                 try:
                     event_active_codes = validate_event_snapshot(
-                        slug, tickets, prior_active, master, datetime.now(),
+                        slug, tickets, prior_active, master, datetime.now(JST),
                         public_event_id=ev_firestore_id,
                     )
                 except UnexplainedDisappearance as warning:
@@ -1374,12 +1370,12 @@ def main():
                     empty_inventory_confirmed = True
             except ScrapeIntegrityError as error:
                 print(f"[INTEGRITY] {error}")
-                failure_time = datetime.now().astimezone()
+                failure_time = datetime.now(timezone.utc)
                 reason = ('empty_inventory_unverified' if isinstance(error, UnverifiedEmptyInventory)
                           else 'event_poll_failed')
                 event_errors[slug] = {
                     'observed_at': failure_time.strftime('%Y-%m-%d %H:%M:%S'),
-                    'observed_at_utc': failure_time.astimezone(timezone.utc).isoformat(),
+                    'observed_at_utc': failure_time.isoformat(),
                     'observed_at_timezone': str(failure_time.tzinfo),
                     'failure_reason': reason,
                 }
@@ -1389,9 +1385,9 @@ def main():
 
             # Each event is observed when its own API response arrives, not at
             # the start of a potentially 15-minute multi-event run.
-            event_now = datetime.now().astimezone()
+            event_now = datetime.now(timezone.utc)
             now_str = event_now.strftime('%Y-%m-%d %H:%M:%S')
-            now_utc = event_now.astimezone(timezone.utc).isoformat()
+            now_utc = event_now.isoformat()
             now_timezone = str(event_now.tzinfo)
             for row in prior_active.values():
                 if row.get('public_event_id') == ev_firestore_id:
@@ -1618,10 +1614,10 @@ def main():
 
         save_master(performer, master)
         save_snapshots(performer, master)
-        written_at = datetime.now().astimezone()
+        written_at = datetime.now(timezone.utc)
         save_ticket_changes(performer, before_poll, master,
                             written_at.strftime('%Y-%m-%d %H:%M:%S'),
-                            written_at.astimezone(timezone.utc).isoformat())
+                            written_at.isoformat())
         save_anonymous_sold_inventory(anonymous_sold_by_event, now_str)
         print(f"Saved {len(master)} tickets to master for {performer}.")
         # Retain only actual polls, including failures, when several URLs resolve
@@ -1659,7 +1655,7 @@ def main():
     if SCRAPE_MODE == 'api':
         print('[PUBLIC STATE] Inventory saved; checking newly absent listings first.', flush=True)
         finish_public_state_poll(public_state_batches, observations, public_cache, public_budget,
-                                 time.monotonic() + status_minutes * 60, public_policy,
+                                 public_deadline_after(status_minutes), public_policy,
                                  unverified_state_codes)
         missing = [
             target['name'] for target in targets

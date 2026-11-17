@@ -2,7 +2,7 @@ import sys
 import json
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -226,7 +226,7 @@ class ScraperIdentityTest(unittest.TestCase):
             self.assertEqual(record['last_observed_at'], '2026-09-24 02:00:00')
 
     def test_market_snapshot_separates_stale_from_current_listings(self):
-        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        now = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         rows = {
             'fresh': {'ticket_id': 'fresh', 'event_id': 'event',
                       'observation_state': 'active', 'quantity': '2',
@@ -242,6 +242,8 @@ class ScraperIdentityTest(unittest.TestCase):
         }
         rows['alias'] = dict(rows['fresh'], ticket_id='alias',
                              observation_state='alias', canonical_ticket_id='fresh')
+        rows['unlisted'] = dict(rows['fresh'], ticket_id='unlisted',
+                                absence_first_observed_at=now, status_source='public_detail')
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             with (patch.object(scraper, 'SNAPSHOT_DIR', str(root / 'snapshot')),
@@ -253,11 +255,11 @@ class ScraperIdentityTest(unittest.TestCase):
             ) as stream:
                 record = next(csv.DictReader(stream))
             self.assertEqual(record['active_tickets'], '1')
-            self.assertEqual(record['historical_listing_rows'], '2')
+            self.assertEqual(record['historical_listing_rows'], '3')
             self.assertEqual(record['current_active_tickets'], '1')
             self.assertEqual(record['current_active_quantity'], '2')
             self.assertEqual(record['alias_rows'], '1')
-            self.assertEqual(record['total_tickets'], '2')
+            self.assertEqual(record['total_tickets'], '3')
             self.assertEqual(record['current_avg_price'], '12000.0')
 
     def test_existing_rotations_are_collapsed_and_details_are_preserved(self):

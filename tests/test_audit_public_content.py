@@ -3,7 +3,7 @@ import json
 import importlib.util
 import tempfile
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 from pathlib import Path
 
@@ -29,10 +29,10 @@ class ContentAuditTest(unittest.TestCase):
     def test_rolling_audit_uses_actual_coverage_and_verified_time(self):
         with tempfile.TemporaryDirectory() as tmp:
             folder = Path(tmp)
-            check = datetime.now() - timedelta(hours=1)
+            check = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(hours=1)
             self.write(folder, raw_description='full text', api_description='full...',
                        description_checked_at=check.isoformat(sep=' ', timespec='seconds'),
-                       last_observed_at=(check + timedelta(minutes=30)).isoformat(sep=' ', timespec='seconds'))
+                       last_observed_at=(check - timedelta(minutes=30)).isoformat(sep=' ', timespec='seconds'))
             (folder/'content_observation_20260927.jsonl').write_text(json.dumps({
                 'performer':'group', 'scope':'observed_active', 'pending':1}))
             passing = module.audit(folder, rolling=True)
@@ -100,3 +100,23 @@ class ContentAuditTest(unittest.TestCase):
             (folder/'observation_20260927.jsonl').write_text(json.dumps({
                 'performer':'group','event_id':'event','public_status_checks':{'failed':1}}))
             self.assertFalse(module.audit(folder)['ok'])
+
+    def test_recent_absence_with_null_reply_cannot_pass_complete_recovery(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            check = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+            self.write(folder, description_checked_at=check, absence_first_observed_at='')
+            path = folder / 'group_master.csv'
+            with path.open(encoding='utf-8-sig', newline='') as stream:
+                reader = csv.DictReader(stream)
+                active = next(reader)
+            with path.open('a', encoding='utf-8', newline='') as stream:
+                csv.DictWriter(stream, fieldnames=list(active)).writerow({
+                    **active, 'ticket_id': 'missing', 'observation_state': 'absent_unknown',
+                    'absence_first_observed_at': check,
+                })
+            report = module.audit(folder, inventory_first=True)
+            self.assertTrue(report['ok'])
+            self.assertFalse(report['public_coverage_complete'])
+            self.assertEqual(report['backlog'][0]['reason'], 'recent_absence_without_outcome')
+            self.assertFalse(module.audit(folder, rolling=True)['ok'])

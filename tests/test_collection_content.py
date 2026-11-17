@@ -26,6 +26,8 @@ class ContentTest(unittest.TestCase):
         row.update(api_description='starts here...', last_observed_at='2026-11-16 10:00:00')
         now = datetime(2026, 11, 16, 11)
         self.assertIsNone(content_refresh_reason(row, now))
+        self.assertEqual(content_refresh_reason(row, now, require_latest=True),
+                         'public_description_older_than_list')
         self.assertEqual(content_refresh_reason(row, datetime(2026, 11, 17, 9)),
                          'expired_full_description')
         row['api_description'] = 'starts here'
@@ -78,6 +80,35 @@ class ContentTest(unittest.TestCase):
             self.assertEqual(row['raw_description'], 'complete conditions and seat information')
             self.assertEqual(row['api_description'], preview)
             self.assertEqual(row['description_is_full'], 'True')
+
+    def test_rotation_uses_old_code_full_text_and_checks_only_unlinked_code_again(self):
+        now = datetime(2026, 11, 17, 10)
+        stamp = now.isoformat(sep=' ')
+        listing = {'event_id': 'event', 'public_event_id': 'fire', 'status': 'listing',
+                   'observation_state': 'active', 'first_observed_at': stamp,
+                   'last_observed_at': stamp, 'state_checked_at': stamp}
+        rows = {code: dict(listing, ticket_id=code) for code in ['linked', 'unlinked']}
+        rows.update({f'old-{i}': dict(listing, ticket_id=f'old-{i}',
+                                      observation_state='absent_unverified',
+                                      absence_first_observed_at=stamp)
+                     for i in range(21)})
+        ticket = {'shareCode': 'linked', 'eventId': 'fire', 'status': 'active',
+                  'description': 'Verified via the old link'}
+        cache = {}
+        counts, _ = evidence.prepare_public_listings(rows, {}, set(), stamp)
+        counts['pending'] = 1
+        evidence.apply_public_listing_check(rows, 'old-0', 'fire', (ticket, None, stamp), cache, counts)
+        self.assertEqual(counts['full_from_alias'], 1)
+        self.assertEqual(rows['old-0']['canonical_ticket_id'], 'linked')
+        self.assertEqual(rows['linked']['raw_description'], ticket['description'])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            with (patch.object(scraper, 'DATA_DIR', tmp),
+                  patch.object(scraper, 'query_public_listings', return_value={}) as lookup):
+                scraper.save_master('group', rows)
+                target = [{'name': 'group'}]
+                scraper.refresh_priority_content(target, now, cache, None)
+                self.assertEqual(lookup.call_args.args[0], ['unlinked'])
 
     def test_verified_empty_full_text_is_preserved(self):
         row = public_updates({'description':''}, 'now')

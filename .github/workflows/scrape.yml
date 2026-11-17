@@ -4,7 +4,7 @@ on:
   workflow_dispatch: # 通常は外部スケジューラから実行
     inputs:
       recover_details:
-        description: "初回・復旧用に未確認の全文取得を継続する"
+        description: "個別状態と全文を同じ実行で回収し、残件があれば監査で失敗にする"
         type: boolean
         default: false
 
@@ -20,10 +20,12 @@ concurrency:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.recover_details && 360 || 35 }}
+    timeout-minutes: ${{ inputs.recover_details && 360 || 60 }}
 
     env:
       PYTHONUNBUFFERED: "1"
+      PUBLIC_API_MIN_INTERVAL: ${{ vars.PUBLIC_API_MIN_INTERVAL || '0' }}
+      PUBLIC_RECOVERY: ${{ inputs.recover_details }}
     steps:
       - name: 今回と日付跨ぎ用の変更履歴日付
         id: dates
@@ -32,6 +34,13 @@ jobs:
           echo "tomorrow=$(date -u --date=tomorrow +%Y%m%d)" >> "$GITHUB_OUTPUT"
           echo "PUBLIC_TICKET_CACHE_PATH=$RUNNER_TEMP/public-ticket-${{ github.run_id }}-${{ github.run_attempt }}.json" >> "$GITHUB_ENV"
           echo "PUBLIC_API_COOLDOWN_PATH=$RUNNER_TEMP/public-ticket-${{ github.run_id }}-${{ github.run_attempt }}.cooldown" >> "$GITHUB_ENV"
+          if [[ "$PUBLIC_RECOVERY" == "true" ]]; then
+            # Leave room for audit, packing, and push before the six-hour job limit.
+            echo "PUBLIC_RUN_DEADLINE_EPOCH=$(date -u --date='+350 minutes' +%s)" >> "$GITHUB_ENV"
+          else
+            # Share the hourly budget across both passes and leave time to save.
+            echo "PUBLIC_RUN_DEADLINE_EPOCH=$(date -u --date='+53 minutes' +%s)" >> "$GITHUB_ENV"
+          fi
 
       - name: リポジトリのチェックアウト
         uses: actions/checkout@v7
@@ -79,16 +88,16 @@ jobs:
       - name: 全対象のAPI状態を収集
         env:
           SCRAPE_MODE: api
-          PUBLIC_STATUS_RUNTIME_MINUTES: ${{ inputs.recover_details && '35' || '5' }}
-          PUBLIC_STATUS_CHECK_LIMIT: ${{ inputs.recover_details && '6000' || '45' }}
+          PUBLIC_STATUS_RUNTIME_MINUTES: ${{ inputs.recover_details && '265' || '30' }}
+          PUBLIC_STATUS_CHECK_LIMIT: '6000'
           COLLECTION_COVERAGE_PATH: ${{ runner.temp }}/ticket-collection-coverage.json
         run: python scraper.py
 
       - name: 公開チケット全文を順次取得・再確認
         env:
           SCRAPE_MODE: details
-          PUBLIC_DETAIL_RUNTIME_MINUTES: ${{ inputs.recover_details && '300' || '8' }}
-          PUBLIC_CONTENT_CHECK_LIMIT: ${{ inputs.recover_details && '6000' || '35' }}
+          PUBLIC_DETAIL_RUNTIME_MINUTES: ${{ inputs.recover_details && '350' || '40' }}
+          PUBLIC_CONTENT_CHECK_LIMIT: '6000'
         run: python scraper.py
         
       # Audit before packing; keep checkpoints even if quality is incomplete.
