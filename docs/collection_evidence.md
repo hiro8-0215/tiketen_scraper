@@ -22,14 +22,16 @@ original verification timestamp intact. Prices and other fields available in
 the list still follow the latest list observation. The CSV columns and history
 formats are unchanged.
 
-The ordinary Actions poll uses two workers and waits 0.5 seconds per worker
-after a lookup. It allows up to 30 minutes for state and 40 minutes for details,
+The ordinary Actions poll starts at a 4.5-second global interval after the
+two-worker burst triggered HTTP 429 in production. It allows up to 30 minutes
+for state and 40 minutes for details,
 with a shared 53-minute deadline measured from job setup. The last seven
 minutes of the hourly job are reserved for audit, packing and push. The optional
 repository variable `PUBLIC_API_MIN_INTERVAL` adds spacing across workers.
 On HTTP 429 or an HTTP 503 with a retry instruction, the collector waits and
 sets global spacing to at least 4.5 seconds for the rest of the run.
-Server cooldowns and the slower spacing carry over to the next phase.
+Server cooldowns carry over to queued runs, and access denial stops further
+individual requests in the same run. Actions records each phase's HTTP counts.
 The collector saves inventory for every event first. It then checks newly
 absent IDs across events before older unresolved IDs, sharing the available
 requests among events in each priority band. Observation logs include `newly_missing`,

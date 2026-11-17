@@ -199,6 +199,27 @@ class PublicRequestRecoveryTest(unittest.TestCase):
             self.assertEqual(request.call_count, 3)
             wait.assert_called_once_with(900)
 
+    def test_server_cooldown_survives_queued_run_without_inheriting_success(self):
+        with tempfile.TemporaryDirectory() as directory:
+            stage = Path(directory) / 'current'
+            durable = Path(directory) / 'durable'
+            clock = [100.0]
+            with (patch.object(evidence.time, 'monotonic', side_effect=lambda: clock[0]),
+                  patch.object(evidence.time, 'time', side_effect=lambda: clock[0] + 10_000)):
+                policy = evidence.PublicRequestPolicy(stage, server_cooldown_path=durable)
+                policy.record_response(200)
+                policy.record_response(403)
+                policy.save_cooldown()
+                following_phase = evidence.PublicRequestPolicy(stage, server_cooldown_path=durable)
+                with self.assertRaises(evidence.PublicLookupDeferred):
+                    following_phase.before_request(2000)
+                following_run = evidence.PublicRequestPolicy(server_cooldown_path=durable)
+                self.assertFalse(following_run.has_succeeded)
+                with self.assertRaises(evidence.PublicLookupDeferred):
+                    following_run.before_request(999)
+                clock[0] = 1000
+                self.assertIsInstance(following_run.before_request(1100), (int, float))
+
     def test_historical_unverified_rows_are_reported_outside_the_recent_lookup_budget(self):
         now = '2026-11-17 12:00:00'
         rows = {

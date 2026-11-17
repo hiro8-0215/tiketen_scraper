@@ -24,7 +24,8 @@ jobs:
 
     env:
       PYTHONUNBUFFERED: "1"
-      PUBLIC_API_MIN_INTERVAL: ${{ vars.PUBLIC_API_MIN_INTERVAL || '0' }}
+      PUBLIC_API_MIN_INTERVAL: ${{ vars.PUBLIC_API_MIN_INTERVAL || '4.5' }}
+      PUBLIC_API_SERVER_COOLDOWN_PATH: data/public_api_retry_at.txt
       PUBLIC_RECOVERY: ${{ inputs.recover_details }}
     steps:
       - name: 今回と日付跨ぎ用の変更履歴日付
@@ -57,6 +58,7 @@ jobs:
             /tests/
             /tools/
             /data/targets.json
+            /data/public_api_retry_at.txt
             /data/*_master.csv
             /data/*_master.csv.gz
             /data/anonymous_sold_inventory.jsonl

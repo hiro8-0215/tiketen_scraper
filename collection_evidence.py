@@ -1,6 +1,7 @@
 """Public listing evidence; never identify listings by matching descriptions."""
 import json
 import math
+import os
 import threading
 import time
 import urllib.error
@@ -56,7 +57,7 @@ class PublicRequestPolicy:
     """Share server backoff and repeated access denials across both workers."""
 
     def __init__(self, cooldown_path=None, *, min_interval=0, has_prior_success=False,
-                 retry_access_denial=False):
+                 retry_access_denial=False, server_cooldown_path=None):
         self._lock = threading.Lock()
         self._resume_at = 0.0
         self._next_request_at = 0.0
@@ -67,16 +68,24 @@ class PublicRequestPolicy:
         self._started_requests = 0
         self._reported_responses = Counter()
         self.retry_access_denial = retry_access_denial
+        self._server_cooldown_path = Path(server_cooldown_path) if server_cooldown_path else None
+        self._server_delayed = False
+        if self._server_cooldown_path and self._server_cooldown_path.exists():
+            retry_epoch = float(self._server_cooldown_path.read_text(encoding='ascii'))
+            if math.isfinite(retry_epoch) and retry_epoch > time.time():
+                self._resume_at = time.monotonic() + retry_epoch - time.time()
+                print(f'[PUBLIC API] retaining prior run cooldown until epoch {retry_epoch:.0f}', flush=True)
         self._cooldown_path = Path(cooldown_path) if cooldown_path else None
         if self._cooldown_path and self._cooldown_path.exists():
             lines = self._cooldown_path.read_text(encoding='ascii').splitlines()
             retry_epoch = float(lines[0]) if lines else 0.0
             if math.isfinite(retry_epoch):
-                self._resume_at = time.monotonic() + max(0.0, retry_epoch - time.time())
+                self._resume_at = max(self._resume_at, time.monotonic() + retry_epoch - time.time())
             if len(lines) > 1 and lines[1].strip() == '1':
                 self._succeeded = max(self._succeeded, 1)
             if len(lines) > 2 and (carried_interval := float(lines[2])) > self._min_interval:
                 self._min_interval = carried_interval
+            self._blocked = len(lines) > 3 and lines[3] == '1'
 
     @property
     def has_succeeded(self):
@@ -85,17 +94,28 @@ class PublicRequestPolicy:
 
     def save_cooldown(self):
         """Carry request spacing and server cooldown across phases of this run."""
-        print('[PUBLIC API COUNTS] ' + json.dumps({
+        counts = json.dumps({
             'started': self._started_requests,
             'recorded_statuses': dict(self._reported_responses),
             'interval_seconds': self._min_interval,
-        }), flush=True)
+        })
+        print('[PUBLIC API COUNTS] ' + counts, flush=True)
+        summary = os.environ.get('GITHUB_STEP_SUMMARY')
+        if summary:
+            phase = os.environ.get('SCRAPE_MODE', 'public')
+            with open(summary, 'a', encoding='utf-8') as stream:
+                stream.write(f'- Public API {phase} counts: `{counts}`\n')
+        clock_now = time.monotonic()
+        epoch_now = time.time()
         if self._cooldown_path:
-            remaining = max(0.0, max(self._resume_at, self._next_request_at) - time.monotonic())
-            if self._blocked:
-                remaining = max(remaining, 900.0)
-            text = f'{time.time() + remaining}\n{int(self._succeeded > 0)}\n{self._min_interval}'
+            remaining = max(0.0, max(self._resume_at, self._next_request_at) - clock_now)
+            text = (f'{epoch_now + remaining}\n{int(self._succeeded > 0)}\n'
+                    f'{self._min_interval}\n{int(self._blocked)}')
             self._cooldown_path.write_text(text, encoding='ascii')
+        if self._server_cooldown_path and self._server_delayed and self._resume_at > clock_now:
+            temporary = self._server_cooldown_path.with_suffix('.tmp')
+            temporary.write_text(str(epoch_now + self._resume_at - clock_now), encoding='ascii')
+            temporary.replace(self._server_cooldown_path)
 
     def before_request(self, deadline):
         while True:
@@ -125,13 +145,16 @@ class PublicRequestPolicy:
                 self._denied = 0
             if (status == 403 and self.retry_access_denial and self._succeeded > 0
                     and self._denied == 1 and not self._blocked):
+                self._server_delayed = True
                 self._resume_at = max(self._resume_at, time.monotonic() + max(900.0, retry_after or 0))
                 print('[PUBLIC API] HTTP 403 in recovery; waiting before one retry', flush=True)
             elif (status == 401 or self._denied >= 4 or (self._denied and self._succeeded)) and not self._blocked:
                 self._blocked = True
+                self._server_delayed = True
                 self._resume_at = max(self._resume_at, time.monotonic() + max(900.0, retry_after or 0))
                 print(f'[PUBLIC API] pausing this phase after HTTP {status}', flush=True)
             if status == 429 or (status == 503 and retry_after is not None):
+                self._server_delayed = True
                 self._min_interval = max(self._min_interval, 4.5)
                 delay = max(5, retry_after if retry_after is not None else 30)
                 until = time.monotonic() + delay

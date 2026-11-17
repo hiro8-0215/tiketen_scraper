@@ -1228,6 +1228,7 @@ def main():
         min_interval=min_interval,
         has_prior_success=has_prior_success,
         retry_access_denial=recovery,
+        server_cooldown_path=os.environ.get('PUBLIC_API_SERVER_COOLDOWN_PATH'),
     )
     public_budget = [max(0, int(os.environ.get('PUBLIC_STATUS_CHECK_LIMIT', '6000')))]
     status_minutes = int(os.environ.get('PUBLIC_STATUS_RUNTIME_MINUTES', '35'))
