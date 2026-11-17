@@ -58,8 +58,9 @@ The longer recovery mode uses `tools/audit_public_content.py --data-dir data
 checks. GitHub persists the collected data before surfacing audit errors.
 A successful scrape invokes the Drive archive job in the same workflow
 and hands it the exact pushed commit to back up. GitHub schedules the scraper
-directly at minute 12 and checks for an earlier run in the same hour before
-scraping. The fallback workflow remains available for a missing hour.
+directly at minutes 12 and 27. Each trigger checks for an active run or a
+successful scrape that started in the same hour before collecting. The manual
+fallback workflow remains available for a missing hour.
 Scraping and Drive uploads each have their own concurrency group.
 Before reporting success, Actions checks this run's exact inventory IDs against
 the saved masters. A missing ID or unsupported later state fails the audit.
