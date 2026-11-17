@@ -1,0 +1,38 @@
+name: Ticket Scraper schedule fallback
+
+on:
+  schedule:
+    - cron: '12 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+concurrency:
+  group: ticket-scraper-schedule-fallback
+  cancel-in-progress: false
+
+jobs:
+  dispatch-missed-hour:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - name: 今の時間帯に収集の起動がない場合だけ補完
+        shell: bash
+        run: |
+          hour_start=$(date -u +'%Y-%m-%dT%H:00:00Z')
+          runs=$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/workflows/scrape.yml/runs" \
+            -f branch="$DEFAULT_BRANCH" -f "created=>=$hour_start" -F per_page=1 --jq '.total_count')
+          if [[ ! "$runs" =~ ^[0-9]+$ ]]; then
+            echo "Cannot determine whether Ticket Scraper already started at $hour_start"
+            exit 1
+          fi
+          if [[ "$runs" -gt 0 ]]; then
+            echo "Ticket Scraper already started or queued since $hour_start"
+            exit 0
+          fi
+          gh workflow run scrape.yml --repo "$GITHUB_REPOSITORY" --ref "$DEFAULT_BRANCH" -f recover_details=false

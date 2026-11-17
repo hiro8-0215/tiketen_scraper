@@ -53,6 +53,10 @@ The longer recovery mode uses `tools/audit_public_content.py --data-dir data
 --rolling` to require verified active descriptions and completed recent state
 checks. GitHub persists the collected data before surfacing audit errors.
 Only a successful scrape starts the automatic Drive archive.
+The GitHub schedule fallback checks at minute 12 whether this hour already
+has a Ticket Scraper run, including queued runs. It dispatches an ordinary
+run for a missing hour and leaves the external hourly trigger in place.
+The scraper concurrency group serializes a fallback run behind any previous run.
 An anonymous sold row remains aggregate evidence even when the run verifies
 all known recent listing outcomes. The summary reports those rows separately.
 CSV evidence timestamps and log dates use UTC, including on a local PC.

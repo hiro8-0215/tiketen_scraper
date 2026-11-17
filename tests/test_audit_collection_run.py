@@ -55,10 +55,13 @@ class CollectionRunAuditTest(unittest.TestCase):
                                'state_checked_at':'2026-09-27 02:05:00'}])
             poll = {'performer':'artist','event_id':'event',
                     'observed_at':'2026-09-27 02:00:00','api_fetch_complete':True,
-                    'api_active_count':1,'api_active_ids':['one'],'public_status_checks':{}}
+                    'api_active_count':1,'api_active_ids':['one'],
+                    'public_status_checks':{'pending': 1, 'request_errors': {'HTTP 403': 1}}}
             (after/'observation_20260927.jsonl').write_text(json.dumps(poll)+'\n')
             report = audit(before, after)
             self.assertTrue(report['ok'])
+            self.assertEqual(report['latest_public_checks'], {'pending': 1})
+            self.assertEqual(report['latest_public_request_errors'], {'HTTP 403': 1})
             self.assertEqual(report['api_ids_with_later_confirmed_state_updates'], 1)
             poll['api_active_ids'] = ['missing']
             (after/'observation_20260927.jsonl').write_text(json.dumps(poll)+'\n')

@@ -70,11 +70,14 @@ def audit(before_dir, after_dir):
                 if item.get('observed_at', '') >= latest.get(key, {}).get('observed_at', ''):
                     latest[key] = item
     checks = Counter()
+    request_errors = Counter()
     later_state_updates = 0
     for (performer, event), observation in latest.items():
         if 'public_status_checks' not in observation:
             continue
-        checks.update(observation['public_status_checks'])
+        evidence = observation['public_status_checks']
+        checks.update({name: count for name, count in evidence.items() if type(count) is int})
+        request_errors.update(evidence.get('request_errors', {}))
         rows = read_master(after_dir / f'{performer}_master.csv')
         if observation.get('api_fetch_complete'):
             api_ids = observation.get('api_active_ids')
@@ -113,7 +116,8 @@ def audit(before_dir, after_dir):
                 json.loads(line)
                 ledger_records += 1
     return {'ok': not errors, 'totals': dict(totals), 'observation_states': dict(states),
-            'latest_public_checks': dict(checks), 'change_ledger_records': ledger_records,
+            'latest_public_checks': dict(checks), 'latest_public_request_errors': dict(request_errors),
+            'change_ledger_records': ledger_records,
             'api_ids_with_later_confirmed_state_updates': later_state_updates,
             'errors': errors,
             'limitations': 'Unknown historical absences and anonymous API sales remain unlabelled; this audit does not prove all sales were individually recovered.'}
