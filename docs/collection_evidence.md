@@ -22,12 +22,12 @@ original verification timestamp intact. Prices and other fields available in
 the list still follow the latest list observation. The CSV columns and history
 formats are unchanged.
 
-The ordinary Actions poll starts at a 4.5-second global interval after the
-two-worker burst triggered HTTP 429 in production. It allows up to 30 minutes
-for state and 40 minutes for details,
-with a shared 53-minute deadline measured from job setup. The last seven
-minutes of the hourly job are reserved for audit, packing and push. The optional
-repository variable `PUBLIC_API_MIN_INTERVAL` adds spacing across workers.
+The ordinary Actions poll defaults to a 4.5-second interval across workers
+after a burst triggered HTTP 429 in production. It allows up to 12 minutes
+for state and eight minutes for details, subject to a shared 22-minute
+request deadline measured from job setup. That deadline applies to individual
+requests. The audit, packing and push follow under the job timeout. The optional
+repository variable `PUBLIC_API_MIN_INTERVAL` sets the initial spacing.
 On HTTP 429 or an HTTP 503 with a retry instruction, the collector waits and
 sets global spacing to at least 4.5 seconds for the rest of the run.
 Server cooldowns carry over to queued runs, and access denial stops further

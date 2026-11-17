@@ -71,8 +71,8 @@ jobs:
             # Leave room for audit, packing, and push before the six-hour job limit.
             echo "PUBLIC_RUN_DEADLINE_EPOCH=$(date -u --date='+350 minutes' +%s)" >> "$GITHUB_ENV"
           else
-            # Share the hourly budget across both passes and leave time to save.
-            echo "PUBLIC_RUN_DEADLINE_EPOCH=$(date -u --date='+53 minutes' +%s)" >> "$GITHUB_ENV"
+            # Bound hourly requests separately from the time needed to audit and publish.
+            echo "PUBLIC_RUN_DEADLINE_EPOCH=$(date -u --date='+22 minutes' +%s)" >> "$GITHUB_ENV"
           fi
 
       - name: リポジトリのチェックアウト
@@ -122,7 +122,7 @@ jobs:
       - name: 全対象のAPI状態を収集
         env:
           SCRAPE_MODE: api
-          PUBLIC_STATUS_RUNTIME_MINUTES: ${{ inputs.recover_details && '265' || '30' }}
+          PUBLIC_STATUS_RUNTIME_MINUTES: ${{ inputs.recover_details && '265' || '12' }}
           PUBLIC_STATUS_CHECK_LIMIT: '6000'
           COLLECTION_COVERAGE_PATH: ${{ runner.temp }}/ticket-collection-coverage.json
         run: python scraper.py
@@ -130,7 +130,7 @@ jobs:
       - name: 公開チケット全文を順次取得・再確認
         env:
           SCRAPE_MODE: details
-          PUBLIC_DETAIL_RUNTIME_MINUTES: ${{ inputs.recover_details && '350' || '40' }}
+          PUBLIC_DETAIL_RUNTIME_MINUTES: ${{ inputs.recover_details && '350' || '8' }}
           PUBLIC_CONTENT_CHECK_LIMIT: '6000'
         run: python scraper.py
         
