@@ -363,6 +363,7 @@ class CoverageRecoveryTest(unittest.TestCase):
                 'status': 'listing', 'observation_state': 'active', 'perf_date': '2099-02-01',
                 'first_observed_at': '2026-11-16 08:00:00',
                 'last_observed_at': '2026-11-16 08:00:00',
+                'is_price_on_request': 'True', 'price_source': 'on_request',
             }
             ticket = {
                 'status': 'active', 'eventId': 'fire-id', 'shareCode': 'ticket',
@@ -384,6 +385,8 @@ class CoverageRecoveryTest(unittest.TestCase):
             self.assertEqual(saved['ticket']['event_id'], 'old-url')
             self.assertEqual(saved['ticket']['first_observed_at'], old['first_observed_at'])
             self.assertEqual(saved['ticket']['price'], '2500')
+            self.assertEqual(saved['ticket']['is_price_on_request'], 'False')
+            self.assertEqual(saved['ticket']['price_source'], 'event_api')
             self.assertEqual(json.loads(coverage.read_text(encoding='utf-8')),
                              {'expected_events':1, 'fetched_events':1, 'issues':[]})
 

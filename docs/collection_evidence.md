@@ -100,8 +100,10 @@ transaction times. A public null or expired code cannot reconstruct lost history
 
 Current market counts also exclude listings absent from the public inventory
 even if a direct lookup still reports them as active. Price on
-request is recorded as `is_price_on_request=True` / `price_source=on_request`;
-price zero is not a zero-yen transaction. `ticket_changes_YYYYMMDD.jsonl` retains
+request is recorded as `is_price_on_request=True` / `price_source=on_request`.
+If a later response supplies a positive price and omits the optional flag,
+the saved price source and flag are updated together. Zero is treated as an
+unknown price unless an on-request flag is available. `ticket_changes_YYYYMMDD.jsonl` retains
 changed price, quantity, state and ID linkage facts even when masters are
 overwritten on the same day. Unchanged polls do not duplicate change records.
 

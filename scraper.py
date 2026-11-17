@@ -1504,9 +1504,12 @@ def main():
                         new_active_tickets.append(share_code)
                         apply_event_content(row, t)
                         row['public_event_id'] = ev_firestore_id
-                    if 'isPriceOnRequest' in t:
-                        row['is_price_on_request'] = str(t['isPriceOnRequest'] is True)
-                    row['price_source'] = 'on_request' if t.get('isPriceOnRequest') is True else ('event_api' if price_val and float(price_val) > 0 else 'unknown')
+                    on_request = t.get('isPriceOnRequest') is True
+                    has_public_price = bool(price_val and float(price_val) > 0)
+                    if 'isPriceOnRequest' in t or (has_public_price and row.get('is_price_on_request') == 'True'):
+                        row['is_price_on_request'] = str(on_request)
+                    row['price_source'] = ('on_request' if row.get('is_price_on_request') == 'True'
+                                           else 'event_api' if has_public_price else 'unknown')
                         
                 elif status == 'sold':
                     row = _sold_match(t, slug, by_share_code, by_created_at, by_identity)

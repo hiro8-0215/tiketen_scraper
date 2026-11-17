@@ -349,8 +349,13 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
         row['observation_state'] = 'public_unclassified' if status == 'unclassified' else status
     else:
         row['observation_state'] = 'expired'
+    on_request = ticket.get('isPriceOnRequest') is True
     if 'isPriceOnRequest' in ticket:
-        row['is_price_on_request'] = str(ticket['isPriceOnRequest'] is True)
+        row['is_price_on_request'] = str(on_request)
+        if on_request:
+            row['price_source'] = 'on_request'
+        elif row.get('price_source') == 'on_request':
+            row['price_source'] = 'unknown'
     value = ticket.get('pricePerTicket')
     if value is not None:
         try:
@@ -358,8 +363,10 @@ def apply_public_evidence(master, old_code, ticket, firestore_event_id, now):
         except (ValueError, TypeError):
             price = float('nan')
         if 0 <= price < float('inf'):
+            if price > 0 and not on_request and row.get('is_price_on_request') == 'True':
+                row['is_price_on_request'] = 'False'
             row['price'] = int(price) if price.is_integer() else price
-            row['price_source'] = ('on_request' if ticket.get('isPriceOnRequest') is True
+            row['price_source'] = ('on_request' if row.get('is_price_on_request') == 'True'
                                    else 'public_detail' if price > 0 else 'unknown')
     return 'alias' if code != old_code else status
 

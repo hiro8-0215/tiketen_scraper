@@ -37,6 +37,26 @@ class CollectionEvidenceTest(unittest.TestCase):
                 'new': {'ticket_id': 'new', 'event_id': 'event', 'status': 'listing',
                         'first_observed_at': '2026-09-27 01:00:00', 'price': 13000}}
 
+    def test_public_price_replaces_old_on_request_flag_and_honors_explicit_mode(self):
+        cases = (
+            ({'pricePerTicket': 2500}, ('False', 'public_detail')),
+            ({'pricePerTicket': 2500, 'isPriceOnRequest': True}, ('True', 'on_request')),
+            ({'pricePerTicket': 0}, ('True', 'on_request')),
+            ({'pricePerTicket': 0, 'isPriceOnRequest': False}, ('False', 'unknown')),
+            ({'isPriceOnRequest': True}, ('True', 'on_request')),
+            ({'isPriceOnRequest': False}, ('False', 'unknown')),
+        )
+        for fields, expected in cases:
+            with self.subTest(fields=fields):
+                rows = self.rows()
+                row = rows['old']
+                row.update(is_price_on_request='True', price_source='on_request')
+                evidence.apply_public_evidence(
+                    rows, 'old', {'shareCode': 'old', 'eventId': 'firestore', 'status': 'active', **fields},
+                    'firestore', '2026-09-27 02:00:00'
+                )
+                self.assertEqual((row['is_price_on_request'], row['price_source']), expected)
+
     def test_public_alias_preserves_both_ids_and_first_observation(self):
         rows = self.rows()
         result = evidence.apply_public_evidence(rows, 'old',
