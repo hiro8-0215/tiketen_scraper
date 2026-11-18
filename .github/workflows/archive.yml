@@ -73,12 +73,12 @@ jobs:
           if day:
               if datetime.strptime(day, '%Y%m%d').strftime('%Y%m%d') != day:
                   raise ValueError('log_date must use UTC YYYYMMDD')
-              subprocess.run(['git', 'sparse-checkout', 'add', '--no-cone',
+              subprocess.run(['git', 'sparse-checkout', 'add',
                               f'/data/observation_{day}.jsonl',
                               f'/data/content_observation_{day}.jsonl',
                               f'/data/ticket_changes_{day}*.jsonl'], check=True)
           elif os.environ.get('GDRIVE_INCLUDE_JSONL', '').lower() in {'1', 'true', 'yes'}:
-              subprocess.run(['git', 'sparse-checkout', 'add', '--no-cone', '/data/*.jsonl'], check=True)
+              subprocess.run(['git', 'sparse-checkout', 'add', '/data/*.jsonl'], check=True)
           PY
 
       - name: Google Driveへデータをバックアップ
