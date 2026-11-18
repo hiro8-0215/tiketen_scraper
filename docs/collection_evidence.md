@@ -38,9 +38,11 @@ Server cooldowns carry over to queued runs, and access denial stops further
 individual requests in the same run. Actions records each phase's HTTP counts.
 The site's explicit `ticket_detail_ip_blocked` response is reported separately
 and stops detail requests immediately, including in recovery mode.
-The collector saves inventory for every event first. It then checks newly
-absent IDs across events before older unresolved IDs, sharing the available
-requests among events in each priority band. Within each event, unresolved IDs
+The collector saves inventory for every event first. It checks newly absent
+IDs, then listings with changed public description previews, then older
+unresolved IDs. The details phase can apply the prefetched description
+responses after requests are paused, provided their listing and event IDs
+match and their timestamps are current. Within each event, unresolved IDs
 closest to the 36-hour cutoff are checked first. Observation logs include `newly_missing`,
 `newly_missing_pending`, and `full_from_alias`.
 

@@ -1150,13 +1150,13 @@ def write_observations(records):
             stream.write(json.dumps(record, ensure_ascii=False) + '\n')
 
 
-def public_state_order(batches, unverified_codes=()):
-    ranked = []
+def public_state_order(batches, unverified_codes=(), changed_content=()):
+    ranked = [(1, rank, code) for rank, code in enumerate(changed_content)]
     for events in batches.values():
         for _, _, candidates, _ in events:
             ranks = Counter()
             for code, newly_missing in candidates:
-                band = 0 if newly_missing else (1 if code in unverified_codes else 2)
+                band = 0 if newly_missing else (2 if code in unverified_codes else 3)
                 ranked.append((band, ranks[band], code))
                 ranks[band] += 1
     ranked.sort(key=lambda item: item[:2])
@@ -1177,10 +1177,19 @@ def public_state_deadline(status_minutes, backlog_minutes, unverified_count, min
     return deadline
 
 
-def finish_public_state_poll(batches, observations, cache, budget, deadline, policy, unverified_codes=()):
+def finish_public_state_poll(batches, observations, cache, budget, deadline, policy, unverified_codes=(),
+                             changed_content=None):
+    changed_content = changed_content or {}
+    if changed_content:
+        print(f'[PUBLIC STATE] {len(changed_content)} changed descriptions queued before older IDs.',
+              flush=True)
     responses = query_public_listings(
-        public_state_order(batches, unverified_codes), cache, budget, deadline, policy
+        public_state_order(batches, unverified_codes, changed_content), cache, budget, deadline, policy
     )
+    for code, event_id in changed_content.items():
+        reply = responses.get(code)
+        if reusable_public_content({'public_event_id': event_id}, code, reply):
+            remember_verified(cache, *reply)
     for performer, events in batches.items():
         checked = [
             (event_id, counts, code)
@@ -1257,6 +1266,7 @@ def main():
     state_attempts = {}
     public_state_batches = {}
     unverified_state_codes = set()
+    changed_content = {}
     observations = {}
     print(f"Scrape mode: {SCRAPE_MODE}")
     if SCRAPE_MODE == 'details':
@@ -1462,8 +1472,11 @@ def main():
                         )
                         apply_event_content(row, t)
                         row['public_event_id'] = ev_firestore_id
-                        if content_refresh_reason(row, content_now):
+                        reason = content_refresh_reason(row, content_now)
+                        if reason:
                             new_active_tickets.append(share_code)
+                        if SCRAPE_MODE == 'api' and reason == 'public_description_preview_changed':
+                            changed_content[share_code] = ev_firestore_id
                         if match_key is not None:
                             by_created_at[match_key] = row
                     else:
@@ -1679,7 +1692,8 @@ def main():
         state_deadline = public_state_deadline(status_minutes, backlog_minutes,
                                                len(unverified_state_codes), min_interval)
         finish_public_state_poll(public_state_batches, observations, public_cache, public_budget,
-                                 state_deadline, public_policy, unverified_state_codes)
+                                 state_deadline, public_policy, unverified_state_codes,
+                                 changed_content=changed_content)
         missing = [
             target['name'] for target in targets
             if not os.path.exists(

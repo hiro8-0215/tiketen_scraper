@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def remember_verified(cache, ticket, error, checked_at):
-    """Call only after identity/event validation by apply_public_evidence."""
+    """Store a response after the caller has validated its listing and event IDs."""
     if ticket is None or error or not checked_at:
         return
     code = ticket['shareCode']

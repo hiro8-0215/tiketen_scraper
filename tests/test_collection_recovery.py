@@ -282,6 +282,26 @@ class PublicRequestRecoveryTest(unittest.TestCase):
 
 
 class CoverageRecoveryTest(unittest.TestCase):
+    def test_visible_preview_changes_are_checked_before_older_absences_and_reused(self):
+        batches = {'group': [('event', 'fire', [('old', False), ('newly-missing', True)], {})]}
+        checked = '2026-11-18 01:00:00'
+        right = {'shareCode': 'changed', 'eventId': 'fire', 'status': 'active', 'description': 'full text'}
+        wrong = {**right, 'shareCode': 'different-event', 'eventId': 'another-event'}
+        replies = {'changed': (right, None, checked), 'different-event': (wrong, None, checked)}
+        cache = {}
+        with (patch.object(scraper, 'query_public_listings', return_value=replies) as lookup,
+              patch.object(scraper, 'write_observations')):
+            scraper.finish_public_state_poll(
+                batches, {'group': []}, cache, [3], 60, None, {'old'},
+                changed_content={'changed': 'fire', 'different-event': 'fire'},
+            )
+        self.assertEqual(lookup.call_args.args[0], ['newly-missing', 'changed', 'different-event', 'old'])
+        self.assertEqual(cache, {'changed': replies['changed']})
+        with patch.object(evidence, 'fetch_public_ticket') as fetch:
+            reused = evidence.query_public_listings(['changed', 'old'], cache, [1], 0, None)
+        self.assertEqual(reused, {'changed': replies['changed']})
+        fetch.assert_not_called()
+
     def test_state_backlog_only_uses_spare_time_before_detail_reserve(self):
         for remaining, queued, expected_duration in [(1210, 160, 720), (1210, 161, 910),
                                                        (960, 5000, 720)]:

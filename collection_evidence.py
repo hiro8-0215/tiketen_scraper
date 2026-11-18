@@ -445,10 +445,10 @@ def prepare_public_listings(master, prior, active_codes, now, *, recheck_after=t
 def query_public_listings(codes, cache, budget, deadline, policy):
     """Share the deadline, rate policy and response cache across listings."""
     def query(code):
-        if time.monotonic() >= deadline:
-            return code, None, 'budget', ''
         if code in cache:
             return code, *cache[code]
+        if time.monotonic() >= deadline:
+            return code, None, 'budget', ''
         try:
             value = (fetch_public_ticket(code) if policy is None else
                      fetch_public_ticket(code, policy=policy, deadline=deadline))
