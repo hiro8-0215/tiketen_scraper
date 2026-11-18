@@ -2,6 +2,11 @@ name: Daily Archive to Google Drive
 
 on:
   workflow_dispatch:
+    inputs:
+      log_date:
+        description: "UTCの収集ログのみ保存する日付（YYYYMMDD）。空欄でマスターCSV"
+        type: string
+        default: ''
   workflow_call:
     inputs:
       data_ref:
@@ -40,8 +45,8 @@ jobs:
             /*
             !/*/
             /.github/
-            /data/*_master.csv
-            /data/*_master.csv.gz
+            ${{ inputs.log_date && '/data/anonymous_sold_inventory.jsonl' || '/data/*_master.csv' }}
+            ${{ !inputs.log_date && '/data/*_master.csv.gz' || '' }}
 
       - name: Pythonのセットアップ
         uses: actions/setup-python@v7
@@ -59,20 +64,31 @@ jobs:
       - name: 明示的に有効な場合だけJSONLを取得
         env:
           GDRIVE_INCLUDE_JSONL: ${{ vars.GDRIVE_INCLUDE_JSONL }}
+          GDRIVE_LOG_DATE: ${{ inputs.log_date }}
         run: |
           python - <<'PY'
           import os, subprocess
-          if os.environ.get('GDRIVE_INCLUDE_JSONL', '').lower() in {'1', 'true', 'yes'}:
+          from datetime import datetime
+          day = os.environ.get('GDRIVE_LOG_DATE', '').strip()
+          if day:
+              if datetime.strptime(day, '%Y%m%d').strftime('%Y%m%d') != day:
+                  raise ValueError('log_date must use UTC YYYYMMDD')
+              subprocess.run(['git', 'sparse-checkout', 'add', '--no-cone',
+                              f'/data/observation_{day}.jsonl',
+                              f'/data/content_observation_{day}.jsonl',
+                              f'/data/ticket_changes_{day}*.jsonl'], check=True)
+          elif os.environ.get('GDRIVE_INCLUDE_JSONL', '').lower() in {'1', 'true', 'yes'}:
               subprocess.run(['git', 'sparse-checkout', 'add', '--no-cone', '/data/*.jsonl'], check=True)
           PY
 
-      - name: Google Driveへmasterをバックアップ
+      - name: Google Driveへデータをバックアップ
         env:
           GDRIVE_WEBAPP_URL: ${{ secrets.GDRIVE_WEBAPP_URL }}
           GDRIVE_UPLOAD_TOKEN: ${{ secrets.GDRIVE_UPLOAD_TOKEN }}
           GDRIVE_SOURCE_DIR: data
           GDRIVE_UPLOAD_CACHE_PATH: ${{ runner.temp }}/gdrive-upload-cache/upload_state.json
           GDRIVE_FORCE_FULL_UPLOAD: ${{ inputs.data_ref == '' }}
+          GDRIVE_LOG_DATE: ${{ inputs.log_date }}
           # Enable only after redeploying Code.gs with numbered JSONL part support.
           GDRIVE_INCLUDE_JSONL: ${{ vars.GDRIVE_INCLUDE_JSONL }}
         run: python upload_to_gdrive.py

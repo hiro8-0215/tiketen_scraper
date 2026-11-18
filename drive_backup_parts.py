@@ -13,6 +13,7 @@ PART_BYTES = 30 * 1024 * 1024
 MANIFEST_SUFFIX = '.backup_manifest_master.csv'
 BACKUP_MANIFEST = 'drive_backup_manifest_master.csv'
 PART_PATTERN = re.compile(r'\.part\d{3,}_master\.csv$')
+LOG_MANIFEST_PATTERN = re.compile(r'drive_logs_\d{8}_manifest_master\.csv')
 FIELDS = ('version', 'source_filename', 'source_bytes', 'source_sha256',
           'source_rows', 'header_bytes', 'header_sha256', 'part_index',
           'part_filename', 'part_bytes', 'part_sha256', 'part_rows')
@@ -52,7 +53,8 @@ def records(path: Path):
 
 
 def is_backup_metadata(name: str) -> bool:
-    return name == BACKUP_MANIFEST or name.endswith(MANIFEST_SUFFIX) or bool(PART_PATTERN.search(name))
+    return (name == BACKUP_MANIFEST or name.endswith(MANIFEST_SUFFIX)
+            or bool(PART_PATTERN.search(name)) or bool(LOG_MANIFEST_PATTERN.fullmatch(name)))
 
 
 def split_csv(source: Path, staging: Path, limit: int = PART_BYTES):

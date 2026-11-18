@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import base64
+import csv
 import glob
 import hashlib
 import json
@@ -13,7 +14,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from ticket_change_log import change_log_paths, migrate_legacy_logs
+from ticket_change_log import change_log_paths, migrate_legacy_log, migrate_legacy_logs
 from drive_backup_parts import prepare_uploads
 from repository_data_storage import restore_data
 
@@ -204,19 +205,43 @@ def upload_files(webapp_url: str, token: str, paths: list[Path], subfolder: str,
                                '; '.join(f'{name}: {error}' for name, error in failures.items()))
 
 
+def dated_log_paths(source_dir: Path, day: str) -> list[Path]:
+    if datetime.strptime(day, "%Y%m%d").strftime("%Y%m%d") != day:
+        raise ValueError("GDRIVE_LOG_DATE must be a UTC date in YYYYMMDD format")
+    legacy = source_dir / f"ticket_changes_{day}.jsonl"
+    if legacy.exists():
+        migrate_legacy_log(legacy)
+    paths = change_log_paths(source_dir, day)
+    paths += [
+        path for path in (source_dir / f"observation_{day}.jsonl",
+                          source_dir / f"content_observation_{day}.jsonl")
+        if path.is_file()
+    ]
+    if not paths:
+        raise ValueError(f"No dated logs found for {day}")
+    sold = source_dir / "anonymous_sold_inventory.jsonl"
+    if sold.is_file():
+        paths.append(sold)
+    return paths
+
+
 def main() -> None:
     webapp_url = required_environment("GDRIVE_WEBAPP_URL")
     token = required_environment("GDRIVE_UPLOAD_TOKEN")
     source_dir = Path(os.environ.get("GDRIVE_SOURCE_DIR", "data"))
-    restore_data(source_dir, masters_only=True, skip_existing=True)
     now = datetime.now(JST)
     subfolder = f"data_{now.month}_{now.day}"
-    paths = [Path(value) for value in sorted(glob.glob(str(source_dir / "*_master.csv")))]
-    if not paths:
-        raise RuntimeError(f"No *_master.csv files found under {source_dir.resolve()}")
+    log_date = os.environ.get("GDRIVE_LOG_DATE", "").strip()
+    if log_date:
+        paths = dated_log_paths(source_dir, log_date)
+    else:
+        restore_data(source_dir, masters_only=True, skip_existing=True)
+        paths = [Path(value) for value in sorted(glob.glob(str(source_dir / "*_master.csv")))]
+        if not paths:
+            raise RuntimeError(f"No *_master.csv files found under {source_dir.resolve()}")
     # The deployed Apps Script may still accept only *_master.csv. Enable JSONL
     # only after redeploying Code.gs with the expanded filename allowlist.
-    if os.environ.get('GDRIVE_INCLUDE_JSONL', '').lower() in {'1', 'true', 'yes'}:
+    if not log_date and os.environ.get('GDRIVE_INCLUDE_JSONL', '').lower() in {'1', 'true', 'yes'}:
         migrate_legacy_logs(source_dir)
         paths += sorted(source_dir.glob('observation_*.jsonl'))
         paths += change_log_paths(source_dir)
@@ -229,7 +254,15 @@ def main() -> None:
     uploaded_hashes = {} if force_full else load_upload_cache(cache_path, subfolder)
     with tempfile.TemporaryDirectory(prefix='drive-backup-') as directory:
         data, manifests = prepare_uploads(paths, Path(directory), MAX_FILE_BYTES)
-        digests = {path.name: file_sha256(path) for path in [*data, *manifests]}
+        digests = {path.name: file_sha256(path) for path in data}
+        if log_date:
+            manifest = Path(directory) / f"drive_logs_{log_date}_manifest_master.csv"
+            with manifest.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.writer(stream)
+                writer.writerow(("filename", "bytes", "sha256"))
+                writer.writerows((path.name, path.stat().st_size, digests[path.name]) for path in data)
+            manifests.append(manifest)
+        digests.update((path.name, file_sha256(path)) for path in manifests)
         pending_data = [
             path for path in data
             if uploaded_hashes.get(path.name) != digests[path.name]

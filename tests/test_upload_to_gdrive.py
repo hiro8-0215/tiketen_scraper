@@ -1,3 +1,5 @@
+import csv
+import hashlib
 import json
 import sys
 import tempfile
@@ -22,6 +24,41 @@ def successful_response():
 
 
 class DriveUploadRetryTest(unittest.TestCase):
+    def test_dated_log_backup_selects_one_utc_day_and_manifest_hashes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            expected = ('ticket_changes_20261117_001.jsonl', 'observation_20261117.jsonl',
+                        'content_observation_20261117.jsonl', 'anonymous_sold_inventory.jsonl')
+            data = {name: json.dumps({"file": name}).encode() + b'\n' for name in expected}
+            for name, payload in data.items():
+                (root / name).write_bytes(payload)
+            (root / 'observation_20261116.jsonl').write_text('{}\n', encoding='utf-8')
+            (root / 'unrelated_master.csv').write_text('ticket_id\n', encoding='utf-8')
+            observed = []
+
+            def upload(url, token, path, folder, deadline=None, *, max_attempts):
+                observed.append(path.name)
+                if path.name == 'drive_logs_20261117_manifest_master.csv':
+                    with path.open(encoding='utf-8', newline='') as stream:
+                        manifest = {row['filename']: row for row in csv.DictReader(stream)}
+                    self.assertEqual(set(manifest), set(data))
+                    for name, payload in data.items():
+                        self.assertEqual(manifest[name]['sha256'], hashlib.sha256(payload).hexdigest())
+                        self.assertEqual(int(manifest[name]['bytes']), len(payload))
+                else:
+                    self.assertEqual(path.read_bytes(), data[path.name])
+
+            with (patch.dict(upload_to_gdrive.os.environ, {
+                    'GDRIVE_WEBAPP_URL': 'https://example.invalid', 'GDRIVE_UPLOAD_TOKEN': 'test',
+                    'GDRIVE_SOURCE_DIR': directory, 'GDRIVE_INCLUDE_JSONL': 'true',
+                    'GDRIVE_LOG_DATE': '20261117'}),
+                  patch.object(upload_to_gdrive, 'upload_file', side_effect=upload),
+                  patch.object(upload_to_gdrive, 'restore_data') as restore,
+                  patch('builtins.print')):
+                upload_to_gdrive.main()
+            self.assertEqual(observed, [*expected, 'drive_logs_20261117_manifest_master.csv'])
+            restore.assert_not_called()
+
     def test_main_expands_git_gzip_before_preparing_drive_csv(self):
         with tempfile.TemporaryDirectory() as directory:
             source = Path(directory, 'group_master.csv')

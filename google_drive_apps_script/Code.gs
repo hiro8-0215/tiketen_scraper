@@ -11,10 +11,14 @@ function getOrCreateFolder(parent, name) {
 
 function replaceFile(folder, filename, blob) {
   const matches = folder.getFilesByName(filename);
+  const replacement = folder.createFile(blob.setName(filename));
   while (matches.hasNext()) {
-    matches.next().setTrashed(true);
+    const previous = matches.next();
+    if (previous.getId() !== replacement.getId()) {
+      previous.setTrashed(true);
+    }
   }
-  return folder.createFile(blob.setName(filename));
+  return replacement;
 }
 
 function doPost(event) {
@@ -33,7 +37,7 @@ function doPost(event) {
     if (!/^data_\d{1,2}_\d{1,2}$/.test(payload.subfolderName || "")) {
       return jsonResponse({status: "error", message: "Invalid subfolder name"});
     }
-    if (!/^(?:[A-Za-z0-9._-]+_master\.csv|observation_\d{8}\.jsonl|ticket_changes_\d{8}(?:_\d{3,})?\.jsonl|anonymous_sold_inventory\.jsonl)$/.test(payload.filename || "")) {
+    if (!/^(?:[A-Za-z0-9._-]+_master\.csv|(?:content_)?observation_\d{8}\.jsonl|ticket_changes_\d{8}(?:_\d{3,})?\.jsonl|anonymous_sold_inventory\.jsonl)$/.test(payload.filename || "")) {
       return jsonResponse({status: "error", message: "Invalid filename"});
     }
 
