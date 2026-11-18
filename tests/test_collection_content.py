@@ -9,6 +9,17 @@ import scraper
 
 
 class ContentTest(unittest.TestCase):
+    def test_missing_event_preview_clears_only_the_latest_preview(self):
+        for ticket in ({}, {'description': None}):
+            with self.subTest(ticket=ticket):
+                row = public_updates({'description': 'verified full text'}, '2026-11-18 10:00:00')
+                row['api_description'] = 'prior preview'
+                apply_api_preview(row, ticket)
+                self.assertEqual(row['api_description'], '')
+                self.assertEqual(row['raw_description'], 'verified full text')
+                self.assertEqual(row['description_checked_at'], '2026-11-18 10:00:00')
+                self.assertEqual(row['description_is_full'], 'True')
+
     def test_event_metadata_does_not_certify_or_overwrite_full_text(self):
         row = public_updates({'description': 'full text', 'seatType': 'orchestra'}, '2026-11-16 09:00:00')
         apply_event_content(row, {

@@ -57,9 +57,10 @@ def apply_event_content(row, ticket):
 
 
 def apply_api_preview(row, ticket):
-    if 'description' not in ticket or ticket['description'] is None:
+    preview = ticket.get('description')
+    if preview is None:
+        row['api_description'] = ''
         return
-    preview = ticket['description']
     if not isinstance(preview, str):
         raise ValueError('Invalid API description')
     row['api_description'] = preview

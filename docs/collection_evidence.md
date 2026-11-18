@@ -4,7 +4,9 @@
 
 The event list refreshes active inventory, price, quantity, date, venue and
 available seat and tag fields. Listing descriptions are previews, saved in
-`api_description`. Only an identity-verified public detail response sets
+`api_description`, which is empty when the latest list response omits the
+description. The last verified full text and its timestamp stay available.
+Only an identity-verified public detail response sets
 `description_source=public_detail`, `description_is_full=True` and
 `description_checked_at`. Full public text can legitimately be empty.
 
