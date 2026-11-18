@@ -22,6 +22,24 @@ def response(**payload):
 
 
 class PublicRequestRecoveryTest(unittest.TestCase):
+    def test_http_success_with_null_ticket_is_counted_without_confirming_evidence(self):
+        policy = evidence.PublicRequestPolicy()
+        with patch.object(evidence.urllib.request, 'urlopen', side_effect=[
+                response(success=True, ticket=None),
+                response(success=True, ticket={'shareCode': 'code', 'eventId': 'event', 'status': 'active'}),
+        ]):
+            self.assertIsNone(evidence.fetch_public_ticket('missing', policy=policy))
+            self.assertFalse(policy.has_succeeded)
+            evidence.fetch_public_ticket('code', policy=policy)
+            self.assertTrue(policy.has_succeeded)
+        with patch('builtins.print') as printed:
+            policy.save_cooldown()
+        counts = json.loads(printed.call_args.args[0].split('] ', 1)[1])
+        self.assertEqual(counts['started'], 2)
+        self.assertEqual(counts['recorded_statuses'], {'200': 2})
+        self.assertEqual(counts['null_tickets'], 1)
+        self.assertEqual(counts['identified_tickets'], 1)
+
     def test_permanent_http_errors_get_one_attempt_and_log_the_status(self):
         for status in (401, 403, 404):
             with self.subTest(status=status), patch.object(
@@ -231,7 +249,7 @@ class PublicRequestRecoveryTest(unittest.TestCase):
             with (patch.object(evidence.time, 'monotonic', side_effect=lambda: clock[0]),
                   patch.object(evidence.time, 'time', side_effect=lambda: clock[0] + 10_000)):
                 policy = evidence.PublicRequestPolicy(stage, server_cooldown_path=durable)
-                policy.record_response(200)
+                policy.record_ticket({'shareCode': 'code', 'eventId': 'event', 'status': 'active'})
                 policy.record_response(403)
                 policy.save_cooldown()
                 following_phase = evidence.PublicRequestPolicy(stage, server_cooldown_path=durable)

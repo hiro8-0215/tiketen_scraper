@@ -81,6 +81,8 @@ class PublicRequestPolicy:
         self._succeeded = 1 if has_prior_success else 0
         self._started_requests = 0
         self._reported_responses = Counter()
+        self._identified_tickets = 0
+        self._null_tickets = 0
         self._ip_blocks = 0
         self.retry_access_denial = retry_access_denial
         self._server_cooldown_path = Path(server_cooldown_path) if server_cooldown_path else None
@@ -112,6 +114,8 @@ class PublicRequestPolicy:
         counts = json.dumps({
             'started': self._started_requests,
             'recorded_statuses': dict(self._reported_responses),
+            'identified_tickets': self._identified_tickets,
+            'null_tickets': self._null_tickets,
             'ip_blocks': self._ip_blocks,
             'interval_seconds': self._min_interval,
         })
@@ -152,12 +156,11 @@ class PublicRequestPolicy:
     def record_response(self, status, retry_after=None, *, ip_blocked=False):
         with self._lock:
             self._reported_responses[status] += 1
+            if 200 <= status < 300:
+                return
             if ip_blocked:
                 self._ip_blocks += 1
-            if status == 200:
-                self._denied = 0
-                self._succeeded += 1
-            elif status in {401, 403}:
+            if status in {401, 403}:
                 self._denied += 1
             else:
                 self._denied = 0
@@ -181,6 +184,16 @@ class PublicRequestPolicy:
                 if until > self._resume_at:
                     self._resume_at = until
                     print(f'[PUBLIC API] HTTP {status}; shared cooldown {delay:g}s', flush=True)
+
+    def record_ticket(self, ticket):
+        with self._lock:
+            if ticket is None:
+                self._null_tickets += 1
+            elif all(isinstance(ticket.get(key), str) and ticket[key].strip()
+                     for key in ('shareCode', 'eventId', 'status')):
+                self._identified_tickets += 1
+                self._denied = 0
+                self._succeeded += 1
 
 
 def public_error_label(error):
@@ -219,16 +232,14 @@ def fetch_public_ticket(code, *, policy=None, deadline=float('inf')):
         retrying_denial = False
         try:
             with urllib.request.urlopen(request, timeout=timeout) as response:
+                policy.record_response(getattr(response, 'status', 200))
                 payload = json.load(response)
             if not isinstance(payload, dict) or payload.get('success') is not True or 'ticket' not in payload:
                 raise ValueError('Invalid public ticket response')
             ticket = payload['ticket']
             if ticket is not None and not isinstance(ticket, dict):
                 raise ValueError('Invalid public ticket object')
-            if ticket is not None and all(
-                    isinstance(ticket.get(key), str) and ticket[key].strip()
-                    for key in ('shareCode', 'eventId', 'status')):
-                policy.record_response(200)
+            policy.record_ticket(ticket)
             return ticket
         except urllib.error.HTTPError as error:
             status = error.code

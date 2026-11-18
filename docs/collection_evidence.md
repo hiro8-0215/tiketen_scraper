@@ -37,7 +37,8 @@ description changes.
 On HTTP 429 or an HTTP 503 with a retry instruction, the collector waits and
 sets global spacing to at least 4.5 seconds for the rest of the run.
 Server cooldowns carry over to queued runs, and access denial stops further
-individual requests in the same run. Actions records each phase's HTTP counts.
+individual requests in the same run. Actions records each phase's HTTP
+responses and counts replies with identity fields and null tickets separately.
 The site's explicit `ticket_detail_ip_blocked` response is reported separately
 and stops detail requests immediately, including in recovery mode.
 The collector saves inventory for every event first. It checks newly absent
