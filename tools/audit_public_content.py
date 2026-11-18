@@ -26,6 +26,8 @@ DEFERRED_CONTENT_REASONS = {
 def audit(folder, live_limit=0, *, rolling=False, inventory_first=False, inventory_since=None):
     errors, active, samples, latest, warnings = [], {}, [], {}, []
     backlog = []
+    archive_tolerable_failures = 0
+    current_inventory_incomplete = False
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     absence_cutoff = (now - timedelta(hours=36)).isoformat(sep=' ')
     current_polls = defaultdict(dict)
@@ -57,6 +59,7 @@ def audit(folder, live_limit=0, *, rolling=False, inventory_first=False, invento
                 errors.append({'reason': 'duplicate_master_ticket_id', 'performer': performer})
             for item in inventory.values():
                 if not item.get('api_fetch_complete'):
+                    current_inventory_incomplete = True
                     continue
                 if not isinstance(item.get('api_active_ids'), list):
                     errors.append({'reason': 'missing_current_inventory_ids', 'performer': performer,
@@ -102,6 +105,8 @@ def audit(folder, live_limit=0, *, rolling=False, inventory_first=False, invento
             findings = warnings if rolling or inventory_first else errors
             if item.get('failed'):
                 findings = errors
+                if item.get('failed') == item.get('ip_blocked_failures'):
+                    archive_tolerable_failures += 1
             findings.append({'performer':performer,'reason':'incomplete_public_refresh',
                            'failed':item.get('failed'),'pending':item.get('pending'),'null':item.get('null')})
         elif item.get('null'):
@@ -121,6 +126,8 @@ def audit(folder, live_limit=0, *, rolling=False, inventory_first=False, invento
                              'reason': 'anonymous_sold_rows', 'count': unresolved_sold})
         if checks.get('failed') or checks.get('pending'):
             findings = backlog if inventory_first and not checks.get('failed') else errors
+            if checks.get('failed') and checks.get('failed') == checks.get('ip_blocked_failures'):
+                archive_tolerable_failures += 1
             findings.append({'performer':performer,'event':event,
                              'reason':'incomplete_public_state_refresh',
                              'failed':checks.get('failed', 0),'pending':checks.get('pending', 0)})
@@ -157,7 +164,12 @@ def audit(folder, live_limit=0, *, rolling=False, inventory_first=False, invento
             errors.append({'id':key[1],'reason':'live_query_failed','error':type(exc).__name__})
         samples.append(result)
         time.sleep(0.5)
+    drive_inventory_verified = bool(
+        inventory_since is not None and verified_inventory_rows and not current_inventory_incomplete
+        and (not errors or (inventory_first and len(errors) == archive_tolerable_failures))
+    )
     return {'ok':not errors,'public_coverage_complete':not errors and not backlog,
+            'drive_inventory_verified':drive_inventory_verified,
             'unique_active_rows':len(active),'verified_inventory_rows':verified_inventory_rows,'live_samples':samples,
             'latest_content_refresh':latest,'errors':errors,'warnings':warnings,'backlog':backlog,
             'limitations':'Live values can change after collection. Historical null tickets cannot be reconstructed.'}
@@ -190,6 +202,7 @@ def main():
             summary.write('### Public ticket evidence\n\n')
             summary.write(f"- Active listing rows: {report['unique_active_rows']:,}\n")
             summary.write(f"- Site inventory IDs verified in saved masters: {report['verified_inventory_rows']:,}\n")
+            summary.write(f"- Saved inventory passed the Drive audit: {report['drive_inventory_verified']}\n")
             summary.write(f"- Known listing states and active content fully checked: {report['public_coverage_complete']}\n")
             anonymous = sum(item['count'] for item in report['warnings'] if item['reason'] == 'anonymous_sold_rows')
             if anonymous:
@@ -199,11 +212,15 @@ def main():
             for reason, count in sorted(error_counts.items()):
                 summary.write(f'- Quality errors {reason}: {count:,}\n')
     print(json.dumps({'ok':report['ok'],'public_coverage_complete':report['public_coverage_complete'],
+                      'drive_inventory_verified':report['drive_inventory_verified'],
                       'unique_active_rows':report['unique_active_rows'],
                       'verified_inventory_rows':report['verified_inventory_rows'],'backlog_counts':dict(backlog_counts),
                       'error_counts':dict(error_counts),
                       'live_samples':len(report['live_samples']),'errors':report['errors'][:20],
                       'warnings':report['warnings']},ensure_ascii=True))
+    if github_output := os.environ.get('GITHUB_OUTPUT'):
+        with open(github_output, 'a', encoding='utf-8') as output:
+            output.write(f"drive_inventory_verified={str(report['drive_inventory_verified']).lower()}\n")
     raise SystemExit(0 if report['ok'] else 1)
 
 

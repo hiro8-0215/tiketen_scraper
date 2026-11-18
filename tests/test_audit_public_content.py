@@ -144,3 +144,29 @@ class ContentAuditTest(unittest.TestCase):
             report = module.audit(folder, inventory_first=True, inventory_since=now)
             self.assertFalse(report['ok'])
             self.assertEqual(report['errors'][0]['reason'], 'api_inventory_not_preserved')
+
+    def test_only_proven_provider_ip_blocks_allow_drive_backup_of_verified_inventory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            now = datetime.now(timezone.utc).replace(microsecond=0)
+            when = now.strftime('%Y-%m-%d %H:%M:%S')
+            self.write(folder, description_checked_at=when, last_observed_at=when)
+            log = folder / f"observation_{now:%Y%m%d}.jsonl"
+            poll = {'performer': 'group', 'event_id': 'event', 'observed_at': when,
+                    'observed_at_utc': now.isoformat(), 'api_fetch_complete': True,
+                    'api_active_count': 1, 'api_active_ids': ['code'],
+                    'public_status_checks': {'failed': 1, 'ip_blocked_failures': 1}}
+            details = folder / f"content_observation_{now:%Y%m%d}.jsonl"
+            details.write_text(json.dumps({'performer': 'group', 'failed': 1,
+                                           'ip_blocked_failures': 1}), encoding='utf-8')
+            for change, eligible in [({}, True), ({'api_fetch_complete': False}, False),
+                                     ({'api_active_ids': ['missing']}, False),
+                                     ({'public_status_checks': {'failed': 2, 'ip_blocked_failures': 1}}, False)]:
+                with self.subTest(change=change):
+                    log.write_text(json.dumps({**poll, **change}), encoding='utf-8')
+                    report = module.audit(folder, inventory_first=True, inventory_since=now)
+                    self.assertFalse(report['ok'])
+                    self.assertFalse(report['public_coverage_complete'])
+                    self.assertEqual(report['drive_inventory_verified'], eligible)
+            log.write_text(json.dumps(poll), encoding='utf-8')
+            self.assertFalse(module.audit(folder, rolling=True, inventory_since=now)['drive_inventory_verified'])

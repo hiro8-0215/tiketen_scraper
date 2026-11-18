@@ -16,7 +16,7 @@ from playwright.sync_api import sync_playwright
 from collection_evidence import EVIDENCE_COLUMNS, reconcile_public_listings
 from collection_evidence import (
     fetch_public_ticket, apply_public_evidence, PublicRequestPolicy,
-    public_error_label, is_deferred_public_error, flatten_canonical_links,
+    PUBLIC_IP_BLOCK_LABEL, public_error_label, is_deferred_public_error, flatten_canonical_links,
     prepare_public_listings, query_public_listings, apply_public_listing_check,
 )
 from collection_content import apply_event_content, content_refresh_reason, has_public_full_text
@@ -933,6 +933,8 @@ def enrich_ticket_details(performer, master, ticket_ids, cache=None, policy=None
                     request_errors[error.removeprefix('deferred:')] += 1
                 else:
                     counts['failed'] += 1
+                    if error == PUBLIC_IP_BLOCK_LABEL:
+                        counts['ip_blocked_failures'] = counts.get('ip_blocked_failures', 0) + 1
                     request_errors[error] += 1
                 continue
             if ticket is None:

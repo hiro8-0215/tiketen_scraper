@@ -57,6 +57,7 @@ jobs:
       cancel-in-progress: false
     outputs:
       data_ref: ${{ steps.publish.outputs.data_ref }}
+      archive_ready: ${{ steps.coverage.outcome == 'success' && steps.audit.outputs.drive_inventory_verified == 'true' }}
 
     env:
       PYTHONUNBUFFERED: "1"
@@ -179,6 +180,7 @@ jobs:
           done
 
       - name: 公演取得漏れを報告（回収済みデータは保存済み）
+        id: coverage
         run: python tools/check_collection_coverage.py "$RUNNER_TEMP/ticket-collection-coverage.json"
 
       - name: 品質確認結果を反映
@@ -188,7 +190,7 @@ jobs:
   archive:
     needs: scrape
     # The schedule guard is skipped for a manual dispatch.
-    if: ${{ !cancelled() && needs.scrape.result == 'success' && needs.scrape.outputs.data_ref != '' }}
+    if: ${{ !cancelled() && needs.scrape.outputs.archive_ready == 'true' && needs.scrape.outputs.data_ref != '' }}
     uses: ./.github/workflows/archive.yml
     permissions:
       contents: read

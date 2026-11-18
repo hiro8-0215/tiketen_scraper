@@ -24,6 +24,7 @@ EVIDENCE_COLUMNS = [
 
 RETRYABLE_PUBLIC_HTTP = {408, 429, 500, 502, 503, 504}
 PUBLIC_IP_BLOCK = 'ticket_detail_ip_blocked'
+PUBLIC_IP_BLOCK_LABEL = f'HTTP 403 ({PUBLIC_IP_BLOCK})'
 
 
 class PublicLookupDeferred(RuntimeError):
@@ -483,6 +484,8 @@ def apply_public_listing_check(master, code, event_id, response, cache, counts):
     counts['pending'] -= 1
     if error:
         counts['failed'] += 1
+        if error == PUBLIC_IP_BLOCK_LABEL:
+            counts['ip_blocked_failures'] = counts.get('ip_blocked_failures', 0) + 1
         errors = counts.setdefault('request_errors', {})
         errors[error] = errors.get(error, 0) + 1
         return
