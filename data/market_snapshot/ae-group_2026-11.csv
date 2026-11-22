@@ -1,5 +1,5 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,current_active_quantity,historical_listing_rows,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
 2026-11,kamigata-expo-park-fes-2026,2026-11-01,,[大阪府] 万博記念公園,88,0,0,0,65,58,2,0.0,0,0,10,13,19889.383720930233,1000,50000
 2026-11,tvasahi-dream-festival-2026,2026-11-21,15:00,Kアリーナ横浜,385,0,0,0,127,11,1091,0.0,0,0,101,157,24749.052356020944,500,700000
-2026-11,tvasahi-dream-festival-2026,2026-11-22,15:00,Kアリーナ横浜,108,26,26,34,47,8,367,16059.09090909091,2000,80000,14,47,26532.135922330097,2000,170000
-2026-11,tvasahi-dream-festival-2026,2026-11-23,15:00,Kアリーナ横浜,253,82,82,120,179,80,656,25618.616438356163,300,170000,28,46,27418.116379310344,300,230000
+2026-11,tvasahi-dream-festival-2026,2026-11-22,15:00,Kアリーナ横浜,108,26,26,34,47,8,369,16059.09090909091,2000,80000,14,47,26532.135922330097,2000,170000
+2026-11,tvasahi-dream-festival-2026,2026-11-23,15:00,Kアリーナ横浜,257,85,85,126,182,80,664,25758.67105263158,300,170000,28,47,27391.96186440678,300,230000
