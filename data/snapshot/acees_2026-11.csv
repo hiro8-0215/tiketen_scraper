@@ -5705,23 +5705,23 @@ j4mpdp8foe,,b1moq9D55JK7I7jdyeo1,2026-11-22,09:30,川崎チネチッタ,pickup_n
 以上をご了承いただける方のみ、ご...",public_detail,2026-11-21 19:18:09,True,2026-11-21 19:18:09,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""N\u5217\u30bb\u30f3\u30d6\u30ed""}",2026-11
 8086wdz6hl,,b1moq9D55JK7I7jdyeo1,2026-11-22,16:05,TOHOシネマズ 川崎,electronic,female,入金後24時間以内に分配,さ,5.0,,,2026-11-22 00:01:37,scrape_observed,2026-11-22 00:01:37,,,listing,1,3200,公演中止のみ返金,True,3xl9vifkoo,2026-11-22 00:01:37,alias,2026-11-22 01:12:59,2026-11-22 01:01:32,public_detail,False,public_detail,active,公演中止のみ返金,public_detail,2026-11-22 00:18:00,True,2026-11-22 00:18:00,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""L\u521717\u301c22\u756a""}",2026-11
 urhjzfyomz,,b1moq9D55JK7I7jdyeo1,2026-11-22,09:30,川崎チネチッタ,paper,female,当日手渡し,R,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 01:01:32,,,listing,1,40000,当日会場にて手渡しいたします。,True,urhjzfyomz,2026-11-21 09:03:18,expired,2026-11-22 02:07:45,2026-11-22 02:01:26,public_detail,False,public_detail,expired,当日会場にて手渡しいたします。,public_detail,2026-11-22 02:07:45,True,2026-11-22 02:07:45,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""D\u52171\u301c10\u756a""}",2026-11
-xbsfloqupg,,b1moq9D55JK7I7jdyeo1,2026-11-22,13:00,TOHOシネマズ 川崎,electronic,none,チケットぴあにて分配,あ,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 03:01:32,,,listing,2,25000,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+xbsfloqupg,,b1moq9D55JK7I7jdyeo1,2026-11-22,13:00,TOHOシネマズ 川崎,electronic,none,チケットぴあにて分配,あ,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 04:01:30,,,listing,2,25000,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
-公演中止の場合のみ返金いたします。",True,xbsfloqupg,2026-11-21 10:03:14,active,2026-11-22 03:01:32,,event_api,False,event_api,active,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+公演中止の場合のみ返金いたします。",True,xbsfloqupg,2026-11-21 10:03:14,active,2026-11-22 04:01:30,,event_api,False,event_api,active,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
 公演中止の場合のみ返金いたします。",public_detail,2026-11-22 01:08:42,True,2026-11-22 01:08:42,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""\u2460F\u5217\u3000\u30bb\u30f3\u30bf\u30fc\u30d6\u30ed\u30c3\u30af\u300010\u301c20\u756a""}",2026-11
 3xl9vifkoo,,b1moq9D55JK7I7jdyeo1,2026-11-22,16:05,TOHOシネマズ 川崎,electronic,female,入金後24時間以内に分配,さ,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 01:12:59,2026-11-22 01:12:59,transition_observed,sold,1,3200,公演中止のみ返金,True,3xl9vifkoo,2026-11-22 00:01:37,sold_confirmed,2026-11-22 01:12:59,,public_detail,False,public_detail,sold,公演中止のみ返金,public_detail,2026-11-22 01:12:59,True,2026-11-22 01:12:59,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""L\u521717\u301c22\u756a""}",2026-11
-gbz6mg0eba,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 03:01:32,,,listing,1,95000,"これ以上の値下げはありません
+gbz6mg0eba,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 04:01:30,,,listing,1,90000,"これ以上の値下げはありません
 
 入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
-公演中止の場合のみ返金いたします。",True,gbz6mg0eba,2026-11-21 06:03:03,active,2026-11-22 03:01:32,,event_api,False,event_api,active,"これ以上の値下げはありません
+公演中止の場合のみ返金いたします。",True,gbz6mg0eba,2026-11-21 06:03:03,active,2026-11-22 04:01:30,,event_api,False,event_api,active,"これ以上の値下げはありません
 
 入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
@@ -5729,12 +5729,12 @@ gbz6mg0eba,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,electronic,f
 
 公演中...",public_detail,2026-11-22 01:06:14,True,2026-11-22 01:06:14,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""\u2461B\u5217\u3000\u30bb\u30f3\u30bf\u30fc\u30d6\u30ed\u30c3\u30af\u30007-24\u756a""}",2026-11
 d35e0siiv0,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,pickup_number,female,入金確認でき次第、分配リンクをご共有,な,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 03:03:25,,,deleted,1,5500,分配リンクをお送りいたしますのでご自身で発券してください。,True,d35e0siiv0,2026-11-21 13:03:11,deleted_confirmed,2026-11-22 03:03:25,2026-11-22 03:01:32,public_detail,False,public_detail,cancelled,分配リンクをお送りいたしますのでご自身で発券してください。,public_detail,2026-11-22 03:03:25,True,2026-11-22 03:03:25,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""P\u5217\u30bb\u30f3\u30d6\u30ed""}",2026-11
-tb4bqjott9,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,paper,female,当日手渡し,あ,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 03:01:32,,,listing,1,6000,当日18:15～18:30の間に会場付近にて手渡しになります。,True,tb4bqjott9,2026-11-20 14:02:20,active,2026-11-22 03:01:32,,event_api,False,event_api,active,当日18:15～18:30の間に会場付近にて手渡しになります。,public_detail,2026-11-22 01:05:20,True,2026-11-22 01:05:20,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""K\u52174\uff5e27\u756a""}",2026-11
-322dxd1b2w,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,paper,female,当日手渡し,ナ,5.0,,同行,2026-11-22 01:01:32,public_alias_observed,2026-11-22 03:01:32,,,listing,1,45000,,True,322dxd1b2w,2026-11-21 17:02:56,active,2026-11-22 03:01:32,,event_api,False,event_api,active,,public_detail,2026-11-22 01:11:15,True,2026-11-22 01:11:15,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""C\u301cE\u521710\u301c20\u756a""}",2026-11
-lo5lgy9t45,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,pickup_number,female,入金確認後、チケットぴあ分配リンクをお送りします。,aa,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 03:01:32,,,listing,2,5500,"・入金確認後、チケットぴあの分配リンクをお送りします。
+tb4bqjott9,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,paper,female,当日手渡し,あ,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 04:03:26,2026-11-22 04:03:26,transition_observed,sold,1,6000,当日18:15～18:30の間に会場付近にて手渡しになります。,True,tb4bqjott9,2026-11-20 14:02:20,sold_confirmed,2026-11-22 04:03:26,2026-11-22 04:01:30,public_detail,False,public_detail,sold,当日18:15～18:30の間に会場付近にて手渡しになります。,public_detail,2026-11-22 04:03:26,True,2026-11-22 04:03:26,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""K\u52174\uff5e27\u756a""}",2026-11
+322dxd1b2w,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,paper,female,当日手渡し,ナ,5.0,,同行,2026-11-22 01:01:32,public_alias_observed,2026-11-22 04:01:30,,,listing,1,45000,,True,322dxd1b2w,2026-11-21 17:02:56,active,2026-11-22 04:01:30,,event_api,False,event_api,active,,public_detail,2026-11-22 01:11:15,True,2026-11-22 01:11:15,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""C\u301cE\u521710\u301c20\u756a""}",2026-11
+lo5lgy9t45,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,pickup_number,female,入金確認後、チケットぴあ分配リンクをお送りします。,aa,5.0,,,2026-11-22 01:01:32,public_alias_observed,2026-11-22 04:01:30,,,listing,1,5500,"・入金確認後、チケットぴあの分配リンクをお送りします。
 ・分配後は速やかにお受け取りのうえ、ご自身で発券をお願いいたします。
 
-以上をご了承いただける方のみ、ご購入をお願いいたします。",True,lo5lgy9t45,2026-11-21 19:03:01,active,2026-11-22 03:01:32,,event_api,False,event_api,active,"・入金確認後、チケットぴあの分配リンクをお送りします。
+以上をご了承いただける方のみ、ご購入をお願いいたします。",True,lo5lgy9t45,2026-11-21 19:03:01,active,2026-11-22 04:01:30,,event_api,False,event_api,active,"・入金確認後、チケットぴあの分配リンクをお送りします。
 ・分配後は速やかにお受け取りのうえ、ご自身で発券をお願いいたします。
 
 以上をご了承いただける方のみ、ご...",public_detail,2026-11-22 01:12:00,True,2026-11-22 01:12:00,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""N\u5217\u30bb\u30f3\u30d6\u30ed""}",2026-11
@@ -5758,41 +5758,45 @@ w8f6qmli43,,b1moq9D55JK7I7jdyeo1,2026-11-22,12:30,川崎チネチッタ,electron
 公演中止の場合のみ返金いたします。",public_detail,2026-11-22 01:04:12,True,2026-11-22 01:04:12,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""\u2462L\u5217\u3000\u30bb\u30f3\u30bf\u30fc\u30d6\u30ed\u30c3\u30af\u300010\u301c20\u756a""}",2026-11
 h07qhj7f06,,b1moq9D55JK7I7jdyeo1,2026-11-22,16:05,TOHOシネマズ 川崎,electronic,none,分配,リ,5.0,,,2026-11-22 01:08:15,public_alias_observed,2026-11-22 01:08:15,,,deleted,2,10000,公演中止以外の返金不可,True,h07qhj7f06,2026-11-21 09:03:18,deleted_confirmed,2026-11-22 01:08:15,2026-11-22 01:08:15,public_detail,False,public_detail,cancelled,公演中止以外の返金不可,public_detail,2026-11-22 01:08:15,True,2026-11-22 01:08:15,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""J\u5217\u300011-19""}",2026-11
 x3teqpsm0u,,b1moq9D55JK7I7jdyeo1,2026-11-22,09:30,川崎チネチッタ,pickup_number,female,分配,の,5.0,,,2026-11-22 01:10:21,public_alias_observed,2026-11-22 01:10:21,,,listing,1,30000,,True,x3teqpsm0u,2026-11-21 15:03:05,expired,2026-11-22 01:10:21,2026-11-22 01:10:21,public_detail,False,public_detail,expired,,public_detail,2026-11-22 01:10:21,True,2026-11-22 01:10:21,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""D\u5217\u30bb\u30f3\u30d6\u30ed""}",2026-11
-4y1f9o1b40,,b1moq9D55JK7I7jdyeo1,2026-11-22,12:30,川崎チネチッタ,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 02:01:26,public_alias_observed,2026-11-22 03:01:32,,,listing,1,25000,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+4y1f9o1b40,,b1moq9D55JK7I7jdyeo1,2026-11-22,12:30,川崎チネチッタ,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 02:01:26,public_alias_observed,2026-11-22 04:01:30,,,listing,1,15000,"12:25には出品取り消します
+
+入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
-公演中止の場合のみ返金いたします。",True,4y1f9o1b40,2026-11-17 12:00:49,active,2026-11-22 03:01:32,,event_api,False,event_api,active,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+公演中止の場合のみ返金いたします。",True,4y1f9o1b40,2026-11-17 12:00:49,active,2026-11-22 04:09:58,,public_detail,False,public_detail,active,"12:25には出品取り消します
+
+入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
-公演中止の場合のみ返金いたします。",public_detail,2026-11-22 02:03:11,True,2026-11-22 02:03:11,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""\u2461E\u5217\u3000\u2605\u30bb\u30f3\u30bf\u30fc\u30007-23\u756a""}",2026-11
+公演...",public_detail,2026-11-22 04:09:58,True,2026-11-22 04:09:58,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""\u2461E\u5217\u3000\u2605\u30bb\u30f3\u30bf\u30fc\u30007-23\u756a""}",2026-11
 bnmjysvsio,,b1moq9D55JK7I7jdyeo1,2026-11-22,12:30,川崎チネチッタ,pickup_number,none,入金確認後発券URL送付,Ri,5.0,,,2026-11-22 02:01:26,scrape_observed,2026-11-22 02:18:05,,,deleted,1,10000,"入金確認後に発見URL送付させていただきます。
 速やかにご対応可能な方お値下げも可能ですので気軽に申請していただいて構いません。",True,bnmjysvsio,2026-11-22 02:01:26,deleted_confirmed,2026-11-22 02:18:05,,public_detail,False,public_detail,cancelled,"入金確認後に発見URL送付させていただきます。
 速やかにご対応可能な方お値下げも可能ですので気軽に申請していただいて構いません。",public_detail,2026-11-22 02:18:05,True,2026-11-22 02:18:05,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""L\u5217 \u30bb\u30f3\u30d6\u30ed\u30c9\u30bb\u30f3\u4ed8\u8fd1""}",2026-11
-afw10h752r,,b1moq9D55JK7I7jdyeo1,2026-11-22,13:00,TOHOシネマズ 川崎,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 02:01:26,public_alias_observed,2026-11-22 03:01:32,,,listing,1,20000,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+afw10h752r,,b1moq9D55JK7I7jdyeo1,2026-11-22,13:00,TOHOシネマズ 川崎,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 02:01:26,public_alias_observed,2026-11-22 04:04:07,,,deleted,1,20000,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
-公演中止の場合のみ返金いたします。",True,afw10h752r,2026-11-17 12:00:49,active,2026-11-22 03:01:32,,event_api,False,event_api,active,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+公演中止の場合のみ返金いたします。",True,afw10h752r,2026-11-17 12:00:49,deleted_confirmed,2026-11-22 04:04:07,2026-11-22 04:01:30,public_detail,False,public_detail,cancelled,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
-公演中止の場合のみ返金いたします。",public_detail,2026-11-22 02:04:13,True,2026-11-22 02:04:13,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""\u2461F\u5217\u300020\u301c30\u756a""}",2026-11
-s612orvq3q,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 02:01:26,public_alias_observed,2026-11-22 03:01:32,,,listing,1,16000,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+公演中止の場合のみ返金いたします。",public_detail,2026-11-22 04:04:07,True,2026-11-22 04:04:07,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""\u2461F\u5217\u300020\u301c30\u756a""}",2026-11
+s612orvq3q,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 02:01:26,public_alias_observed,2026-11-22 04:01:30,,,listing,1,16000,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
-公演中止の場合のみ返金いたします。",True,s612orvq3q,2026-11-17 12:00:49,active,2026-11-22 03:01:32,,event_api,False,event_api,active,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+公演中止の場合のみ返金いたします。",True,s612orvq3q,2026-11-17 12:00:49,active,2026-11-22 04:01:30,,event_api,False,event_api,active,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
 公演中止の場合のみ返金いたします。",public_detail,2026-11-22 02:05:21,True,2026-11-22 02:05:21,b1moq9D55JK7I7jdyeo1,"{""isSpecified"": true, ""value"": ""\u2463I\u5217\u300019\u301c27\u756a\u2605\u901a\u8def\u771f\u6a2a""}",2026-11
-unhux5eyz5,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 02:01:26,public_alias_observed,2026-11-22 03:01:32,,,listing,1,8000,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+unhux5eyz5,,b1moq9D55JK7I7jdyeo1,2026-11-22,18:55,横浜ブルク13,electronic,female,チケットぴあにて分配,あ,5.0,,,2026-11-22 02:01:26,public_alias_observed,2026-11-22 04:01:30,,,listing,1,8000,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
-公演中止の場合のみ返金いたします。",True,unhux5eyz5,2026-11-17 12:00:49,active,2026-11-22 03:01:32,,event_api,False,event_api,active,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
+公演中止の場合のみ返金いたします。",True,unhux5eyz5,2026-11-17 12:00:49,active,2026-11-22 04:01:30,,event_api,False,event_api,active,"入金確認後に速やかにチケットぴあ分配urlを送付いたします。
 
 分配後は速やかに受け取り評価の方よろしくお願いします。
 
