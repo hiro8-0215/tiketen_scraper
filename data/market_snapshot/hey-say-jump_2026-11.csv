@@ -1,5 +1,5 @@
 ﻿year_month,event_id,perf_date,perf_time,venue,total_tickets,active_tickets,current_active_tickets,current_active_quantity,historical_listing_rows,unknown_listing_tickets,alias_rows,current_avg_price,current_min_price,current_max_price,sold_tickets,deleted_tickets,avg_price,min_price,max_price
-2026-11,hey-say-jump-dome-tour-2026-2027-juliet,2026-12-12,18:00,みずほPayPayドーム福岡,1076,204,204,341,928,683,3386,16299.103448275862,500,70000,39,109,16447.031894934335,200,70000
+2026-11,hey-say-jump-dome-tour-2026-2027-juliet,2026-12-12,18:00,みずほPayPayドーム福岡,1030,204,204,341,882,637,3432,16299.103448275862,500,70000,39,109,16490.574509803922,200,70000
 2026-11,hey-say-jump-dome-tour-2026-2027-juliet,2026-12-13,15:00,みずほPayPayドーム福岡,1309,149,149,241,1146,965,2561,13911.020408163266,500,80000,48,115,14029.238645111624,500,80000
 2026-11,hey-say-jump-dome-tour-2026-2027-juliet,2026-12-19,17:00,バンテリンドーム ナゴヤ,1210,142,142,228,1075,907,2071,15466.398550724638,1900,45000,30,105,15327.413209144792,1900,50000
 2026-11,hey-say-jump-dome-tour-2026-2027-juliet,2026-12-20,15:00,バンテリンドームナゴヤ,1155,128,128,211,1055,905,1811,15146.0859375,2800,45000,27,73,15582.82837127846,2800,50000
